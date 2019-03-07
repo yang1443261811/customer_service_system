@@ -11,8 +11,12 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
+Route::get('/', 'IndexController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+});
+
+
