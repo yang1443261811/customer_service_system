@@ -178,19 +178,19 @@
     //打开/关闭聊天框
     $(".chatBtn").click(function () {
         $(".chatBox").toggle(10);
-    })
+    });
     $(".chat-close").click(function () {
         $(".chatBox").toggle(10);
-    })
+    });
 
     //返回列表
     $(".chat-return").click(function () {
        console.log('return');
     });
 
-    //      发送信息
+    //发送信息
     $("#chat-fasong").click(function () {
-        var textContent = $(".div-textarea").html().replace(/[\n\r]/g, '<br>')
+        var textContent = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
         if (textContent != "") {
             $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
                 "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
@@ -205,7 +205,7 @@
         }
     });
 
-    //      发送表情
+    //发送表情
     $("#chat-biaoqing").click(function () {
         $(".biaoqing-photo").toggle();
     });
@@ -219,7 +219,7 @@
     $(".emoji-picker-image").each(function () {
         $(this).click(function () {
             var bq = $(this).parent().html();
-            console.log(bq)
+            console.log(bq);
             $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
                 "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
                 "<div class=\"right\"> <div class=\"chat-message\"> " + bq + " </div> " +

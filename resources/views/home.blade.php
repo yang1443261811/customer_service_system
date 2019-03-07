@@ -34,7 +34,8 @@
         $(function () {
             window.client_id = '';
             window.uid = {{auth()->id()}};
-            window.to_id = uid === 1 ? 2 : 1;
+//            window.to_id = uid === 1 ? 2 : 1;
+            window.to_id = '';
             window.to_name = '杨静';
             window.from_id = {{auth()->id()}};
             window.from_name = '{{auth()->user()->name}}';
