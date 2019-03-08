@@ -133,7 +133,6 @@
 
 <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
 <script>
-
     screenFuc();
     function screenFuc() {
         var topHeight = $(".chatBox-head").innerHeight();//聊天头部高度
@@ -162,6 +161,91 @@
     (window.onresize = function () {
         screenFuc();
     })();
+
+    //当前用户相关信息
+    window.uid = '{{$uid}}';
+    window.name = '{{$name}}';
+    window.avatar = '{{$avatar}}';
+    window.to_id = '';
+    window.to_name = '';
+
+    //    ws = new WebSocket("ws://" + document.domain + ":2346");
+    window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
+
+    ws.onopen = function (e) {
+        //如果连接成功执行初始化
+        if (e.target.readyState === 1) {
+            var text = {'message_type': 'init', 'data': {'uid': uid}};
+            ws.send(JSON.stringify(text));
+        }
+        console.log(e.target.readyState);
+    };
+
+    ws.onmessage = function (e) {
+        var response = JSON.parse(e.data);
+
+        //如果有新消息就追加到dom中展示出来
+        if (response.message_type === 'chatMessage') {
+            //保存消息来源用户的信息,回复消息时会用到
+            to_id = response.data.id;
+            to_name = response.data.to_name;
+            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
+                "<div class=\"author-name\"><small class=\"chat-date\">" + response.data.time + "</small> </div> " +
+                "<div class=\"left\"> <div class=\"chat-message\"> " + response.data.content + " </div> " +
+                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
+
+            console.log(response.data)
+        }
+    };
+
+    //发送信息
+    $("#chat-fasong").click(function () {
+        var textContent = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
+        if (textContent != "") {
+            var time = (new Date()).toLocaleString().split('/').join('-');
+            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
+                "<div class=\"author-name\"><small class=\"chat-date\">" + time + "</small> </div> " +
+                "<div class=\"right\"> <div class=\"chat-message\"> " + textContent + " </div> " +
+                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
+            //发送后清空输入框
+            $(".div-textarea").html("");
+            //聊天框默认最底部
+            $(document).ready(function () {
+                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+            });
+
+            //通过websocket将消息推送到服务端
+            sendMessage(textContent);
+        }
+    });
+
+    /**
+     * 通过websocket推送消息到服务端
+     *
+     * @param string word 消息内容
+     */
+    function sendMessage(word) {
+        //socket连接成功才能发送消息
+        if (ws.readyState !== 1) {
+            return false;
+        }
+
+        var msg = {
+            'message_type': 'chatMessage',
+            'data': {
+                'from_id': uid,
+                'from_name': name,
+                'from_avatar': avatar,
+                'to_id': to_id,
+                'to_name': to_name,
+                'content': word
+            }
+        };
+
+        ws.send(JSON.stringify(msg));
+        console.log('send success');
+    }
+
     //未读信息数量为空时
     var totalNum = $(".chat-message-num").html();
     if (totalNum == "") {
@@ -185,24 +269,7 @@
 
     //返回列表
     $(".chat-return").click(function () {
-       console.log('return');
-    });
-
-    //发送信息
-    $("#chat-fasong").click(function () {
-        var textContent = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
-        if (textContent != "") {
-            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
-                "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
-                "<div class=\"right\"> <div class=\"chat-message\"> " + textContent + " </div> " +
-                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
-            //发送后清空输入框
-            $(".div-textarea").html("");
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-        }
+        console.log('return');
     });
 
     //发送表情
