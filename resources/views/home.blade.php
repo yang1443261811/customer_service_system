@@ -63,7 +63,8 @@
                             <i class="iconfont icon-biaoqing"></i>
                         </button>
                         <label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
-                            <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png" name="file" id="inputImage" class="hidden">
+                            <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png"
+                                   name="file" id="inputImage" class="hidden">
                             <i class="iconfont icon-tuxiang"></i>
                         </label>
                         <button id="chat-fasong" class="btn-default-styles"><i class="iconfont icon-fasong"></i>
@@ -299,18 +300,35 @@
         if (!e.files || !e.files[0]) {
             return;
         }
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            var images = evt.target.result;
-            var dom = makeChatMessage('<img src="' + images + '">', avatar, 'right');
-            $(".chatBox-content-demo").append(dom);
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-        };
 
-        reader.readAsDataURL(pic.files[0]);
+        var image = e.files[0];
+        var formData = new FormData();
+        formData.append('image', image);
+        formData.append('_token', token);
+
+        $.ajax({
+            url: '/chatLog/upload',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false
+        })
+            .done(function (res) {
+                var dom = makeChatMessage('<img src="' + res + '">', avatar, 'right');
+                $(".chatBox-content-demo").append(dom);
+
+                //聊天框默认最底部
+                $(document).ready(function () {
+                    $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+                });
+
+                //将消息推送到服务端;
+                sendMessage(res);
+            })
+            .fail(function (res) {
+                console.log(res.responseJSON.message);
+            });
     }
 
     /**

@@ -11,14 +11,16 @@
 |
 */
 
-Route::get('/', 'IndexController@index');
-
 Auth::routes();
+
+Route::get('/', 'IndexController@index');
+Route::get('/chatLog/{uid}/get', 'ChatLogController@get');
+Route::post('/chatLog/upload', 'ChatLogController@upload');
+
 
 Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/customer/lists', 'CustomerController@lists');
-    Route::get('/chatLog/{uid}/get', 'ChatLogController@get');
 });
 
 
