@@ -63,8 +63,7 @@
                             <i class="iconfont icon-biaoqing"></i>
                         </button>
                         <label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
-                            <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png"
-                                   name="file" id="inputImage" class="hidden">
+                            <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png" name="file" id="inputImage" class="hidden">
                             <i class="iconfont icon-tuxiang"></i>
                         </label>
                         <button id="chat-fasong" class="btn-default-styles"><i class="iconfont icon-fasong"></i>
@@ -118,36 +117,8 @@
 
 
 <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="/js/common.js"></script>
 <script>
-    screenFuc();
-    function screenFuc() {
-        var topHeight = $(".chatBox-head").innerHeight();//聊天头部高度
-        //屏幕小于768px时候,布局change
-        var winWidth = $(window).innerWidth();
-        if (winWidth <= 768) {
-            var totalHeight = $(window).height(); //页面整体高度
-            $(".chatBox-info").css("height", totalHeight - topHeight);
-            var infoHeight = $(".chatBox-info").innerHeight();//聊天头部以下高度
-            //中间内容高度
-            $(".chatBox-content").css("height", infoHeight - 46);
-            $(".chatBox-content-demo").css("height", infoHeight - 46);
-
-            $(".chatBox-list").css("height", totalHeight - topHeight);
-            $(".chatBox-kuang").css("height", totalHeight - topHeight);
-            $(".div-textarea").css("width", winWidth - 106);
-        } else {
-            $(".chatBox-info").css("height", 495);
-            $(".chatBox-content").css("height", 448);
-            $(".chatBox-content-demo").css("height", 448);
-            $(".chatBox-list").css("height", 495);
-            $(".chatBox-kuang").css("height", 495);
-            $(".div-textarea").css("width", 260);
-        }
-    }
-    (window.onresize = function () {
-        screenFuc();
-    })();
-
     //当前用户相关信息
     window.uid = '{{auth()->id()}}';
     window.name = '{{auth()->user()->name}}';
@@ -175,11 +146,9 @@
         if (response.message_type === 'chatMessage') {
             //保存消息来源用户的信息,回复消息时会用到
             to_id = response.data.id;
-            to_name = response.data.to_name;
-            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
-                "<div class=\"author-name\"><small class=\"chat-date\">" + response.data.time + "</small> </div> " +
-                "<div class=\"left\"> <div class=\"chat-message\"> " + response.data.content + " </div> " +
-                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
+            to_name = response.data.name;
+            var dom = makeChatMessage(response.data.content, response.data.avatar, 'left');
+            $(".chatBox-content-demo").append(dom);
 
             //聊天框默认最底部
             $(document).ready(function () {
@@ -230,35 +199,15 @@
         console.log('send success');
     }
 
-
-    //未读信息数量为空时
-    var totalNum = $(".chat-message-num").html();
-    if (totalNum == "") {
-        $(".chat-message-num").css("padding", 0);
-    }
-    $(".message-num").each(function () {
-        var wdNum = $(this).html();
-        if (wdNum == "") {
-            $(this).css("padding", 0);
-        }
-    });
-
-
-    //打开/关闭聊天框
-    $(".chatBtn").click(function () {
-        $(".chatBox").toggle(10);
-    });
-    $(".chat-close").click(function () {
-        $(".chatBox").toggle(10);
-    });
-
     //进聊天页面
     $('body').on('click', '.chat-list-people', function () {
         to_id = $(this).attr('data-uid');
         to_name = $(this).find('.chat-name p').html();
-        console.log(to_name);
+
         showChatRecord(to_id);
+
         var n = $(this).index();
+
         $(".chatBox-head-one").toggle();
         $(".chatBox-head-two").toggle();
         $(".chatBox-list").fadeToggle();
@@ -281,10 +230,7 @@
             $.each(response, function (index, item) {
                 //如果消息来源客户那么消息显示在聊天窗口右侧
                 var point = item.from_id === to_id ? 'left' : 'right';
-                dom += "<div class=\"clearfloat\">" +
-                    "<div class=\"author-name\"><small class=\"chat-date\">" + item.created_at + "</small> </div> " +
-                    "<div class=\"" + point + "\"> <div class=\"chat-message\"> " + item.content + " </div> " +
-                    "<div class=\"chat-avatars\"><img src=\"" + item.from_avatar + "\" alt=\"头像\" /></div> </div> </div>";
+                dom += makeChatMessage(item.content, item.from_avatar, point);
             });
 
             $(".chatBox-content-demo").append(dom);
@@ -306,13 +252,10 @@
 
     //发送信息
     $("#chat-fasong").click(function () {
-        var textContent = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
-        var time = (new Date()).toLocaleString().split('/').join('-');
-        if (textContent != "") {
-            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
-                "<div class=\"author-name\"><small class=\"chat-date\">" + time + "</small> </div> " +
-                "<div class=\"right\"> <div class=\"chat-message\"> " + textContent + " </div> " +
-                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
+        var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
+        if (content !== "") {
+            var dom = makeChatMessage(content, avatar, 'right');
+            $(".chatBox-content-demo").append(dom);
 
             //发送后清空输入框
             $(".div-textarea").html("");
@@ -321,7 +264,7 @@
                 $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
             });
 
-            sendMessage(textContent);
+            sendMessage(content);
         }
     });
 
@@ -340,10 +283,8 @@
         $(this).click(function () {
             var bq = $(this).parent().html();
             console.log(bq)
-            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
-                "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
-                "<div class=\"right\"> <div class=\"chat-message\"> " + bq + " </div> " +
-                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
+            var dom = makeChatMessage(bq, avatar, 'right');
+            $(".chatBox-content-demo").append(dom);
             //发送后关闭表情框
             $(".biaoqing-photo").toggle();
             //聊天框默认最底部
@@ -354,24 +295,45 @@
     });
 
     //发送图片
-    function selectImg(pic) {
-        if (!pic.files || !pic.files[0]) {
+    function selectImg(e) {
+        if (!e.files || !e.files[0]) {
             return;
         }
         var reader = new FileReader();
         reader.onload = function (evt) {
             var images = evt.target.result;
-            $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
-                "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
-                "<div class=\"right\"> <div class=\"chat-message\"><img src=" + images + "></div> " +
-                "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
+            var dom = makeChatMessage('<img src="' + images + '">', avatar, 'right');
+            $(".chatBox-content-demo").append(dom);
             //聊天框默认最底部
             $(document).ready(function () {
                 $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
             });
         };
-        reader.readAsDataURL(pic.files[0]);
 
+        reader.readAsDataURL(pic.files[0]);
+    }
+
+    /**
+     * 为一条消息构建dom
+     *
+     * @param string word 消息的内容
+     * @param avatar      消息发送者的头像
+     * @param point       消息显示在聊天窗口的左侧还是右侧
+     * @returns {string}
+     */
+    function makeChatMessage(word, avatar, point) {
+        var time = (new Date()).toLocaleString().split('/').join('-');
+
+        if (point === 'right') {
+            return '<div class="clearfloat"> <div class="author-name"> <small class="chat-date">' + time + '</small></div>' +
+                '<div class="right"><div class="chat-message">' + word + '</div>' +
+                '<div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div></div></div>';
+
+        } else {
+            return '<div class="clearfloat"><div class="author-name"><small class="chat-date">' + time + '</small></div>' +
+                '<div class="left"><div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div>' +
+                '<div class="chat-message">' + word + '</div></div></div>';
+        }
     }
 
 
