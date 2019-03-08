@@ -34,40 +34,6 @@
                 <div class="chatBox-content">
                     <div class="chatBox-content-demo" id="chatBox-content-demo">
 
-                        <div class="clearfloat">
-                            <div class="author-name">
-                                <small class="chat-date">2017-12-02 14:26:58</small>
-                            </div>
-                            <div class="left">
-                                <div class="chat-avatars"><img src="img/icon01.png" alt="头像"/></div>
-                                <div class="chat-message">
-                                    给你看张图
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="clearfloat">
-                            <div class="author-name">
-                                <small class="chat-date">2017-12-02 14:26:58</small>
-                            </div>
-                            <div class="left">
-                                <div class="chat-avatars"><img src="img/icon01.png" alt="头像"/></div>
-                                <div class="chat-message">
-                                    <img src="img/1.png" alt="">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="clearfloat">
-                            <div class="author-name">
-                                <small class="chat-date">2017-12-02 14:26:58</small>
-                            </div>
-                            <div class="right">
-                                <div class="chat-message">嗯，适合做壁纸</div>
-                                <div class="chat-avatars"><img src="img/icon02.png" alt="头像"/></div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
                 <div class="chatBox-send">
@@ -194,9 +160,37 @@
                 "<div class=\"left\"> <div class=\"chat-message\"> " + response.data.content + " </div> " +
                 "<div class=\"chat-avatars\"><img src=\"img/icon01.png\" alt=\"头像\" /></div> </div> </div>");
 
+            //聊天框默认最底部
+            $(document).ready(function () {
+                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+            });
+
             console.log(response.data)
         }
     };
+
+    showChatRecord(uid);
+
+    function showChatRecord(uid) {
+        $.get('/chatLog/' + uid + '/get').done(function (response) {
+            var dom = '';
+            $.each(response, function (index, item) {
+                //如果消息来源客户那么消息显示在聊天窗口右侧
+                var point = item.from_id === uid ? 'left' : 'right';
+                dom += "<div class=\"clearfloat\">" +
+                    "<div class=\"author-name\"><small class=\"chat-date\">" + item.created_at + "</small> </div> " +
+                    "<div class=\"" + point + "\"> <div class=\"chat-message\"> " + item.content + " </div> " +
+                    "<div class=\"chat-avatars\"><img src=\"" + item.from_avatar + "\" alt=\"头像\" /></div> </div> </div>";
+            });
+
+            $(".chatBox-content-demo").append(dom);
+
+            //聊天框默认最底部
+            $(document).ready(function () {
+                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+            });
+        });
+    }
 
     //发送信息
     $("#chat-fasong").click(function () {
