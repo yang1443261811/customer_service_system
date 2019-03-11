@@ -283,7 +283,7 @@
     $(".emoji-picker-image").each(function () {
         $(this).click(function () {
             var bq = $(this).parent().html();
-            console.log(bq)
+            console.log(bq);
             var dom = makeChatMessage(bq, avatar, 'right');
             $(".chatBox-content-demo").append(dom);
             //发送后关闭表情框

@@ -25,14 +25,11 @@ class IndexController extends Controller
 
         $validator->fails() && exit($validator->errors()->first());
 
-        $where = array('uid' => $request->uid);
-        $input = array(
+        Customer::firstOrCreate(['uid' => $request->uid], [
             'uid'    => $request->uid,
             'name'   => $request->name,
             'avatar' => $request->avatar,
-        );
-
-        $data = Customer::firstOrCreate($where, $input);
+        ]);
 
         return view('index', $request->all());
     }
