@@ -132,14 +132,12 @@
     window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
 
     ws.onopen = function (e) {
-        //如果连接成功执行初始化
         if (e.target.readyState === 1) {
-            var text = {'message_type': 'init', 'data': {'uid': uid}};
-            ws.send(JSON.stringify(text));
+            console.log('连接成功' + e.target.readyState);
         }
-        console.log(e.target.readyState);
     };
 
+    //监听消息
     ws.onmessage = function (e) {
         var response = JSON.parse(e.data);
 
@@ -160,6 +158,7 @@
         }
     };
 
+    //获取客户列表
     $.get('/customer/lists').done(function (response) {
         var dom = '';
         $.each(response, function (key, item) {
@@ -170,45 +169,22 @@
         });
 
         $('.chatBox-list').append(dom);
-        console.log(response[0])
     });
-
-    /**
-     * 通过websocket推送消息到服务端
-     *
-     * @param string word 消息内容
-     */
-    function sendMessage(word) {
-        //socket连接成功才能发送消息
-        if (ws.readyState !== 1) {
-            return false;
-        }
-
-        var msg = {
-            'message_type': 'chatMessage',
-            'data': {
-                'from_id': uid,
-                'from_name': name,
-                'from_avatar': avatar,
-                'to_id': to_id,
-                'to_name': to_name,
-                'content': word
-            }
-        };
-
-        ws.send(JSON.stringify(msg));
-        console.log('send success');
-    }
 
     //进聊天页面
     $('body').on('click', '.chat-list-people', function () {
+        console.log('into room' + ws.readyState);
         to_id = $(this).attr('data-uid');
         to_name = $(this).find('.chat-name p').html();
+        //初始化客服与用户的的连接
+        if (ws.readyState === 1) {
+            ws.send(JSON.stringify({'message_type': 'init', 'data': {'uid': uid, 'group_id': to_id}}));
+        } else {
+            console.log('websoket 连接错误');
+        }
 
+        //获取聊天记录
         showChatRecord(to_id);
-
-        var n = $(this).index();
-
         $(".chatBox-head-one").toggle();
         $(".chatBox-head-two").toggle();
         $(".chatBox-list").fadeToggle();
@@ -224,24 +200,6 @@
             $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
         });
     });
-
-    function showChatRecord(uid) {
-        $.get('/chatLog/' + uid + '/get').done(function (response) {
-            var dom = '';
-            $.each(response, function (index, item) {
-                //如果消息来源客户那么消息显示在聊天窗口右侧
-                var point = item.from_id === to_id ? 'left' : 'right';
-                dom += makeChatMessage(item.content, item.from_avatar, point);
-            });
-
-            $(".chatBox-content-demo").append(dom);
-
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-        });
-    }
 
     //返回列表
     $(".chat-return").click(function () {
@@ -295,6 +253,7 @@
         })
     });
 
+
     //发送图片
     function selectImg(e) {
         if (!e.files || !e.files[0]) {
@@ -332,8 +291,55 @@
     }
 
     /**
+     * 获取聊天记录
+     * @param string uid
+     */
+    function showChatRecord(uid) {
+        $.get('/chatLog/' + uid + '/get').done(function (response) {
+            var dom = '';
+            $.each(response, function (index, item) {
+                //如果消息来源客户那么消息显示在聊天窗口右侧
+                var point = item.from_id === to_id ? 'left' : 'right';
+                dom += makeChatMessage(item.content, item.from_avatar, point);
+            });
+
+            $(".chatBox-content-demo").append(dom);
+
+            //聊天框默认最底部
+            $(document).ready(function () {
+                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+            });
+        });
+    }
+
+    /**
+     * 通过websocket推送消息到服务端
+     * @param string word 消息内容
+     */
+    function sendMessage(word) {
+        //socket连接成功才能发送消息
+        if (ws.readyState !== 1) {
+            return false;
+        }
+
+        var msg = {
+            'message_type': 'chatMessage',
+            'data': {
+                'from_id': uid,
+                'from_name': name,
+                'from_avatar': avatar,
+                'to_id': to_id,
+                'to_name': to_name,
+                'content': word
+            }
+        };
+
+        ws.send(JSON.stringify(msg));
+        console.log('send success');
+    }
+
+    /**
      * 为一条消息构建dom
-     *
      * @param string word 消息的内容
      * @param avatar      消息发送者的头像
      * @param point       消息显示在聊天窗口的左侧还是右侧
@@ -353,7 +359,6 @@
                 '<div class="chat-message">' + word + '</div></div></div>';
         }
     }
-
 
 </script>
 

@@ -116,8 +116,7 @@
     ws.onopen = function (e) {
         //如果连接成功执行初始化
         if (e.target.readyState === 1) {
-            var text = {'message_type': 'init', 'data': {'uid': uid}};
-            ws.send(JSON.stringify(text));
+            ws.send(JSON.stringify({'message_type': 'init', 'data': {'uid': uid, 'group_id': uid}}));
         }
     };
 
