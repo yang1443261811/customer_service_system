@@ -31,6 +31,6 @@ class ChatLogController extends Controller
 
         $path = $request->file('image')->store('avatars', 'public');
 
-        return response()->json(Storage::url($path));
+        return response()->json(['url' => Storage::url($path)]);
     }
 }

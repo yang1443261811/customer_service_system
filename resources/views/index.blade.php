@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
     <link rel="stylesheet" type="text/css" href="/font_Icon/iconfont.css">
     <link rel="stylesheet" type="text/css" href="/css/chat.css">
 
@@ -106,6 +105,7 @@
     window.avatar = '{{$avatar}}';
     window.to_id = '';
     window.to_name = '';
+    window.token = '{{csrf_token()}}';
 
     //展示聊天记录
     showChatRecord(uid);
@@ -116,48 +116,42 @@
     ws.onopen = function (e) {
         //如果连接成功执行初始化
         if (e.target.readyState === 1) {
-            ws.send(JSON.stringify({'message_type': 'init', 'data': {'uid': uid, 'group_id': uid}}));
+            ws.send(JSON.stringify({'message_type': 'checkIn', 'data': {'uid': uid, 'group_id': uid}}));
         }
     };
 
     ws.onmessage = function (e) {
         var response = JSON.parse(e.data);
-
+        var data = response.data;
         //如果有新消息就追加到dom中展示出来
         if (response.message_type === 'chatMessage') {
             //保存消息来源用户的信息,回复消息时会用到
-            to_id = response.data.id;
-            to_name = response.data.name;
-            //将消息内容在聊天窗口展示出来
-            var dom = makeChatMessage(response.data.content, response.data.avatar, 'right');
+            to_id = data.id;
+            to_name = data.name;
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'right');
             $(".chatBox-content-demo").append(dom);
-
             //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
+            positionBottom();
         }
     };
 
-    //发送信息
+    //发送文字信息
     $("#chat-fasong").click(function () {
         var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
-
-        if (content !== "") {
-            var dom = makeChatMessage(content, avatar, 'left');
-            $(".chatBox-content-demo").append(dom);
-
-            //发送后清空输入框
-            $(".div-textarea").html("");
-
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-
-            //通过websocket将消息推送到服务端
-            sendMessage(content);
+        if (content === "") {
+            return false;
         }
+
+        //清空输入框
+        $(".div-textarea").html("");
+        //构建消息标签然后插入dom中
+        var dom = makeChatMessage(content, 1, avatar, 'left');
+        $(".chatBox-content-demo").append(dom);
+        //聊天框默认最底部
+        positionBottom();
+        //通过websocket将消息推送到服务端
+        sendMessage(content, 1);
     });
 
     //发送表情
@@ -176,47 +170,57 @@
     $(".emoji-picker-image").each(function () {
         $(this).click(function () {
             var bq = $(this).parent().html();
-            var dom = makeChatMessage(bq, avatar, 'left');
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(bq, 3, avatar, 'left');
             $(".chatBox-content-demo").append(dom);
-            console.log(bq);
             //发送后关闭表情框
             $(".biaoqing-photo").toggle();
             //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-
-            sendMessage(bq);
+            positionBottom();
+            //将消息内容推送到服务端
+            sendMessage(bq, 3);
         })
     });
 
     //发送图片
-    function selectImg(pic) {
-        if (!pic.files || !pic.files[0]) {
+    function selectImg(e) {
+        if (!e.files || !e.files[0]) {
             return;
         }
 
-        var reader = new FileReader();
+        var image = e.files[0];
+        var formData = new FormData();
+        formData.append('image', image);
+        formData.append('_token', token);
 
-        reader.onload = function (evt) {
-            var content = evt.target.result;
-            var dom = makeChatMessage(content, avatar, 'left');
-            $(".chatBox-content-demo").append(dom);
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+        $.ajax({
+            url: '/chatLog/upload',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false
+        })
+            .done(function (res) {
+                //构建消息标签然后插入dom中
+                var dom = makeChatMessage(res.url, 2, avatar, 'left');
+                $(".chatBox-content-demo").append(dom);
+                //聊天框默认最底部
+                positionBottom();
+                //将消息推送到服务端;
+                sendMessage(res.url, 2);
+            })
+            .fail(function (res) {
+                console.log(res.responseJSON.message);
             });
-        };
-
-        reader.readAsDataURL(pic.files[0]);
     }
 
     /**
      * 通过websocket推送消息到服务端
-     *
+     * @param int contentType 消息类型 1是文字消息 2是图片消息 3是表情消息
      * @param string word 消息内容
      */
-    function sendMessage(word) {
+    function sendMessage(word, contentType) {
         //socket连接成功才能发送消息
         if (ws.readyState !== 1) {
             return false;
@@ -230,7 +234,8 @@
                 'from_avatar': avatar,
                 'to_id': to_id,
                 'to_name': to_name,
-                'content': word
+                'content': word,
+                'content_type': contentType
             }
         };
 
@@ -238,50 +243,60 @@
         console.log('send success');
     }
 
-    /**
-     * 展示聊天记录
-     *
-     * @param string word 消息内容
-     */
-    function showChatRecord(uid) {
-
-        $.get('/chatLog/' + uid + '/get').done(function (response) {
-            var dom = '';
-            $.each(response, function (index, item) {
-                //如果消息来源客户那么消息显示在聊天窗口右侧
-                var point = item.from_id === uid ? 'left' : 'right';
-                dom += makeChatMessage(item.content, item.from_avatar, point);
-            });
-
-            $(".chatBox-content-demo").append(dom);
-
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
+    //聊天框默认定位到最底部
+    function positionBottom() {
+        $(document).ready(function () {
+            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
         });
     }
 
     /**
+     * 展示聊天记录
+     * @param string word 消息内容
+     */
+    function showChatRecord(uid) {
+        $.get('/chatLog/' + uid + '/get')
+            .done(function (response) {
+                var dom = '';
+                //循环构建消息标签然后插入dom中
+                $.each(response, function (index, item) {
+                    //如果消息来源客户那么消息显示在聊天窗口右侧
+                    var point = item.from_id === uid ? 'left' : 'right';
+                    dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
+                });
+
+                //将消息插入dom中
+                $(".chatBox-content-demo").append(dom);
+                //聊天框默认最底部
+                positionBottom();
+            });
+    }
+
+    /**
      * 为一条消息构建dom
-     *
-     * @param string word 消息的内容
+     * @param string content 消息的内容
+     * @param string content_type 消息的类型 1是文字消息 2是图片消息 3是表情消息
      * @param avatar      消息发送者的头像
      * @param point       消息显示在聊天窗口的左侧还是右侧
      * @returns {string}
      */
-    function makeChatMessage(word, avatar, point) {
+    function makeChatMessage(content, content_type, avatar, point) {
         var time = (new Date()).toLocaleString().split('/').join('-');
+        if (content_type === 2) {
+            content = '<img src="' + content + '">';
+        } else if (content_type === 3) {
+
+        }
 
         if (point === 'right') {
             return '<div class="clearfloat"> <div class="author-name"> <small class="chat-date">' + time + '</small></div>' +
-                '<div class="right"><div class="chat-message">' + word + '</div>' +
+                '<div class="right"><div class="chat-message">' + content + '</div>' +
                 '<div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div></div></div>';
 
         } else {
             return '<div class="clearfloat"><div class="author-name"><small class="chat-date">' + time + '</small></div>' +
                 '<div class="left"><div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div>' +
-                '<div class="chat-message">' + word + '</div></div></div>';
+                '<div class="chat-message">' + content + '</div></div></div>';
         }
     }
 

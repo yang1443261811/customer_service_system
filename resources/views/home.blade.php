@@ -140,21 +140,19 @@
     //监听消息
     ws.onmessage = function (e) {
         var response = JSON.parse(e.data);
-
+        var data = response.data;
         //如果有新消息就追加到dom中展示出来
         if (response.message_type === 'chatMessage') {
             //保存消息来源用户的信息,回复消息时会用到
-            to_id = response.data.id;
-            to_name = response.data.name;
-            var dom = makeChatMessage(response.data.content, response.data.avatar, 'left');
+            to_id = data.id;
+            to_name = data.name;
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'left');
             $(".chatBox-content-demo").append(dom);
 
             //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-
-            console.log(response.data)
+            positionBottom();
+            console.log(data)
         }
     };
 
@@ -173,32 +171,28 @@
 
     //进聊天页面
     $('body').on('click', '.chat-list-people', function () {
-        console.log('into room' + ws.readyState);
         to_id = $(this).attr('data-uid');
         to_name = $(this).find('.chat-name p').html();
         //初始化客服与用户的的连接
         if (ws.readyState === 1) {
-            ws.send(JSON.stringify({'message_type': 'init', 'data': {'uid': uid, 'group_id': to_id}}));
+            ws.send(JSON.stringify({'message_type': 'checkIn', 'data': {'uid': uid, 'group_id': to_id}}));
         } else {
             console.log('websoket 连接错误');
         }
 
-        //获取聊天记录
-        showChatRecord(to_id);
         $(".chatBox-head-one").toggle();
         $(".chatBox-head-two").toggle();
         $(".chatBox-list").fadeToggle();
         $(".chatBox-kuang").fadeToggle();
 
+        //获取聊天记录
+        showChatRecord(to_id);
         //传名字
         $(".ChatInfoName").text(to_name);
         //传头像
         $(".ChatInfoHead>img").attr("src", $(this).find('img').attr("src"));
-
         //聊天框默认最底部
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
+        positionBottom();
     });
 
     //返回列表
@@ -213,17 +207,15 @@
     $("#chat-fasong").click(function () {
         var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
         if (content !== "") {
-            var dom = makeChatMessage(content, avatar, 'right');
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(content, 1, avatar, 'right');
             $(".chatBox-content-demo").append(dom);
-
             //发送后清空输入框
             $(".div-textarea").html("");
             //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
-
-            sendMessage(content);
+            positionBottom();
+            //将消息推送到服务端
+            sendMessage(content, 1);
         }
     });
 
@@ -241,20 +233,20 @@
     $(".emoji-picker-image").each(function () {
         $(this).click(function () {
             var bq = $(this).parent().html();
-            console.log(bq);
-            var dom = makeChatMessage(bq, avatar, 'right');
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(bq, 3, avatar, 'right');
             $(".chatBox-content-demo").append(dom);
             //发送后关闭表情框
             $(".biaoqing-photo").toggle();
             //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-            });
+            positionBottom();
+            //将消息推送到服务端;
+            sendMessage(bq, 3);
         })
     });
 
 
-    //发送图片
+    //发送图片消息
     function selectImg(e) {
         if (!e.files || !e.files[0]) {
             return;
@@ -274,20 +266,24 @@
             contentType: false
         })
             .done(function (res) {
-                var dom = makeChatMessage('<img src="' + res + '">', avatar, 'right');
+                //构建消息标签然后插入dom中
+                var dom = makeChatMessage(res.url, 2, avatar, 'right');
                 $(".chatBox-content-demo").append(dom);
-
                 //聊天框默认最底部
-                $(document).ready(function () {
-                    $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-                });
-
+                positionBottom();
                 //将消息推送到服务端;
-                sendMessage(res);
+                sendMessage(res.url, 2);
             })
             .fail(function (res) {
                 console.log(res.responseJSON.message);
             });
+    }
+
+    //聊天框默认定位到最底部
+    function positionBottom() {
+        $(document).ready(function () {
+            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+        });
     }
 
     /**
@@ -295,28 +291,27 @@
      * @param string uid
      */
     function showChatRecord(uid) {
-        $.get('/chatLog/' + uid + '/get').done(function (response) {
-            var dom = '';
-            $.each(response, function (index, item) {
-                //如果消息来源客户那么消息显示在聊天窗口右侧
-                var point = item.from_id === to_id ? 'left' : 'right';
-                dom += makeChatMessage(item.content, item.from_avatar, point);
-            });
+        $.get('/chatLog/' + uid + '/get')
+            .done(function (response) {
+                var dom = '';
+                $.each(response, function (index, item) {
+                    //如果消息来源客户那么消息显示在聊天窗口右侧
+                    var point = item.from_id === to_id ? 'left' : 'right';
+                    dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
+                });
 
-            $(".chatBox-content-demo").append(dom);
-
-            //聊天框默认最底部
-            $(document).ready(function () {
-                $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+                $(".chatBox-content-demo").append(dom);
+                //聊天框默认最底部
+                positionBottom();
             });
-        });
     }
 
     /**
      * 通过websocket推送消息到服务端
      * @param string word 消息内容
+     * @param int contentType 消息类型 1是文字消息 2是图片消息 3是表情消息
      */
-    function sendMessage(word) {
+    function sendMessage(word, contentType) {
         //socket连接成功才能发送消息
         if (ws.readyState !== 1) {
             return false;
@@ -330,7 +325,8 @@
                 'from_avatar': avatar,
                 'to_id': to_id,
                 'to_name': to_name,
-                'content': word
+                'content': word,
+                'content_type': contentType
             }
         };
 
@@ -340,24 +336,39 @@
 
     /**
      * 为一条消息构建dom
-     * @param string word 消息的内容
+     * @param string content 消息的内容
+     * @param string content_type 消息的类型 1是文字消息 2是图片消息 3是表情消息
      * @param avatar      消息发送者的头像
      * @param point       消息显示在聊天窗口的左侧还是右侧
      * @returns {string}
      */
-    function makeChatMessage(word, avatar, point) {
+    function makeChatMessage(content, content_type, avatar, point) {
         var time = (new Date()).toLocaleString().split('/').join('-');
+
+        if (content_type === 2) {
+            content = '<img src="' + content + '">';
+        } else if (content_type === 3) {
+            content = HTMLDecode(content);
+        }
 
         if (point === 'right') {
             return '<div class="clearfloat"> <div class="author-name"> <small class="chat-date">' + time + '</small></div>' +
-                '<div class="right"><div class="chat-message">' + word + '</div>' +
+                '<div class="right"><div class="chat-message">' + content + '</div>' +
                 '<div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div></div></div>';
 
         } else {
             return '<div class="clearfloat"><div class="author-name"><small class="chat-date">' + time + '</small></div>' +
                 '<div class="left"><div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div>' +
-                '<div class="chat-message">' + word + '</div></div></div>';
+                '<div class="chat-message">' + content + '</div></div></div>';
         }
+    }
+
+    function HTMLDecode(text) {
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
     }
 
 </script>
