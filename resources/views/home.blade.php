@@ -215,7 +215,9 @@
             //聊天框默认最底部
             positionBottom();
             //将消息推送到服务端
-            sendMessage(content, 1);
+            pushMessage(content, 1);
+            //保存消息
+            storeMessage(content, 1);
         }
     });
 
@@ -241,10 +243,41 @@
             //聊天框默认最底部
             positionBottom();
             //将消息推送到服务端;
-            sendMessage(bq, 3);
+            pushMessage(bq, 3);
+            //保存消息
+            storeMessage(bq, 3);
         })
     });
 
+    /**
+     * 保存消息类容
+     * @param string content 消息的类容
+     * @param int contentType 消息的类型 1是文字消息 2是图片消息 3是表情消息
+     */
+    function storeMessage(content, contentType) {
+        var data = {
+            'from_id': uid,
+            'from_name': name,
+            'from_avatar': avatar,
+            'to_id': to_id,
+            'to_name': to_name,
+            'content': content,
+            'content_type': contentType,
+            '_token': token
+        };
+
+        $.post('/chatLog/store', data, function (res) {
+            var err = res ? '保存成功' : '保存失败';
+            console.log(err);
+        }).complete(function (res) {
+            if (res.status !== 200) {
+                $.each(res.responseJSON.errors, function (key, value) {
+                    console.log(value[0]);
+                    return false;
+                });
+            }
+        })
+    }
 
     //发送图片消息
     function selectImg(e) {
@@ -272,7 +305,9 @@
                 //聊天框默认最底部
                 positionBottom();
                 //将消息推送到服务端;
-                sendMessage(res.url, 2);
+                pushMessage(res.url, 2);
+                //保存消息
+                storeMessage(res.url, 2);
             })
             .fail(function (res) {
                 console.log(res.responseJSON.message);
@@ -311,7 +346,7 @@
      * @param string word 消息内容
      * @param int contentType 消息类型 1是文字消息 2是图片消息 3是表情消息
      */
-    function sendMessage(word, contentType) {
+    function pushMessage(word, contentType) {
         //socket连接成功才能发送消息
         if (ws.readyState !== 1) {
             return false;
@@ -347,8 +382,6 @@
 
         if (content_type === 2) {
             content = '<img src="' + content + '">';
-        } else if (content_type === 3) {
-            content = HTMLDecode(content);
         }
 
         if (point === 'right') {
@@ -361,14 +394,6 @@
                 '<div class="left"><div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div>' +
                 '<div class="chat-message">' + content + '</div></div></div>';
         }
-    }
-
-    function HTMLDecode(text) {
-        var temp = document.createElement("div");
-        temp.innerHTML = text;
-        var output = temp.innerText || temp.textContent;
-        temp = null;
-        return output;
     }
 
 </script>
