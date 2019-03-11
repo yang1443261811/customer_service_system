@@ -134,6 +134,17 @@
             //聊天框默认最底部
             positionBottom();
         }
+
+        if (response.message_type === 'connectSuccess') {
+            $.post('/server/joinGroup', {'client_id': response.client_id, 'group_id': uid, '_token': token})
+                .done(function (res) {
+                    console.log(res);
+                })
+        }
+
+        if (response.message_type === 'init') {
+            console.log(e.data);
+        }
     };
 
     //发送文字信息

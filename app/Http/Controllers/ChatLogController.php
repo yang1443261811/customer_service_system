@@ -19,9 +19,7 @@ class ChatLogController extends Controller
     {
         $data = ChatLog::where(function ($query) use ($uid) {
             $query->where('from_id', $uid)->orWhere('to_id', $uid);
-        })
-            ->orderBy('created_at', 'asc')
-            ->get();
+        })->orderBy('created_at', 'asc')->get();
 
         return response()->json($data);
     }
