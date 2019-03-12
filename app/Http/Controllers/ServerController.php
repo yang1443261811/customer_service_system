@@ -21,25 +21,29 @@ class ServerController extends Controller
      * 将聊天用户加入组内
      *
      * @param Request $request
+     * @param string $client_id
      */
-    public function joinGroup(Request $request)
+    public function joinGroup(Request $request, $client_id)
     {
-        $client_id = $request->input('client_id');
         $group_id  = $request->input('group_id');
-
+        //将用户的所在组保存到session中
         Gateway::setSession($client_id, ['group_id' => $group_id]);
         //将用户加入组内
         Gateway::joinGroup($client_id, $group_id);
     }
 
     /**
-     * 消息入库并推送到客户端
-     *
      * @param StoreChatMessage $request
+     * @param $client_id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function send(StoreChatMessage $request)
+    public function send(StoreChatMessage $request, $client_id)
     {
+        //根据client_id获取用户所在组,如果没有获取到直接返回
+        if (!$session = Gateway::getSession($client_id)) {
+            return response()->json(false);
+        }
+
         $chat = new ChatLog();
         //消息入库
         $result = $chat->fill($request->all())->save();
@@ -56,8 +60,8 @@ class ServerController extends Controller
                 'content_type'=> $request['content_type'],
             ]
         ];
-        //将消息内容推送给接收方
-        Gateway::sendToGroup($request['group_id'], json_encode($chat_message), [$request['client_id']]);
+        //将消息内容推送给用户所在组的人
+        Gateway::sendToGroup($session['group_id'], json_encode($chat_message), [$client_id]);
 
         return response()->json($result);
     }

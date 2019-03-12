@@ -118,7 +118,7 @@
     ws.onopen = function (e) {
         //如果连接成功执行初始化
         if (e.target.readyState === 1) {
-            ws.send(JSON.stringify({'message_type': 'checkIn', 'data': {'uid': uid, 'group_id': uid}}));
+            console.log('socket连接成功');
         }
     };
 
@@ -142,8 +142,8 @@
         }
 
         if (response.message_type === 'connectSuccess') {
-            client_id = response.client_id;
-            $.post('/server/joinGroup', {'client_id': response.client_id, 'group_id': uid, '_token': token})
+            window.client_id = response.client_id;
+            $.post('/server/joinGroup/' + client_id, {'group_id': uid, '_token': token})
                 .done(function (res) {
                     console.log(res);
                 })
@@ -168,18 +168,6 @@
         storeMessage(content, 1);
     });
 
-    //发送表情
-    $("#chat-biaoqing").click(function () {
-        $(".biaoqing-photo").toggle();
-    });
-
-    $(document).click(function () {
-        $(".biaoqing-photo").css("display", "none");
-    });
-
-    $("#chat-biaoqing").click(function (event) {
-        event.stopPropagation();//阻止事件
-    });
     //发送表情
     $(".emoji-picker-image").each(function () {
         $(this).click(function () {
@@ -212,20 +200,19 @@
             data: formData,
             processData: false,
             contentType: false
-        })
-            .done(function (res) {
-                //构建消息标签然后插入dom中
-                var dom = makeChatMessage(res.url, 2, avatar, 'left');
-                $(".chatBox-content-demo").append(dom);
-                //聊天框默认最底部
-                positionBottom();
-                //保存消息
-                storeMessage(res.url, 2);
 
-            })
-            .fail(function (res) {
-                console.log(res.responseJSON.message);
-            });
+        }).done(function (res) {
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(res.url, 2, avatar, 'left');
+            $(".chatBox-content-demo").append(dom);
+            //聊天框默认最底部
+            positionBottom();
+            //保存消息
+            storeMessage(res.url, 2);
+
+        }).fail(function (res) {
+            console.log(res.responseJSON.message);
+        });
     }
 
     /**
@@ -242,12 +229,11 @@
             'to_name': to_name,
             'group_id': group_id,
             'content': content,
-            'client_id': client_id,
             'content_type': contentType,
             '_token': token
         };
 
-        $.post('/server/send', data, function (res) {
+        $.post('/server/send/' + client_id, data, function (res) {
             var err = res ? '保存成功' : '保存失败';
             console.log(err);
         }).complete(function (res) {
@@ -260,33 +246,26 @@
         })
     }
 
-    //聊天框默认定位到最底部
-    function positionBottom() {
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
-    }
-
     /**
      * 展示聊天记录
      * @param string word 消息内容
      */
     function showChatRecord(uid) {
-        $.get('/chatLog/' + uid + '/get')
-            .done(function (response) {
-                var dom = '';
-                //循环构建消息标签然后插入dom中
-                $.each(response, function (index, item) {
-                    //如果消息来源客户那么消息显示在聊天窗口右侧
-                    var point = item.from_id === uid ? 'left' : 'right';
-                    dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
-                });
-
-                //将消息插入dom中
-                $(".chatBox-content-demo").append(dom);
-                //聊天框默认最底部
-                positionBottom();
+        $.get('/chatLog/' + uid + '/get', function (response) {
+            var dom = '';
+            //循环构建消息标签然后插入dom中
+            $.each(response, function (index, item) {
+                //如果消息来源客户那么消息显示在聊天窗口右侧
+                var point = item.from_id === uid ? 'left' : 'right';
+                dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
             });
+
+            //将消息插入dom中
+            $(".chatBox-content-demo").append(dom);
+            //聊天框默认最底部
+            positionBottom();
+        })
+
     }
 
     /**
@@ -299,6 +278,7 @@
      */
     function makeChatMessage(content, content_type, avatar, point) {
         var time = (new Date()).toLocaleString().split('/').join('-');
+
         if (parseInt(content_type) === 2) {
             content = '<img src="' + content + '">';
         } else if (content_type === 3) {

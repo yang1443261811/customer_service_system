@@ -17,8 +17,8 @@ Route::get('/', 'IndexController@index');
 Route::get('/chatLog/{uid}/get', 'ChatLogController@get');
 Route::get('/chatLog/haveRead/{id}', 'ChatLogController@haveRead');
 Route::post('/chatLog/upload', 'ChatLogController@upload');
-Route::post('/server/joinGroup', 'ServerController@joinGroup');
-Route::post('/server/send', 'ServerController@send');
+Route::post('/server/joinGroup/{client_id}', 'ServerController@joinGroup');
+Route::post('/server/send/{client_id}', 'ServerController@send');
 
 
 Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {

@@ -126,9 +126,8 @@
     window.avatar = '/img/icon03.png';
     window.to_id = '';
     window.to_name = '';
-    window.group_id = '',
-        window.client_id = '',
-        window.token = '{{csrf_token()}}';
+    window.client_id = '';
+    window.token = '{{csrf_token()}}';
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
     window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
@@ -143,6 +142,7 @@
     ws.onmessage = function (e) {
         var response = JSON.parse(e.data);
         var data = response.data;
+
         //如果有新消息就追加到dom中展示出来
         if (response.message_type === 'chatMessage') {
             //构建消息标签然后插入dom中
@@ -156,8 +156,9 @@
             })
         }
 
+        //如果socket连接成功保存自己的client_id
         if (response.message_type === 'connectSuccess') {
-            client_id = response.client_id;
+            window.client_id = response.client_id;
         }
     };
 
@@ -179,7 +180,7 @@
         to_id = $(this).attr('data-uid');
         to_name = $(this).find('.chat-name p').html();
         //初始化客服与用户的的连接
-        $.post('/server/joinGroup', {'client_id': client_id, 'group_id': to_id, '_token': token})
+        $.post('/server/joinGroup/' + client_id, {'group_id': to_id, '_token': token})
             .done(function (res) {
                 console.log(res);
             });
@@ -223,17 +224,7 @@
         }
     });
 
-    //发送表情
-    $("#chat-biaoqing").click(function () {
-        $(".biaoqing-photo").toggle();
-    });
-    $(document).click(function () {
-        $(".biaoqing-photo").css("display", "none");
-    });
-    $("#chat-biaoqing").click(function (event) {
-        event.stopPropagation();//阻止事件
-    });
-
+    //发送表情消息
     $(".emoji-picker-image").each(function () {
         $(this).click(function () {
             var bq = $(this).parent().html();
@@ -261,14 +252,12 @@
             'from_avatar': avatar,
             'to_id': to_id,
             'to_name': to_name,
-            'group_id': to_id,
-            'client_id': client_id,
             'content': content,
             'content_type': contentType,
             '_token': token
         };
 
-        $.post('/server/send', data, function (res) {
+        $.post('/server/send/' + client_id, data, function (res) {
             var err = res ? '保存成功' : '保存失败';
             console.log(err);
         }).complete(function (res) {
@@ -299,25 +288,18 @@
             data: formData,
             processData: false,
             contentType: false
-        })
-            .done(function (res) {
-                //构建消息标签然后插入dom中
-                var dom = makeChatMessage(res.url, 2, avatar, 'right');
-                $(".chatBox-content-demo").append(dom);
-                //聊天框默认最底部
-                positionBottom();
-                //保存消息
-                storeMessage(res.url, 2);
-            })
-            .fail(function (res) {
-                console.log(res.responseJSON.message);
-            });
-    }
 
-    //聊天框默认定位到最底部
-    function positionBottom() {
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+        }).done(function (res) {
+            //构建消息标签然后插入dom中
+            var dom = makeChatMessage(res.url, 2, avatar, 'right');
+            $(".chatBox-content-demo").append(dom);
+            //聊天框默认最底部
+            positionBottom();
+            //保存消息
+            storeMessage(res.url, 2);
+
+        }).fail(function (res) {
+            console.log(res.responseJSON.message);
         });
     }
 
@@ -326,19 +308,18 @@
      * @param string uid
      */
     function showChatRecord(uid) {
-        $.get('/chatLog/' + uid + '/get')
-            .done(function (response) {
-                var dom = '';
-                $.each(response, function (index, item) {
-                    //如果消息来源客户那么消息显示在聊天窗口右侧
-                    var point = item.from_id === to_id ? 'left' : 'right';
-                    dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
-                });
-
-                $(".chatBox-content-demo").append(dom);
-                //聊天框默认最底部
-                positionBottom();
+        $.get('/chatLog/' + uid + '/get', function (response) {
+            var dom = '';
+            $.each(response, function (index, item) {
+                //如果消息来源客户那么消息显示在聊天窗口右侧
+                var point = item.from_id === to_id ? 'left' : 'right';
+                dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
             });
+
+            $(".chatBox-content-demo").append(dom);
+            //聊天框默认最底部
+            positionBottom();
+        })
     }
 
     /**

@@ -56,3 +56,21 @@ $(".chat-close").click(function () {
 $(".chat-return").click(function () {
     console.log('return');
 });
+
+//发送表情
+$("#chat-biaoqing").click(function () {
+    $(".biaoqing-photo").toggle();
+});
+$(document).click(function () {
+    $(".biaoqing-photo").css("display", "none");
+});
+$("#chat-biaoqing").click(function (event) {
+    event.stopPropagation();//阻止事件
+});
+
+//滚动条自动定位到最底端
+function positionBottom() {
+    $(document).ready(function () {
+        $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+    });
+}
