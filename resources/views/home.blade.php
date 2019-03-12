@@ -126,7 +126,9 @@
     window.avatar = '/img/icon03.png';
     window.to_id = '';
     window.to_name = '';
-    window.token = '{{csrf_token()}}';
+    window.group_id = '',
+        window.client_id = '',
+        window.token = '{{csrf_token()}}';
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
     window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
@@ -143,16 +145,19 @@
         var data = response.data;
         //如果有新消息就追加到dom中展示出来
         if (response.message_type === 'chatMessage') {
-            //保存消息来源用户的信息,回复消息时会用到
-            to_id = data.id;
-            to_name = data.name;
             //构建消息标签然后插入dom中
             var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'left');
             $(".chatBox-content-demo").append(dom);
-
             //聊天框默认最底部
             positionBottom();
-            console.log(data)
+            //将接收到的消息标记为已读
+            $.get('chatLog/haveRead/' + data.message_id).done(function (res) {
+                console.log(res);
+            })
+        }
+
+        if (response.message_type === 'connectSuccess') {
+            client_id = response.client_id;
         }
     };
 
@@ -174,11 +179,10 @@
         to_id = $(this).attr('data-uid');
         to_name = $(this).find('.chat-name p').html();
         //初始化客服与用户的的连接
-        if (ws.readyState === 1) {
-            ws.send(JSON.stringify({'message_type': 'checkIn', 'data': {'uid': uid, 'group_id': to_id}}));
-        } else {
-            console.log('websoket 连接错误');
-        }
+        $.post('/server/joinGroup', {'client_id': client_id, 'group_id': to_id, '_token': token})
+            .done(function (res) {
+                console.log(res);
+            });
 
         $(".chatBox-head-one").toggle();
         $(".chatBox-head-two").toggle();
@@ -214,8 +218,6 @@
             $(".div-textarea").html("");
             //聊天框默认最底部
             positionBottom();
-            //将消息推送到服务端
-            pushMessage(content, 1);
             //保存消息
             storeMessage(content, 1);
         }
@@ -242,8 +244,6 @@
             $(".biaoqing-photo").toggle();
             //聊天框默认最底部
             positionBottom();
-            //将消息推送到服务端;
-            pushMessage(bq, 3);
             //保存消息
             storeMessage(bq, 3);
         })
@@ -261,12 +261,14 @@
             'from_avatar': avatar,
             'to_id': to_id,
             'to_name': to_name,
+            'group_id': to_id,
+            'client_id': client_id,
             'content': content,
             'content_type': contentType,
             '_token': token
         };
 
-        $.post('/chatLog/store', data, function (res) {
+        $.post('/server/send', data, function (res) {
             var err = res ? '保存成功' : '保存失败';
             console.log(err);
         }).complete(function (res) {
@@ -304,8 +306,6 @@
                 $(".chatBox-content-demo").append(dom);
                 //聊天框默认最底部
                 positionBottom();
-                //将消息推送到服务端;
-                pushMessage(res.url, 2);
                 //保存消息
                 storeMessage(res.url, 2);
             })
@@ -342,34 +342,6 @@
     }
 
     /**
-     * 通过websocket推送消息到服务端
-     * @param string word 消息内容
-     * @param int contentType 消息类型 1是文字消息 2是图片消息 3是表情消息
-     */
-    function pushMessage(word, contentType) {
-        //socket连接成功才能发送消息
-        if (ws.readyState !== 1) {
-            return false;
-        }
-
-        var msg = {
-            'message_type': 'chatMessage',
-            'data': {
-                'from_id': uid,
-                'from_name': name,
-                'from_avatar': avatar,
-                'to_id': to_id,
-                'to_name': to_name,
-                'content': word,
-                'content_type': contentType
-            }
-        };
-
-        ws.send(JSON.stringify(msg));
-        console.log('send success');
-    }
-
-    /**
      * 为一条消息构建dom
      * @param string content 消息的内容
      * @param string content_type 消息的类型 1是文字消息 2是图片消息 3是表情消息
@@ -380,7 +352,7 @@
     function makeChatMessage(content, content_type, avatar, point) {
         var time = (new Date()).toLocaleString().split('/').join('-');
 
-        if (content_type === 2) {
+        if (parseInt(content_type) === 2) {
             content = '<img src="' + content + '">';
         }
 

@@ -14,7 +14,7 @@
     <div class="chatBtn">
         <i class="iconfont icon-xiaoxi1"></i>
     </div>
-    <div class="chat-message-num">10</div>
+    <div class="chat-message-num">{{$unread}}</div>
     <div class="chatBox" ref="chatBox">
         <div class="chatBox-head">
             <div class="chatBox-head-two" style="display: block;">
@@ -105,6 +105,8 @@
     window.avatar = '{{$avatar}}';
     window.to_id = '';
     window.to_name = '';
+    window.group_id = '{{$uid}}';
+    window.client_id = '';
     window.token = '{{csrf_token()}}';
 
     //展示聊天记录
@@ -133,17 +135,18 @@
             $(".chatBox-content-demo").append(dom);
             //聊天框默认最底部
             positionBottom();
+            //将接收到的消息标记为已读
+            $.get('chatLog/haveRead/' + data.message_id).done(function (res) {
+                console.log(res);
+            })
         }
 
         if (response.message_type === 'connectSuccess') {
+            client_id = response.client_id;
             $.post('/server/joinGroup', {'client_id': response.client_id, 'group_id': uid, '_token': token})
                 .done(function (res) {
                     console.log(res);
                 })
-        }
-
-        if (response.message_type === 'init') {
-            console.log(e.data);
         }
     };
 
@@ -161,8 +164,6 @@
         $(".chatBox-content-demo").append(dom);
         //聊天框默认最底部
         positionBottom();
-        //通过websocket将消息推送到服务端
-        pushMessage(content, 1);
         //保存消息
         storeMessage(content, 1);
     });
@@ -190,8 +191,6 @@
             $(".biaoqing-photo").toggle();
             //聊天框默认最底部
             positionBottom();
-            //将消息内容推送到服务端
-            pushMessage(bq, 3);
             //保存消息
             storeMessage(bq, 3);
         })
@@ -203,11 +202,9 @@
             return;
         }
 
-        var image = e.files[0];
         var formData = new FormData();
-        formData.append('image', image);
+        formData.append('image', e.files[0]);
         formData.append('_token', token);
-
         $.ajax({
             url: '/chatLog/upload',
             type: 'POST',
@@ -222,8 +219,6 @@
                 $(".chatBox-content-demo").append(dom);
                 //聊天框默认最底部
                 positionBottom();
-                //将消息推送到服务端;
-                pushMessage(res.url, 2);
                 //保存消息
                 storeMessage(res.url, 2);
 
@@ -231,34 +226,6 @@
             .fail(function (res) {
                 console.log(res.responseJSON.message);
             });
-    }
-
-    /**
-     * 通过websocket推送消息到服务端
-     * @param int contentType 消息类型 1是文字消息 2是图片消息 3是表情消息
-     * @param string word 消息内容
-     */
-    function pushMessage(word, contentType) {
-        //socket连接成功才能发送消息
-        if (ws.readyState !== 1) {
-            return false;
-        }
-
-        var msg = {
-            'message_type': 'chatMessage',
-            'data': {
-                'from_id': uid,
-                'from_name': name,
-                'from_avatar': avatar,
-                'to_id': to_id,
-                'to_name': to_name,
-                'content': word,
-                'content_type': contentType
-            }
-        };
-
-        ws.send(JSON.stringify(msg));
-        console.log('send success');
     }
 
     /**
@@ -273,12 +240,14 @@
             'from_avatar': avatar,
             'to_id': to_id,
             'to_name': to_name,
+            'group_id': group_id,
             'content': content,
+            'client_id': client_id,
             'content_type': contentType,
             '_token': token
         };
 
-        $.post('/chatLog/store', data, function (res) {
+        $.post('/server/send', data, function (res) {
             var err = res ? '保存成功' : '保存失败';
             console.log(err);
         }).complete(function (res) {
@@ -330,7 +299,7 @@
      */
     function makeChatMessage(content, content_type, avatar, point) {
         var time = (new Date()).toLocaleString().split('/').join('-');
-        if (content_type === 2) {
+        if (parseInt(content_type) === 2) {
             content = '<img src="' + content + '">';
         } else if (content_type === 3) {
 

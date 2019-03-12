@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ChatLog;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreChatMessage;
 use Illuminate\Support\Facades\Storage;
 
 class ChatLogController extends Controller
@@ -39,9 +38,15 @@ class ChatLogController extends Controller
         return response()->json(['url' => Storage::url($path)]);
     }
 
-    public function store(StoreChatMessage $request)
+    /**
+     * 更新消息为已读
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function haveRead($id)
     {
-        $result = (new ChatLog($request->all()))->save();
+        $result = ChatLog::where('id', $id)->update(['is_read' => 1]);
 
         return response()->json($result);
     }
