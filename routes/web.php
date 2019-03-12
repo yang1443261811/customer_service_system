@@ -23,6 +23,8 @@ Route::post('/server/send/{client_id}', 'ServerController@send');
 
 Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/home/chat', 'HomeController@chat');
+    Route::get('/home/test', 'HomeController@test');
     Route::get('/customer/lists', 'CustomerController@lists');
 });
 
