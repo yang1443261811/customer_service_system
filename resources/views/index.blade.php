@@ -14,7 +14,7 @@
     <div class="chatBtn">
         <i class="iconfont icon-xiaoxi1"></i>
     </div>
-    <div class="chat-message-num">{{$unread}}</div>
+    <div class="chat-message-num">{{$unread > 0 ? $unread : ''}}</div>
     <div class="chatBox" ref="chatBox">
         <div class="chatBox-head">
             <div class="chatBox-head-two" style="display: block;">
@@ -42,8 +42,7 @@
                             <i class="iconfont icon-biaoqing"></i>
                         </button>
                         <label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
-                            <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png"
-                                   name="file" id="inputImage" class="hidden">
+                            <input type="file" onchange="sendImageHandler(this)" accept="image/jpg,image/jpeg,image/png" name="file" id="inputImage" class="hidden">
                             <i class="iconfont icon-tuxiang"></i>
                         </label>
                         <button id="chat-fasong" class="btn-default-styles"><i class="iconfont icon-fasong"></i>
@@ -110,7 +109,7 @@
     window.token = '{{csrf_token()}}';
 
     //展示聊天记录
-    showChatRecord(uid);
+    showChatRecord(uid, 'user');
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
     window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
@@ -151,151 +150,10 @@
     };
 
     //发送文字信息
-    $("#chat-fasong").click(function () {
-        var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
-        if (content === "") {
-            return false;
-        }
-
-        //清空输入框
-        $(".div-textarea").html("");
-        //构建消息标签然后插入dom中
-        var dom = makeChatMessage(content, 1, avatar, 'left');
-        $(".chatBox-content-demo").append(dom);
-        //聊天框默认最底部
-        positionBottom();
-        //保存消息
-        storeMessage(content, 1);
-    });
+    $("#chat-fasong").click(sendTextHandler);
 
     //发送表情
-    $(".emoji-picker-image").each(function () {
-        $(this).click(function () {
-            var bq = $(this).parent().html();
-            //构建消息标签然后插入dom中
-            var dom = makeChatMessage(bq, 3, avatar, 'left');
-            $(".chatBox-content-demo").append(dom);
-            //发送后关闭表情框
-            $(".biaoqing-photo").toggle();
-            //聊天框默认最底部
-            positionBottom();
-            //保存消息
-            storeMessage(bq, 3);
-        })
-    });
-
-    //发送图片
-    function selectImg(e) {
-        if (!e.files || !e.files[0]) {
-            return;
-        }
-
-        var formData = new FormData();
-        formData.append('image', e.files[0]);
-        formData.append('_token', token);
-        $.ajax({
-            url: '/chatLog/upload',
-            type: 'POST',
-            cache: false,
-            data: formData,
-            processData: false,
-            contentType: false
-
-        }).done(function (res) {
-            //构建消息标签然后插入dom中
-            var dom = makeChatMessage(res.url, 2, avatar, 'left');
-            $(".chatBox-content-demo").append(dom);
-            //聊天框默认最底部
-            positionBottom();
-            //保存消息
-            storeMessage(res.url, 2);
-
-        }).fail(function (res) {
-            console.log(res.responseJSON.message);
-        });
-    }
-
-    /**
-     * 保存消息类容
-     * @param string content 消息的类容
-     * @param int contentType 消息的类型 1是文字消息 2是图片消息 3是表情消息
-     */
-    function storeMessage(content, contentType) {
-        var data = {
-            'from_id': uid,
-            'from_name': name,
-            'from_avatar': avatar,
-            'to_id': to_id,
-            'to_name': to_name,
-            'group_id': group_id,
-            'content': content,
-            'content_type': contentType,
-            '_token': token
-        };
-
-        $.post('/server/send/' + client_id, data, function (res) {
-            var err = res ? '保存成功' : '保存失败';
-            console.log(err);
-        }).complete(function (res) {
-            if (res.status !== 200) {
-                $.each(res.responseJSON.errors, function (key, value) {
-                    console.log(value[0]);
-                    return false;
-                });
-            }
-        })
-    }
-
-    /**
-     * 展示聊天记录
-     * @param string word 消息内容
-     */
-    function showChatRecord(uid) {
-        $.get('/chatLog/' + uid + '/get', function (response) {
-            var dom = '';
-            //循环构建消息标签然后插入dom中
-            $.each(response, function (index, item) {
-                //如果消息来源客户那么消息显示在聊天窗口右侧
-                var point = item.from_id === uid ? 'left' : 'right';
-                dom += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
-            });
-
-            //将消息插入dom中
-            $(".chatBox-content-demo").append(dom);
-            //聊天框默认最底部
-            positionBottom();
-        })
-
-    }
-
-    /**
-     * 为一条消息构建dom
-     * @param string content 消息的内容
-     * @param string content_type 消息的类型 1是文字消息 2是图片消息 3是表情消息
-     * @param avatar      消息发送者的头像
-     * @param point       消息显示在聊天窗口的左侧还是右侧
-     * @returns {string}
-     */
-    function makeChatMessage(content, content_type, avatar, point) {
-        var time = (new Date()).toLocaleString().split('/').join('-');
-
-        if (parseInt(content_type) === 2) {
-            content = '<img src="' + content + '">';
-        } else if (content_type === 3) {
-
-        }
-
-        if (point === 'right') {
-            return '<div class="clearfloat"> <div class="author-name"> <small class="chat-date">' + time + '</small></div>' +
-                '<div class="right"><div class="chat-message">' + content + '</div>' +
-                '<div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div></div></div>';
-
-        } else {
-            return '<div class="clearfloat"><div class="author-name"><small class="chat-date">' + time + '</small></div>' +
-                '<div class="left"><div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div>' +
-                '<div class="chat-message">' + content + '</div></div></div>';
-        }
-    }
+    $(".emoji-picker-image").click(sendEmojiHandler);
 
 </script>
 
