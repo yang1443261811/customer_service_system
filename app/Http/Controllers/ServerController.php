@@ -25,7 +25,7 @@ class ServerController extends Controller
      */
     public function joinGroup(Request $request, $client_id)
     {
-        $group_id  = $request->input('group_id');
+        $group_id = $request->input('group_id');
         //将用户的所在组保存到session中
         Gateway::setSession($client_id, ['group_id' => $group_id]);
         //将用户加入组内
@@ -51,13 +51,13 @@ class ServerController extends Controller
         $chat_message = [
             'message_type' => 'chatMessage',
             'data' => [
-                'name'    => $request['from_name'],
-                'avatar'  => $request['from_avatar'],
-                'id'      => $request['from_id'],
-                'time'    => date('Y-m-d H:i:s'),
+                'id' => $request['from_id'],
+                'name' => $request['from_name'],
+                'avatar' => $request['from_avatar'],
+                'time' => date('Y-m-d H:i:s'),
                 'content' => $request['content'],
                 'message_id' => $chat->id,
-                'content_type'=> $request['content_type'],
+                'content_type' => $request['content_type'],
             ]
         ];
         //将消息内容推送给用户所在组的人

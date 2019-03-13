@@ -26,6 +26,9 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
 }
+.heightControl{
+  min-height: 740px;
+}
 /* Layout */
 .wrapper {
   min-height: 100%;

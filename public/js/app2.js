@@ -265,7 +265,6 @@ function _init() {
           $(".content-wrapper, .right-side").css('min-height', sidebar_height);
           postSetWidth = sidebar_height;
         }
-
         //Fix for the control sidebar height
         var controlSidebar = $($.AdminLTE.options.controlSidebarOptions.selector);
         if (typeof controlSidebar !== "undefined") {

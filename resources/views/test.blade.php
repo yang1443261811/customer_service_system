@@ -41,7 +41,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             color:black;
         }
         .content-wrapper {
-           
+
+        }
+        textarea {
+            overflow-y: auto; font-weight: normal; font-size: 14px; overflow-x: hidden; word-break: break-all; font-style: normal; outline: none;padding: 5px;border:none;height:100px;width: 100%
         }
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -309,29 +312,15 @@ desired effect
         </section>
 
         <!-- Main content -->
-        <section class="content" style="height: 100%">
+        <section class="content" style="padding-bottom: 0">
 
             <!-- Your Page Content Here -->
-            <div class="row no-padding" style="height: 100%">
-                <div class="col-md-3" style="height: 100%">
+            <div class="row no-padding">
+                <div class="col-md-3" style="padding-bottom: 0">
                     <!-- Widget: user widget style 1 -->
-                    <div class="box box-widget widget-user-2" style="height: 100%">
+                    <div class="box box-widget widget-user-2" style="margin-bottom:0">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header bg-default no-padding">
-                            {{--<div class="row">--}}
-                                {{--<div class="col-sm-6 border-right">--}}
-                                    {{--<a class="description-block active">--}}
-                                        {{--<p class="">当前对话</p>--}}
-                                    {{--</a>--}}
-                                    {{--<!-- /.description-block -->--}}
-                                {{--</div>--}}
-                                {{--<div class="col-sm-6">--}}
-                                    {{--<a class="description-block">--}}
-                                        {{--<h5 class="">排队列表</h5>--}}
-                                    {{--</a>--}}
-                                    {{--<!-- /.description-block -->--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
                             <ul class="nav row no-margin no-padding users-status-list">
                                 <li class="col-sm-6 no-padding"><a class="no-margin">当前对话</a></li>
                                 <li class="active col-sm-6 no-padding"><a class="no-margin">排队列表</a></li>
@@ -370,9 +359,9 @@ desired effect
                     </div>
                     <!-- /.widget-user -->
                 </div>
-                <div class="col-md-6" style="height: 100%">
+                <div class="col-md-6" style="padding-bottom: 0">
                     <!-- DIRECT CHAT PRIMARY -->
-                    <div class="box box-primary direct-chat direct-chat-primary" style="height: 100%">
+                    <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0">
                         <div class="box-header with-border">
                             <h3 class="box-title">Direct Chat</h3>
 
@@ -399,65 +388,40 @@ desired effect
                                         <span class="direct-chat-name pull-left">Alexander Pierce</span>
                                         <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
                                     </div>
-                                    <!-- /.direct-chat-info -->
-                                    <img class="direct-chat-img" src="/img/user1-128x128.jpg"
-                                         alt="Message User Image"><!-- /.direct-chat-img -->
-                                    <div class="direct-chat-text">
-                                        Is this template really for free? That's unbelievable!
-                                    </div>
-                                    <!-- /.direct-chat-text -->
+                                    <img class="direct-chat-img" src="/img/user1-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">Is this template really for free? That's unbelievable!</div>
                                 </div>
-                                <!-- /.direct-chat-msg -->
 
-                                <!-- Message to the right -->
                                 <div class="direct-chat-msg right">
                                     <div class="direct-chat-info clearfix">
                                         <span class="direct-chat-name pull-right">Sarah Bullock</span>
                                         <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
                                     </div>
-                                    <!-- /.direct-chat-info -->
-                                    <img class="direct-chat-img" src="/img/user3-128x128.jpg"
-                                         alt="Message User Image"><!-- /.direct-chat-img -->
-                                    <div class="direct-chat-text">
-                                        You better believe it!
-                                    </div>
-                                    <!-- /.direct-chat-text -->
+                                    <img class="direct-chat-img" src="/img/user3-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">You better believe it!</div>
                                 </div>
-                                <!-- /.direct-chat-msg -->
                             </div>
-                            <!--/.direct-chat-messages-->
 
-                            <!-- Contacts are loaded here -->
-                            <div class="direct-chat-contacts">
-                                <ul class="contacts-list">
-                                    <li>
-                                        <a href="#">
-                                            <img class="contacts-list-img" src="../dist/img/user1-128x128.jpg"
-                                                 alt="User Image">
-                                            <div class="contacts-list-info">
-                                            <span class="contacts-list-name">
-                                              Count Dracula
-                                              <small class="contacts-list-date pull-right">2/28/2015</small>
-                                            </span>
-                                                <span class="contacts-list-msg">How have you been? I was...</span>
-                                            </div>
-                                            <!-- /.contacts-list-info -->
-                                        </a>
-                                    </li>
-                                    <!-- End Contact Item -->
-                                </ul>
-                                <!-- /.contatcts-list -->
-                            </div>
-                            <!-- /.direct-chat-pane -->
                         </div>
                         <!-- /.box-body -->
-                        <div class="box-footer">
+                        <div class="box-footer editor" style="padding-top:0">
+                            <div class="box-header">
+                                <div class="box-tools" style="position: absolute; left:0">
+                                    <button type="button" class="btn btn-box-tool" style="font-size:20px;"><i class="fa fa-photo"></i></button>
+                                    <button type="button" class="btn btn-box-tool" style="font-size:20px;"><i class="fa  fa-meh-o"></i></button>
+                                </div>
+                                <h3 class="box-title"></h3>
+                            </div>
                             <form action="#" method="post">
-                                <div class="input-group">
-                                    <input type="text" name="message" placeholder="Type Message ..."
-                                           class="form-control">
-                                    <span class="input-group-btn"><button type="submit"
-                                                                          class="btn btn-primary btn-flat">Send</button></span>
+                                <textarea id="text_in" class="edit-ipt" style="" ></textarea>
+
+                                <div class="input-group pull-right">
+                                    <button type="submit" class="btn btn-primary btn-flat">Send</button>
+
+                                    {{--<input type="text" name="message" placeholder="Type Message ..." class="form-control">--}}
+                                    {{--<span class="input-group-btn">--}}
+
+                                    {{--</span>--}}
                                 </div>
                             </form>
                         </div>
@@ -465,28 +429,13 @@ desired effect
                     </div>
                     <!--/.direct-chat -->
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3" style="padding-bottom: 0">
                     <!-- Custom Tabs -->
-                    <div class="nav-tabs-custom">
+                    <div class="nav-tabs-custom" style="margin-bottom:0">
                         <ul class="nav nav-tabs">
-                            <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">Tab 1</a></li>
-                            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Tab 2</a></li>
-                            <li class="active"><a href="#tab_3" data-toggle="tab" aria-expanded="true">Tab 3</a></li>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                                    Dropdown <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a>
-                                    </li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else
-                                            here</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a>
-                                    </li>
-                                </ul>
-                            </li>
+                            <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">访客信息</a></li>
+                            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
+                            <li class="active"><a href="#tab_3" data-toggle="tab" aria-expanded="true">快捷回复</a></li>
                             <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                         </ul>
                         <div class="tab-content">
@@ -584,7 +533,7 @@ desired effect
                 <h3 class="control-sidebar-heading">Tasks Progress</h3>
                 <ul class="control-sidebar-menu">
                     <li>
-                        <a href="javascript::;">
+                        <a href="javascript:;">
                             <h4 class="control-sidebar-subheading">
                                 Custom Template Design
                                 <span class="label label-danger pull-right">70%</span>
@@ -639,7 +588,31 @@ desired effect
 <script src="/js/bootstrap.js"></script>
 <!-- AdminLTE App -->
 <script src="/js/app2.js"></script>
+<script>
+    var chatRoomHeight, chatRecordHeight;
+    autoChatRoomHeight();
 
+    $(window, ".wrapper").resize(function () {
+        autoChatRoomHeight();
+    });
+
+    var editorHeight = $('.editor').height();
+    chatRecordHeight = chatRoomHeight - 60 - editorHeight;
+    $('.direct-chat-messages').css('min-height', chatRecordHeight);
+
+    function autoChatRoomHeight() {
+        var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight();
+        var window_height = $(window).height();
+        var sidebar_height = $(".sidebar").height();
+        if (window_height >= sidebar_height) {
+            chatRoomHeight = window_height - neg - 80;
+            $(".nav-tabs-custom, .widget-user-2, .direct-chat").css('min-height', chatRoomHeight);
+        } else {
+            chatRoomHeight = sidebar_height - 80;
+            $(".nav-tabs-custom, .widget-user-2, .direct-chat").css('min-height', chatRoomHeight);
+        }
+    }
+</script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
