@@ -27,6 +27,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
         .comment-text {
             margin-left: 50px !important;
         }
+        .users-status-list .active{
+            border-top: 3px solid #3c8dbc;border-radius: 3px;
+        }
+        .users-status-list .active a {
+            color:#3c8dbc;
+        }
+        .users-status-list li {
+            text-align: center;
+            cursor: pointer;
+        }
+        .users-status-list li a {
+            color:black;
+        }
+        .content-wrapper {
+           
+        }
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -293,21 +309,33 @@ desired effect
         </section>
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content" style="height: 100%">
 
             <!-- Your Page Content Here -->
-            <div class="row no-padding">
-                <div class="col-md-3">
+            <div class="row no-padding" style="height: 100%">
+                <div class="col-md-3" style="height: 100%">
                     <!-- Widget: user widget style 1 -->
-                    <div class="box box-widget widget-user-2">
+                    <div class="box box-widget widget-user-2" style="height: 100%">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <div class="widget-user-header bg-yellow">
-                            <div class="widget-user-image">
-                                <img class="img-circle" src="/img/user7-128x128.jpg" alt="User Avatar">
-                            </div>
-                            <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">Nadia Carmichael</h3>
-                            <h5 class="widget-user-desc">Lead Developer</h5>
+                        <div class="widget-user-header bg-default no-padding">
+                            {{--<div class="row">--}}
+                                {{--<div class="col-sm-6 border-right">--}}
+                                    {{--<a class="description-block active">--}}
+                                        {{--<p class="">当前对话</p>--}}
+                                    {{--</a>--}}
+                                    {{--<!-- /.description-block -->--}}
+                                {{--</div>--}}
+                                {{--<div class="col-sm-6">--}}
+                                    {{--<a class="description-block">--}}
+                                        {{--<h5 class="">排队列表</h5>--}}
+                                    {{--</a>--}}
+                                    {{--<!-- /.description-block -->--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            <ul class="nav row no-margin no-padding users-status-list">
+                                <li class="col-sm-6 no-padding"><a class="no-margin">当前对话</a></li>
+                                <li class="active col-sm-6 no-padding"><a class="no-margin">排队列表</a></li>
+                            </ul>
                         </div>
                         <div class="box-footer box-comments">
                             <div class="box-comment">
@@ -342,9 +370,9 @@ desired effect
                     </div>
                     <!-- /.widget-user -->
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="height: 100%">
                     <!-- DIRECT CHAT PRIMARY -->
-                    <div class="box box-primary direct-chat direct-chat-primary">
+                    <div class="box box-primary direct-chat direct-chat-primary" style="height: 100%">
                         <div class="box-header with-border">
                             <h3 class="box-title">Direct Chat</h3>
 
