@@ -417,11 +417,6 @@ desired effect
 
                                 <div class="input-group pull-right">
                                     <button type="submit" class="btn btn-primary btn-flat">Send</button>
-
-                                    {{--<input type="text" name="message" placeholder="Type Message ..." class="form-control">--}}
-                                    {{--<span class="input-group-btn">--}}
-
-                                    {{--</span>--}}
                                 </div>
                             </form>
                         </div>
@@ -517,7 +512,7 @@ desired effect
                 <h3 class="control-sidebar-heading">Recent Activity</h3>
                 <ul class="control-sidebar-menu">
                     <li>
-                        <a href="javascript::;">
+                        <a href="javascript:;">
                             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
 
                             <div class="menu-info">
