@@ -6,7 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" type="text/css" href="/font_Icon/iconfont.css">
     <link rel="stylesheet" type="text/css" href="/css/chat.css">
-
+    <style>
+        .labFace {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,54 +42,55 @@
                 <div class="chatBox-send">
                     <div class="div-textarea" contenteditable="true"></div>
                     <div>
-                        <button id="chat-biaoqing" class="btn-default-styles">
+                        <button id="chat-biaoqing" class="btn-default-styles face">
                             <i class="iconfont icon-biaoqing"></i>
                         </button>
                         <label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
-                            <input type="file" onchange="sendImageHandler(this)" accept="image/jpg,image/jpeg,image/png" name="file" id="inputImage" class="hidden">
+                            <input type="file" onchange="sendImageHandler(this)" accept="image/jpg,image/jpeg,image/png"
+                                   name="file" id="inputImage" class="hidden">
                             <i class="iconfont icon-tuxiang"></i>
                         </label>
+                        <input type="hidden" id="face-box">
                         <button id="chat-fasong" class="btn-default-styles"><i class="iconfont icon-fasong"></i>
                         </button>
                     </div>
                     <div class="biaoqing-photo">
                         <ul>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -120px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -120px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -120px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -120px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -120px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -120px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -154px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -154px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -154px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -154px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -154px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -154px;"></span>
-                            </li>
+                            <li><img src="/img/arclist/1.gif" iconText="[em_1]" class="labFace"></li>
+                            <li><img src="/img/arclist/2.gif" iconText="[em_2]" class="labFace"></li>
+                            <li><img src="/img/arclist/3.gif" iconText="[em_3]" class="labFace"></li>
+                            <li><img src="/img/arclist/4.gif" iconText="[em_4]" class="labFace"></li>
+                            <li><img src="/img/arclist/5.gif" iconText="[em_5]" class="labFace"></li>
+                            <li><img src="/img/arclist/6.gif" iconText="[em_6]" class="labFace"></li>
+                            <li><img src="/img/arclist/7.gif" iconText="[em_7]" class="labFace"></li>
+                            <li><img src="/img/arclist/8.gif" iconText="[em_8]" class="labFace"></li>
+                            <li><img src="/img/arclist/9.gif" iconText="[em_9]" class="labFace"></li>
+                            <li><img src="/img/arclist/10.gif" iconText="[em_10]" class="labFace"></li>
+                            <li><img src="/img/arclist/11.gif" iconText="[em_11]" class="labFace"></li>
+                            <li><img src="/img/arclist/12.gif" iconText="[em_12]" class="labFace"></li>
+                            <li><img src="/img/arclist/13.gif" iconText="[em_13]" class="labFace"></li>
+                            <li><img src="/img/arclist/14.gif" iconText="[em_14]" class="labFace"></li>
+                            <li><img src="/img/arclist/15.gif" iconText="[em_15]" class="labFace"></li>
+                            <li><img src="/img/arclist/16.gif" iconText="[em_16]" class="labFace"></li>
+                            <li><img src="/img/arclist/17.gif" iconText="[em_17]" class="labFace"></li>
+                            <li><img src="/img/arclist/18.gif" iconText="[em_18]" class="labFace"></li>
+                            <li><img src="/img/arclist/19.gif" iconText="[em_19]" class="labFace"></li>
+                            <li><img src="/img/arclist/20.gif" iconText="[em_20]" class="labFace"></li>
+                            <li><img src="/img/arclist/21.gif" iconText="[em_21]" class="labFace"></li>
+                            <li><img src="/img/arclist/22.gif" iconText="[em_22]" class="labFace"></li>
+                            <li><img src="/img/arclist/23.gif" iconText="[em_23]" class="labFace"></li>
+                            <li><img src="/img/arclist/24.gif" iconText="[em_24]" class="labFace"></li>
+                            <li><img src="/img/arclist/25.gif" iconText="[em_25]" class="labFace"></li>
+                            <li><img src="/img/arclist/26.gif" iconText="[em_26]" class="labFace"></li>
+                            <li><img src="/img/arclist/27.gif" iconText="[em_27]" class="labFace"></li>
+                            <li><img src="/img/arclist/28.gif" iconText="[em_28]" class="labFace"></li>
+                            <li><img src="/img/arclist/29.gif" iconText="[em_29]" class="labFace"></li>
+                            <li><img src="/img/arclist/30.gif" iconText="[em_30]" class="labFace"></li>
+                            <li><img src="/img/arclist/31.gif" iconText="[em_31]" class="labFace"></li>
+                            <li><img src="/img/arclist/32.gif" iconText="[em_32]" class="labFace"></li>
+                            <li><img src="/img/arclist/33.gif" iconText="[em_33]" class="labFace"></li>
+                            <li><img src="/img/arclist/34.gif" iconText="[em_34]" class="labFace"></li>
+                            <li><img src="/img/arclist/35.gif" iconText="[em_35]" class="labFace"></li>
                         </ul>
                     </div>
                 </div>
@@ -96,6 +101,7 @@
 
 
 <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="/js/jquery.qqFace.js"></script>
 <script src="/js/common.js"></script>
 <script>
     //当前用户相关信息
@@ -153,7 +159,7 @@
     $("#chat-fasong").click(sendTextHandler);
 
     //发送表情
-    $(".emoji-picker-image").click(sendEmojiHandler);
+    $(".labFace").click(sendEmojiHandler);
 
 </script>
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "688e4bf6a553808c175fbdf3a1f7c70e",
+    "content-hash": "523fd8e6380f710308f88c103dd34f41",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -407,6 +407,70 @@
                 "trusted proxy"
             ],
             "time": "2019-01-10T14:06:47+00:00"
+        },
+        {
+            "name": "irazasyed/laravel-identicon",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/irazasyed/laravel-identicon.git",
+                "reference": "330504fe88146684a9a682cd99f51a673b6270f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/irazasyed/laravel-identicon/zipball/330504fe88146684a9a682cd99f51a673b6270f0",
+                "reference": "330504fe88146684a9a682cd99f51a673b6270f0",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "illuminate/support": "~4.1 || ~5.0",
+                "php": ">=5.4.0",
+                "yzalis/identicon": "~1.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Irazasyed\\LaravelIdenticon\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "Identicon": "Irazasyed\\LaravelIdenticon\\Facade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Irazasyed\\LaravelIdenticon\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Syed I.R",
+                    "email": "syed@lukonet.com"
+                }
+            ],
+            "description": "Laravel Identicon Package - Extends Identicon Library and Adds Support for Seamless Usage with Laravel 4/5.",
+            "homepage": "http://irazasyed.github.io/laravel-identicon/",
+            "keywords": [
+                "Laravel 4",
+                "avatar",
+                "identicon",
+                "image",
+                "laravel",
+                "laravel 5",
+                "laravel identicon"
+            ],
+            "time": "2017-09-21T05:00:53+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -2781,6 +2845,64 @@
             ],
             "homepage": "http://www.workerman.net",
             "time": "2018-09-15T03:03:50+00:00"
+        },
+        {
+            "name": "yzalis/identicon",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yzalis/Identicon.git",
+                "reference": "228eca74299a45163be40fd82d334bf21e66b86b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yzalis/Identicon/zipball/228eca74299a45163be40fd82d334bf21e66b86b",
+                "reference": "228eca74299a45163be40fd82d334bf21e66b86b",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "ext-imagick": "*",
+                "fzaninotto/faker": "^1.2.0",
+                "phpunit/phpunit": "^4.0 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Identicon\\": "src/Identicon/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Laugueux",
+                    "email": "benjamin@yzalis.com"
+                }
+            ],
+            "description": "Create awesome unique avatar.",
+            "homepage": "http://identicon-php.org",
+            "keywords": [
+                "avatar",
+                "identicon",
+                "image"
+            ],
+            "time": "2017-08-01T14:39:05+00:00"
         }
     ],
     "packages-dev": [

@@ -64,7 +64,7 @@ $("#chat-biaoqing").click(function () {
 $(document).click(function () {
     $(".biaoqing-photo").css("display", "none");
 });
-
+//
 $("#chat-biaoqing").click(function (event) {
     event.stopPropagation();//阻止事件
 });
@@ -81,7 +81,7 @@ function sendTextHandler() {
     var text = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
     if (text !== "") {
         //构建消息标签然后插入dom中
-        var _html = makeChatMessage(text, 1, avatar, 'right');
+        var _html = makeChatMessage(text, 1, avatar, 'left');
         $(".chatBox-content-demo").append(_html);
         //发送后清空输入框
         $(".div-textarea").html("");
@@ -96,7 +96,7 @@ function sendTextHandler() {
 function sendEmojiHandler() {
     var emoji = $(this).parent().html();
     //构建消息标签然后插入dom中
-    var _html = makeChatMessage(emoji, 3, avatar, 'right');
+    var _html = makeChatMessage(emoji, 3, avatar, 'left');
     $(".chatBox-content-demo").append(_html);
     //发送后关闭表情框
     $(".biaoqing-photo").toggle();
@@ -127,7 +127,7 @@ function sendImageHandler(e) {
 
     }).done(function (res) {
         //构建消息标签然后插入dom中
-        var dom = makeChatMessage(res.url, 2, avatar, 'right');
+        var dom = makeChatMessage(res.url, 2, avatar, 'left');
         $(".chatBox-content-demo").append(dom);
         //聊天框默认最底部
         positionBottom();
@@ -180,7 +180,7 @@ function showChatRecord(uid, from) {
         var _html = '';
         $.each(response, function (index, item) {
             //如果消息来源客户那么消息显示在聊天窗口右侧
-            var point = item.from_id === to_id ? 'left' : 'right';
+            var point = item.from_id === uid ? 'left' : 'right';
             _html += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
         });
 
