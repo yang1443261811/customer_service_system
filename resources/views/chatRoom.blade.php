@@ -128,6 +128,25 @@
         .box-comment:hover {
             background: #e6e6e6;
         }
+
+        .box-footer {
+            padding: 0px;
+        }
+
+        .box-comment {
+            padding: 10px !important;
+        }
+        .box-comments .active {
+            background: #c2c2c2 !important;
+        }
+        .editor {
+            padding: 10px;
+        }
+        .img-circle {
+            border-radius: 100%;
+            background: white;
+            vertical-align: middle;
+        }
     </style>
 @endsection
 
@@ -369,5 +388,6 @@
             assign: 'text_in',
             path: '/img/arclist/'	//表情存放的路径
         });
+
     </script>
 @endsection

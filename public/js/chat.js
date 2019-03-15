@@ -31,7 +31,7 @@ function getCustomers() {
         var _html = '';
         $.each(response, function (key, item) {
             _html += '<div class="box-comment" data-uid = ' + item.uid + '>';
-            _html += '<img class="img-circle img-sm" src="' + item.avatar + '" alt="User Image"><div class="comment-text">';
+            _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
             _html += '<span class="username">' + item.name + '';
             _html += item.unread > 0 ? '<span class="pull-right badge bg-red">' + item.unread + '</span>' : '';
             _html += '</span>It is a long established fact</div></div>';
@@ -46,10 +46,15 @@ function intoChatRoom() {
     //获取客户uid
     to_id = $(this).attr('data-uid');
     //初始化客服与用户的的连接
-    $.post('/server/joinGroup/' + client_id, {'group_id': to_id, '_token': token})
-        .done(function (res) {
-            console.log(res);
-        });
+    $.ajax({
+        url: '/server/joinGroup/' + client_id,
+        type: "post",
+        data: {'group_id': to_id, '_token': token}
+    });
+
+    //客户列表选中效果
+    $('.box-comment').removeClass('active');
+    $(this).addClass('active');
 
     //使聊天窗口的编辑区可编辑
     unLock();
@@ -155,8 +160,8 @@ function msgFactory(content, avatar, point) {
 }
 
 /**
- * 存储消息类容
- * @param content 消息的类容
+ * 存储消息内容
+ * @param content 消息的内容容
  * @param contentType 消息的类型 1是文字消息 2是图片消息 3是表情消息
  */
 function storeMessage(content, contentType) {
@@ -203,10 +208,12 @@ function unLock() {
     $('.shade').addClass('hidden');
 }
 
+
 function replace_em(str) {
+    console.log('call fun');
     str = str.replace(/</g, '<；');
     str = str.replace(/>/g, '>；');
     str = str.replace(/ /g, '<；br/>；');
-    str = str.replace(/[em_([0-9]*)]/g, '<img src="face/$1.gif" border="0" />');
+    str = str.replace(/\[em_([0-9]*)\]/g, '<img src="face/$1.gif" border="0" />');
     return str;
 }
