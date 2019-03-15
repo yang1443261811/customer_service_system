@@ -1,162 +1,16 @@
 @extends('layouts.admin')
 
 @section('css')
-    <style type="text/css">
-        .comment-text {
-            margin-left: 50px !important;
-        }
-
-        .users-status-list .active {
-            border-top: 3px solid #3c8dbc;
-            border-radius: 3px;
-        }
-
-        .users-status-list .active a {
-            color: #3c8dbc;
-        }
-
-        .users-status-list li {
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .users-status-list li a {
-            color: black;
-        }
-
-        textarea {
-            overflow-y: auto;
-            font-weight: normal;
-            font-size: 14px;
-            overflow-x: hidden;
-            word-break: break-all;
-            font-style: normal;
-            outline: none;
-            padding: 5px;
-            border: none;
-            height: 100px;
-            width: 100%
-        }
-
-        #facebox {
-            padding: 5px;
-            background-color: #fff;
-            border: 1px solid #bfbfbf;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.176);
-        }
-
-        .image-label {
-            font-size: 20px;
-            cursor: pointer;
-            color: #97a0b3;
-            vertical-align: text-bottom;
-            padding: 0;
-            margin: 0
-        }
-
-        .face {
-            font-size: 20px;
-            vertical-align: text-bottom;
-            padding: 0;
-            margin: 0;
-            margin-left: 5px
-        }
-
-        textarea::-webkit-input-placeholder {
-            color: #e6e6e6;
-        }
-
-        textarea::-moz-placeholder { /* Mozilla Firefox 19+ */
-            color: #e6e6e6;
-        }
-
-        textarea:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-            color: #e6e6e6;
-        }
-
-        textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
-            color: #e6e6e6;
-        }
-
-        .labFace {
-            cursor: pointer;
-        }
-
-        .direct-chat-msg .direct-chat-timestamp {
-            float: right;
-        }
-
-        .right .direct-chat-timestamp {
-            float: left !important;
-        }
-
-        .right .direct-chat-name {
-            float: right !important;
-        }
-
-        .direct-chat-text {
-            display: inline-block;
-            margin: 5px 0 0 5px;
-        }
-
-        .direct-chat-primary .right > .direct-chat-text {
-            margin-right: 5px;
-            text-align: right;
-            float: right;
-        }
-
-        .shade {
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            background-color: #000;
-            opacity: 0.3;
-            filter: alpha(opacity=30);
-            cursor: not-allowed;
-        }
-
-        .editor {
-            position: relative;
-        }
-
-        .box-comment {
-            cursor: pointer;
-        }
-
-        .box-comment:hover {
-            background: #e6e6e6;
-        }
-
-        .box-footer {
-            padding: 0px;
-        }
-
-        .box-comment {
-            padding: 10px !important;
-        }
-        .box-comments .active {
-            background: #c2c2c2 !important;
-        }
-        .editor {
-            padding: 10px;
-        }
-        .img-circle {
-            border-radius: 100%;
-            background: white;
-            vertical-align: middle;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/admin-chat.css">
 @endsection
 
 
 @section('content')
     <!-- Your Page Content Here -->
     <div class="row no-padding">
-        <div class="col-md-3" style="padding-bottom: 0">
+        <div class="col-md-3" style="padding-bottom: 0;margin: 0">
             <!-- Widget: user widget style 1 -->
-            <div class="box box-widget widget-user-2" style="margin-bottom:0">
+            <div class="box box-widget widget-user-2" style="margin-bottom:0;">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-default no-padding">
                     <ul class="nav row no-margin no-padding users-status-list">
@@ -200,9 +54,9 @@
             </div>
             <!-- /.widget-user -->
         </div>
-        <div class="col-md-6" style="padding-bottom: 0">
+        <div class="col-md-6" style="padding: 0;margin: 0;">
             <!-- DIRECT CHAT PRIMARY -->
-            <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0">
+            <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0;">
                 <div class="box-header with-border">
                     <h3 class="box-title">Direct Chat</h3>
 

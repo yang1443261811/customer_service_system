@@ -125,6 +125,7 @@ function sendImageHandler(e) {
 //发送文字消息处理
 function sendTextHandler() {
     var text = $('#text_in').val();
+    $('#text_in').val('');
     var elem = msgFactory(text, avatar, 'left');
     $('.direct-chat-messages').append(elem);
     positionBottom();
