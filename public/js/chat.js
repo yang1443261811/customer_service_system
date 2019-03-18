@@ -56,7 +56,8 @@ function intoChatRoom() {
     //客户列表选中效果
     $('.box-comment').removeClass('active');
     $(this).addClass('active');
-
+    //删除未读消息数量标签
+    $(this).find('.badge').remove();
     //使聊天窗口的编辑区可编辑
     unLock();
     //获取聊天记录
@@ -76,7 +77,7 @@ function showChatRecord(uid) {
             if (parseInt(item.content_type) === 2) {
                 item.content = '<img src="' + item.content + '" style="width: 200px;height: auto">';
             }
-            //如果消息来源客户那么消息显示在聊天窗口右侧
+            //如果消息来源于客户那么消息显示在聊天窗口右侧
             var point = item.from_id == uid ? 'right' : 'left';
 
             _html += msgFactory(item.content, item.from_avatar, point);
@@ -146,7 +147,7 @@ function sendFaceHandler() {
 /**
  * 为一条消息构建dom标签
  * @param content 消息的内容
- * @param avatar  消息人的头像
+ * @param avatar  发送消息人的头像
  * @param point   消息显示在消息窗口的左侧还是右侧
  */
 function msgFactory(content, avatar, point) {

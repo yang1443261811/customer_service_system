@@ -225,22 +225,7 @@
             }
         };
 
-        //获取客户列表
-        getWorkOrderList('/workOrder/myself');
-        //获取当前对话或者排队列表
-        $('.users-status-list li').click(function () {
-            if ($(this).hasClass('active')) {
-                return;
-            }
 
-            //选中效果
-            $('.users-status-list li').removeClass('active');
-            $(this).addClass('active');
-
-            var action = $(this).attr('type');
-            var apiUrl = '/workOrder/' + action;
-            getWorkOrderList(apiUrl);
-        });
         //发送文字消息
         $('.send').click(sendTextHandler);
         //发送表情消息
@@ -251,6 +236,19 @@
         $('.box-comments').on('click', '.box-comment', intoChatRoom);
         //光标定位到编辑区
         $("#text_in").get(0).focus();
+        //获取客户列表
+        getWorkOrderList('/workOrder/myself');
+        //获取当前对话或者排队列表
+        $('.users-status-list li').click(function () {
+            if (!$(this).hasClass('active')) {
+                //选中效果
+                $('.users-status-list li').removeClass('active');
+                $(this).addClass('active');
+                var action = $(this).attr('type');
+                var apiUrl = '/workOrder/' + action;
+                getWorkOrderList(apiUrl);
+            }
+        });
         //初始化表情插件
         $('.face').qqFace({
             id: 'facebox',
