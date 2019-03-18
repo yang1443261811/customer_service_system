@@ -179,7 +179,7 @@ function storeMessage(content, contentType) {
         '_token': token
     };
 
-    $.post('/server/send/' + client_id, data, function (res) {
+    $.post('/server/send_by_kf/' + client_id, data, function (res) {
         var err = res ? '保存成功' : '保存失败';
         console.log(err);
     }).complete(function (res) {

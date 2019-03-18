@@ -24,6 +24,7 @@ class StoreChatMessage extends FormRequest
     public function rules()
     {
         return [
+            'wo_id' => 'required',
             'from_id' => 'required',
             'from_name' => 'required',
             'from_avatar' => 'required',
