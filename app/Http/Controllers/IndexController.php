@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Validator;
 use App\ChatLog;
 use App\Customer;
+use App\WorkOrder;
 use Identicon\Identicon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,19 +22,19 @@ class IndexController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'uid'    => 'required|max:255',
-//            'avatar' => 'required',
             'name'   => 'required',
+//            'avatar' => 'required',
         ]);
 
         $validator->fails() && exit($validator->errors()->first());
 
         $data = array(
-            'uid'    => $request->uid,
-            'name'   => $request->name,
-            'avatar' => (new Identicon())->getImageDataUri($request->uid, 256),
+            'from_id'     => $request->uid,
+            'from_name'   => $request->name,
+            'from_avatar' => (new Identicon())->getImageDataUri($request->uid, 256),
         );
 
-        $result = Customer::firstOrCreate(['uid' => $request->uid], $data);
+        $result = WorkOrder::firstOrCreate(['from_id' => $request->uid, 'status' => 2], $data);
 
         //获取用户未读消息数量
         $unread = ChatLog::where(['to_id' => $request->uid, 'is_read' => 0])->count();

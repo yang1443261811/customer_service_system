@@ -24,15 +24,15 @@ function autoChatRoomHeight() {
     $('.direct-chat-messages').css('min-height', chatRecordHeight);
 }
 
-//获取客户列表
-function getCustomers() {
+//获取工单列表
+function getWorkOrderList(apiUrl) {
     //获取客户列表
-    $.get('/customer/lists').done(function (response) {
+    $.get(apiUrl).done(function (response) {
         var _html = '';
         $.each(response, function (key, item) {
-            _html += '<div class="box-comment" data-uid = ' + item.uid + '>';
-            _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
-            _html += '<span class="username">' + item.name + '';
+            _html += '<div class="box-comment" data-uid = ' + item.from_id + ' wo_id=' + item.id + '>';
+            _html += '<img class="img-circle img-sm" src="' + item.from_avatar + '"><div class="comment-text">';
+            _html += '<span class="username">' + item.from_name + '';
             _html += item.unread > 0 ? '<span class="pull-right badge bg-red">' + item.unread + '</span>' : '';
             _html += '</span>It is a long established fact</div></div>';
         });
@@ -45,6 +45,7 @@ function getCustomers() {
 function intoChatRoom() {
     //获取客户uid
     to_id = $(this).attr('data-uid');
+    wo_id = $(this).attr('wo_id');
     //初始化客服与用户的的连接
     $.ajax({
         url: '/server/joinGroup/' + client_id,
@@ -110,7 +111,7 @@ function sendImageHandler(e) {
         console.log(res);
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, avatar, 'left');
+        var _html = msgFactory(image, from_avatar, 'left');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         positionBottom();
@@ -126,7 +127,7 @@ function sendImageHandler(e) {
 function sendTextHandler() {
     var text = $('#text_in').val();
     $('#text_in').val('');
-    var elem = msgFactory(text, avatar, 'left');
+    var elem = msgFactory(text, from_avatar, 'left');
     $('.direct-chat-messages').append(elem);
     positionBottom();
     storeMessage(text, 1);
@@ -136,7 +137,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, avatar, 'left');
+    var elem = msgFactory(labFace, from_avatar, 'left');
     $('.direct-chat-messages').append(elem);
     positionBottom();
     storeMessage(labFace, 3);
@@ -162,14 +163,15 @@ function msgFactory(content, avatar, point) {
 
 /**
  * 存储消息内容
- * @param content 消息的内容容
+ * @param content 消息的内容
  * @param contentType 消息的类型 1是文字消息 2是图片消息 3是表情消息
  */
 function storeMessage(content, contentType) {
     var data = {
-        'from_id': uid,
-        'from_name': name,
-        'from_avatar': avatar,
+        'wo_id': wo_id,
+        'from_id': from_id,
+        'from_name': from_name,
+        'from_avatar': from_avatar,
         'to_id': to_id,
         'to_name': to_name,
         'content': content,

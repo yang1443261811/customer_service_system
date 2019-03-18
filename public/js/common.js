@@ -81,7 +81,7 @@ function sendTextHandler() {
     var text = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
     if (text !== "") {
         //构建消息标签然后插入dom中
-        var _html = makeChatMessage(text, 1, avatar, 'left');
+        var _html = makeChatMessage(text, 1, from_avatar, 'left');
         $(".chatBox-content-demo").append(_html);
         //发送后清空输入框
         $(".div-textarea").html("");
@@ -96,7 +96,7 @@ function sendTextHandler() {
 function sendEmojiHandler() {
     var emoji = $(this).parent().html();
     //构建消息标签然后插入dom中
-    var _html = makeChatMessage(emoji, 3, avatar, 'left');
+    var _html = makeChatMessage(emoji, 3, from_avatar, 'left');
     $(".chatBox-content-demo").append(_html);
     //发送后关闭表情框
     $(".biaoqing-photo").toggle();
@@ -127,7 +127,7 @@ function sendImageHandler(e) {
 
     }).done(function (res) {
         //构建消息标签然后插入dom中
-        var dom = makeChatMessage(res.url, 2, avatar, 'left');
+        var dom = makeChatMessage(res.url, 2, from_avatar, 'left');
         $(".chatBox-content-demo").append(dom);
         //聊天框默认最底部
         positionBottom();
@@ -146,9 +146,10 @@ function sendImageHandler(e) {
  */
 function storeMessage(content, contentType) {
     var data = {
-        'from_id': uid,
-        'from_name': name,
-        'from_avatar': avatar,
+        'wo_id': wo_id,
+        'from_id': from_id,
+        'from_name': from_name,
+        'from_avatar': from_avatar,
         'to_id': to_id,
         'to_name': to_name,
         'content': content,

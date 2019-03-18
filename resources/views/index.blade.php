@@ -25,9 +25,9 @@
                 <div class="chat-return">返回</div>
                 <div class="chat-people">
                     <div class="ChatInfoHead">
-                        <img src="{{$avatar}}" alt="头像">
+                        <img src="{{$from_avatar}}" alt="头像">
                     </div>
-                    <div class="ChatInfoName">{{$name}}</div>
+                    <div class="ChatInfoName">{{$from_name}}</div>
                 </div>
                 <div class="chat-close">关闭</div>
             </div>
@@ -105,17 +105,18 @@
 <script src="/js/common.js"></script>
 <script>
     //当前用户相关信息
-    window.uid = '{{$uid}}';
-    window.name = '{{$name}}';
-    window.avatar = '{{$avatar}}';
+    window.from_id = '{{$from_id}}';
+    window.from_name = '{{$from_name}}';
+    window.from_avatar = '{{$from_avatar}}';
+    window.wo_id = '{{$id}}';//工单id
     window.to_id = '';
     window.to_name = '';
-    window.group_id = '{{$uid}}';
+    window.group_id = '{{$from_id}}';
     window.client_id = '';
     window.token = '{{csrf_token()}}';
 
     //展示聊天记录
-    showChatRecord(uid, 'user');
+    showChatRecord(from_id, 'user');
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
     window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
@@ -148,7 +149,7 @@
 
         if (response.message_type === 'connectSuccess') {
             window.client_id = response.client_id;
-            $.post('/server/joinGroup/' + client_id, {'group_id': uid, '_token': token})
+            $.post('/server/joinGroup/' + client_id, {'group_id': from_id, '_token': token})
                 .done(function (res) {
                     console.log(res);
                 })

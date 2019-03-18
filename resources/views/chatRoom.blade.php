@@ -14,8 +14,8 @@
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-default no-padding">
                     <ul class="nav row no-margin no-padding users-status-list">
-                        <li class="col-sm-6 no-padding"><a class="no-margin">当前对话</a></li>
-                        <li class="active col-sm-6 no-padding"><a class="no-margin">排队列表</a></li>
+                        <li class="active col-sm-6 no-padding" type="myself"><a class="no-margin">当前对话</a></li>
+                        <li class="col-sm-6 no-padding" type="getNew"><a class="no-margin">排队列表</a></li>
                     </ul>
                 </div>
                 <div class="box-footer box-comments">
@@ -178,9 +178,10 @@
     <script type="text/javascript" src="/js/chat.js"></script>
     <script>
         //当前用户相关信息
-        window.uid = '{{auth()->id()}}';
-        window.name = '{{auth()->user()->name}}';
-        window.avatar = '/img/icon03.png';
+        window.ow_id = '';
+        window.from_id = '{{auth()->id()}}';
+        window.from_name = '{{auth()->user()->name}}';
+        window.from_avatar = '/img/icon03.png';
         window.to_id = '';
         window.to_name = '';
         window.client_id = '';
@@ -206,7 +207,7 @@
                     data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
                 }
                 //构建消息标签然后插入dom中
-                var _html = makeMessageHtml(data.content, data.avatar, 'right');
+                var _html = msgFactory(data.content, data.avatar, 'right');
                 $(".direct-chat-messages").append(_html);
 
                 //聊天框默认最底部
@@ -225,7 +226,21 @@
         };
 
         //获取客户列表
-        getCustomers();
+        getWorkOrderList('/workOrder/myself');
+        //获取当前对话或者排队列表
+        $('.users-status-list li').click(function () {
+            if ($(this).hasClass('active')) {
+                return;
+            }
+
+            //选中效果
+            $('.users-status-list li').removeClass('active');
+            $(this).addClass('active');
+
+            var action = $(this).attr('type');
+            var apiUrl = '/workOrder/' + action;
+            getWorkOrderList(apiUrl);
+        });
         //发送文字消息
         $('.send').click(sendTextHandler);
         //发送表情消息

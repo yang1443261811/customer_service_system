@@ -26,6 +26,8 @@ Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function
     Route::get('/home/chat', 'HomeController@chat');
     Route::get('/home/test', 'HomeController@test');
     Route::get('/customer/lists', 'CustomerController@lists');
+    Route::get('/workOrder/myself', 'WorkOrderController@myself');
+    Route::get('/workOrder/getNew', 'WorkOrderController@getNew');
 });
 
 
