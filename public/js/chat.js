@@ -85,7 +85,7 @@ function showChatRecord(uid) {
 
         $(".direct-chat-messages").html(_html);
         //聊天框默认最底部
-        positionBottom();
+        scrollToEnd();
     })
 }
 
@@ -115,7 +115,7 @@ function sendImageHandler(e) {
         var _html = msgFactory(image, from_avatar, 'left');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
-        positionBottom();
+        scrollToEnd();
         //保存消息
         storeMessage(res.url, 2);
 
@@ -130,7 +130,7 @@ function sendTextHandler() {
     $('#text_in').val('');
     var elem = msgFactory(text, from_avatar, 'left');
     $('.direct-chat-messages').append(elem);
-    positionBottom();
+    scrollToEnd();
     storeMessage(text, 1);
 }
 
@@ -140,7 +140,7 @@ function sendFaceHandler() {
     var labFace = $(this).parent().html();
     var elem = msgFactory(labFace, from_avatar, 'left');
     $('.direct-chat-messages').append(elem);
-    positionBottom();
+    scrollToEnd();
     storeMessage(labFace, 3);
 }
 
@@ -194,10 +194,8 @@ function storeMessage(content, contentType) {
 }
 
 //消息显示框定位到最底部
-function positionBottom() {
-    $(document).ready(function () {
-        $(".direct-chat-messages").scrollTop($(".direct-chat-messages")[0].scrollHeight);
-    });
+function scrollToEnd() {
+    $(".direct-chat-messages").scrollTop($(".direct-chat-messages")[0].scrollHeight);
 }
 
 //给编辑区加上遮罩使其不能编辑

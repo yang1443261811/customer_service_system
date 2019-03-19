@@ -2,6 +2,32 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin-chat.css">
+    <style>
+        body {
+            margin: 0;
+            color: rgba(0,0,0,.65);
+            font-size: 14px;
+            font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+            font-variant: tabular-nums;
+            line-height: 1.5;
+            background-color: #fff;
+            font-feature-settings: "tnum";
+        }
+        .user-info span{
+            display: inline-block;
+            padding: 5px 0;
+        }
+        .user-info li {
+            padding-left: 0;
+            border: 0;
+        }
+        .user-info li span:first-child {
+            text-align: right;
+            width: 90px;
+            font-weight: 600;
+            /*background: red;*/
+        }
+    </style>
 @endsection
 
 
@@ -113,24 +139,27 @@
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0">
                 <ul class="nav nav-tabs">
-                    <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">访客信息</a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">访客信息</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
-                    <li class="active"><a href="#tab_3" data-toggle="tab" aria-expanded="true">快捷回复</a></li>
+                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
                     <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane" id="tab_1">
-                        <b>How to use:</b>
-
-                        <p>Exactly like the original bootstrap tabs except you should use
-                            the custom wrapper <code>.nav-tabs-custom</code> to achieve this style.</p>
-                        A wonderful serenity has taken possession of my entire soul,
-                        like these sweet mornings of spring which I enjoy with my whole heart.
-                        I am alone, and feel the charm of existence in this spot,
-                        which was created for the bliss of souls like mine. I am so happy,
-                        my dear friend, so absorbed in the exquisite sense of mere tranquil existence,
-                        that I neglect my talents. I should be incapable of drawing a single stroke
-                        at the present moment; and yet I feel that I never was a greater artist than now.
+                    <div class="tab-pane active" id="tab_1">
+                        <ul class="list-group user-info">
+                            <li class="list-group-item">
+                                <span><i class="fa fa-fw fa-user"></i>&#12288;用户ID&nbsp;:</span>
+                                <span>396521kfkldff2d122</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span><i class="fa fa-fw fa-street-view"></i>是否在线&nbsp;:</span>
+                                <span>是</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span><i class="fa fa-fw fa-map-marker"></i>用户位置&nbsp;:</span>
+                                <span>江苏苏州</span>
+                            </li>
+                        </ul>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
@@ -149,7 +178,7 @@
                         and regular than that of the individual languages.
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane active" id="tab_3">
+                    <div class="tab-pane" id="tab_3">
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
                         when an unknown printer took a galley of type and scrambled it to make a type specimen
@@ -211,7 +240,7 @@
                 $(".direct-chat-messages").append(_html);
 
                 //聊天框默认最底部
-                positionBottom();
+                scrollToEnd();
 
                 //将接收到的消息标记为已读
                 $.get('/chatLog/haveRead/' + data.message_id, function (res) {
