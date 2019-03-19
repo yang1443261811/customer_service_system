@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class WorkOrderController extends Controller
 {
+    /**
+     * 获取当前用户的工单
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function myself()
     {
         $data = WorkOrder::where('kf_id', \Auth::id())->get();
@@ -15,6 +20,11 @@ class WorkOrderController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * 获取新工单(状态为1的工单就是新工单)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getNew()
     {
         $data = WorkOrder::where('status', 1)->get();
@@ -22,21 +32,31 @@ class WorkOrderController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * 获取用户未处理完成的历史工单
+     *
+     * @param $uid
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function history($uid)
     {
         $history = WorkOrder::where(['uid' => $uid, 'status' => 2])->first();
 
         if ($history) {
             $chatRecord = ChatLog::where('wo_id', $history->id)->get()->toArray();
-            $data = ['wo_id' => $history->id, 'chatRecord' => $chatRecord];
-        } else {
-            $data = ['wo_id' => '', 'chatRecord' => []];
+
+            return response()->json(['wo_id' => $history->id, 'chatRecord' => $chatRecord]);
         }
 
-        return response()->json($data);
-
+        return response()->json(['wo_id' => '', 'chatRecord' => []]);
     }
 
+    /**
+     * 创建一条新的工单
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(Request $request)
     {
         $this->validate($request, [
@@ -46,7 +66,6 @@ class WorkOrderController extends Controller
         ]);
 
         $workOrder = new WorkOrder();
-
         $result = $workOrder->fill($request->all())->save();
 
         $response = $result ? ['success' => true, 'wo_id' => $workOrder->id] : ['success' => false];
