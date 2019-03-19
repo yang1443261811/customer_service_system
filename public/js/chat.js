@@ -30,10 +30,10 @@ function getWorkOrderList(apiUrl) {
     $.get(apiUrl).done(function (response) {
         var _html = '';
         $.each(response, function (key, item) {
-            _html += '<div class="box-comment" data-uid = ' + item.from_id + ' wo_id=' + item.id + '>';
-            _html += '<img class="img-circle img-sm" src="' + item.from_avatar + '"><div class="comment-text">';
-            _html += '<span class="username">' + item.from_name + '';
-            _html += item.unread > 0 ? '<span class="pull-right badge bg-red">' + item.unread + '</span>' : '';
+            _html += '<div class="box-comment" data-uid = ' + item.uid + ' wo_id=' + item.id + '>';
+            _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
+            _html += '<span class="username">' + item.name + '';
+            _html += item.server_msg_unread_count > 0 ? '<span class="pull-right badge bg-red">' + item.server_msg_unread_count + '</span>' : '';
             _html += '</span>It is a long established fact</div></div>';
         });
 
@@ -43,8 +43,9 @@ function getWorkOrderList(apiUrl) {
 
 //点击客户进入聊天窗口
 function intoChatRoom() {
-    //获取客户uid
+    //保存客户的uid
     to_id = $(this).attr('data-uid');
+    //保存工单的ID
     wo_id = $(this).attr('wo_id');
     //初始化客服与用户的的连接
     $.ajax({
@@ -61,15 +62,16 @@ function intoChatRoom() {
     //使聊天窗口的编辑区可编辑
     unLock();
     //获取聊天记录
-    showChatRecord(to_id);
+    showChatRecord(wo_id, to_id);
 }
 
 /**
  * 获取聊天记录
- * @param uid 客户的uid
+ * @param wo_id 工单id
+ * @param uid   客户的id
  */
-function showChatRecord(uid) {
-    var param = {'uid': uid, 'from': 'kf', '_token': token};
+function showChatRecord(wo_id, uid) {
+    var param = {'wo_id': wo_id, 'uid': uid, 'from': 'kf', '_token': token};
     $.post('/chatLog/get', param, function (response) {
         var _html = '';
         $.each(response, function (index, item) {
@@ -78,7 +80,7 @@ function showChatRecord(uid) {
                 item.content = '<img src="' + item.content + '" style="width: 200px;height: auto">';
             }
             //如果消息来源于客户那么消息显示在聊天窗口右侧
-            var point = item.from_id == uid ? 'right' : 'left';
+            var point = item.from_id == to_id ? 'left' : 'right';
 
             _html += msgFactory(item.content, item.from_avatar, point);
         });
@@ -112,7 +114,7 @@ function sendImageHandler(e) {
         console.log(res);
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, from_avatar, 'left');
+        var _html = msgFactory(image, kf_avatar, 'left');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         scrollToEnd();
@@ -128,7 +130,7 @@ function sendImageHandler(e) {
 function sendTextHandler() {
     var text = $('#text_in').val();
     $('#text_in').val('');
-    var elem = msgFactory(text, from_avatar, 'left');
+    var elem = msgFactory(text, kf_avatar, 'left');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(text, 1);
@@ -138,7 +140,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, from_avatar, 'left');
+    var elem = msgFactory(labFace, kf_avatar, 'left');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(labFace, 3);
@@ -170,9 +172,9 @@ function msgFactory(content, avatar, point) {
 function storeMessage(content, contentType) {
     var data = {
         'wo_id': wo_id,
-        'from_id': from_id,
-        'from_name': from_name,
-        'from_avatar': from_avatar,
+        'from_id': kf_id,
+        'from_name': kf_name,
+        'from_avatar': kf_avatar,
         'to_id': to_id,
         'to_name': to_name,
         'content': content,

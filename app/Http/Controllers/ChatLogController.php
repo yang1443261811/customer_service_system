@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ChatLog;
+use App\WorkOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,18 +17,17 @@ class ChatLogController extends Controller
      */
     public function get(Request $request)
     {
-        $uid = $request->input('uid');
+        $wo_id = $request->input('wo_id');
         //请求来源于普通用户还是客服人员,from = kf 表示请求来源于客服人员否则就是普通用户的请求
         $from = $request->input('from');
+        $uid = $request->input('uid');
 
         //如果请求来源于普通用户则将客服发给用户的所有未读消息更新为已读
         //如果请求来源于客服人员那么将用户发给客服人员的所有未读消息更新为已读
         $where = $from == 'kf' ? ['from_id' => $uid] : ['to_id' => $uid];
         ChatLog::where($where)->update(['is_read' => 1]);
 
-        $data = ChatLog::where(function ($query) use ($uid) {
-            $query->where('from_id', $uid)->orWhere('to_id', $uid);
-        })->orderBy('created_at', 'asc')->get();
+        $data = ChatLog::where('wo_id', $wo_id)->orderBy('created_at', 'asc')->get();
 
         return response()->json($data);
     }

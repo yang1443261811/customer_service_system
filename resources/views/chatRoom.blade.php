@@ -206,13 +206,12 @@
     <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
     <script type="text/javascript" src="/js/chat.js"></script>
     <script>
-        //当前用户相关信息
-        window.ow_id = '';
-        window.from_id = '{{auth()->id()}}';
-        window.from_name = '{{auth()->user()->name}}';
-        window.from_avatar = '/img/icon03.png';
-        window.to_id = '';
-        window.to_name = '';
+        window.ow_id = '';//工单ID
+        window.kf_id = '{{auth()->id()}}';//客服的ID
+        window.kf_name = '{{auth()->user()->name}}';//客服的名称
+        window.kf_avatar = '/img/icon03.png';
+        window.to_id = '';//客户的ID
+        window.to_name = '';//客户的名称
         window.client_id = '';
         window.token = '{{csrf_token()}}';
 
@@ -263,8 +262,6 @@
         $('.upload').change(sendImageHandler);
         //点击客户列表进入聊天窗口
         $('.box-comments').on('click', '.box-comment', intoChatRoom);
-        //光标定位到编辑区
-        $("#text_in").get(0).focus();
         //获取客户列表
         getWorkOrderList('/workOrder/myself');
         //获取当前对话或者排队列表

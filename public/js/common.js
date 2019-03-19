@@ -81,7 +81,7 @@ function sendTextHandler() {
     var text = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
     if (text !== "") {
         //构建消息标签然后插入dom中
-        var _html = makeChatMessage(text, 1, from_avatar, 'left');
+        var _html = makeChatMessage(text, 1, avatar, 'left');
         $(".chatBox-content-demo").append(_html);
         //发送后清空输入框
         $(".div-textarea").html("");
@@ -96,7 +96,7 @@ function sendTextHandler() {
 function sendEmojiHandler() {
     var emoji = $(this).parent().html();
     //构建消息标签然后插入dom中
-    var _html = makeChatMessage(emoji, 3, from_avatar, 'left');
+    var _html = makeChatMessage(emoji, 3, avatar, 'left');
     $(".chatBox-content-demo").append(_html);
     //发送后关闭表情框
     $(".biaoqing-photo").toggle();
@@ -127,7 +127,7 @@ function sendImageHandler(e) {
 
     }).done(function (res) {
         //构建消息标签然后插入dom中
-        var dom = makeChatMessage(res.url, 2, from_avatar, 'left');
+        var dom = makeChatMessage(res.url, 2, avatar, 'left');
         $(".chatBox-content-demo").append(dom);
         //聊天框默认最底部
         positionBottom();
@@ -147,9 +147,9 @@ function sendImageHandler(e) {
 function storeMessage(content, contentType) {
     var data = {
         'wo_id': wo_id,
-        'from_id': from_id,
-        'from_name': from_name,
-        'from_avatar': from_avatar,
+        'from_id': uid,
+        'from_name': name,
+        'from_avatar': avatar,
         'to_id': to_id,
         'to_name': to_name,
         'content': content,
@@ -176,10 +176,17 @@ function storeMessage(content, contentType) {
  * @param uid 客户的uid
  * @param from 请求来源于客服人员还是用户
  */
-function showChatRecord(uid, from) {
-    $.post('/chatLog/get', {'uid': uid, 'from': from, '_token': token}, function (response) {
+function getHistory(uid) {
+    $.get('/workOrder/history/' + uid, function (response) {
+        //如果没有历史工单就创建一条新的工单
+        wo_id = response.wo_id;
+        if (!wo_id) {
+            createWorkOrder();
+            return false;
+        }
+
         var _html = '';
-        $.each(response, function (index, item) {
+        $.each(response.chatRecord, function (index, item) {
             //如果消息来源客户那么消息显示在聊天窗口右侧
             var point = item.from_id === uid ? 'left' : 'right';
             _html += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
@@ -189,6 +196,18 @@ function showChatRecord(uid, from) {
         //聊天框默认最底部
         positionBottom();
     })
+}
+
+function createWorkOrder() {
+    $.post('/workOrder/create', {'uid': uid, 'name': name, 'avatar': avatar}, function (res) {
+        if (res.success) {
+            wo_id = res.wo_id;
+        } else {
+            console.log('工单创建失败');
+        }
+    }).complete(function (res) {
+        console.log(res);
+    });
 }
 
 
