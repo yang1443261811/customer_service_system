@@ -22,7 +22,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect.
   -->
-  <link rel="stylesheet" href="/css/skin-blue.css">
+  {{--<link rel="stylesheet" href="/css/skin-blue.css">--}}
+  <link rel="stylesheet" href="/css/_all-skins.css">
   @yield('css')
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

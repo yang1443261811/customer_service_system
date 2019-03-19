@@ -23,7 +23,7 @@
         }
         .user-info li span:first-child {
             text-align: right;
-            width: 90px;
+            width: 60px;
             font-weight: 600;
             /*background: red;*/
         }
@@ -127,7 +127,7 @@
                         <textarea id="text_in" class="edit-ipt disable" placeholder="编辑信息"></textarea>
 
                         <div class="input-group pull-right">
-                            <button type="submit" class="btn btn-primary btn-flat send">Send</button>
+                            <button type="submit" class="btn btn-default send">发送</button>
                         </div>
                     </form>
                 </div>
@@ -139,7 +139,7 @@
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">访客信息</a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
                     <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
@@ -148,15 +148,15 @@
                     <div class="tab-pane active" id="tab_1">
                         <ul class="list-group user-info">
                             <li class="list-group-item">
-                                <span><i class="fa fa-fw fa-user"></i>&#12288;用户ID&nbsp;:</span>
+                                <span><i class="fa fa-fw fa-user"></i>&#12288;ID&nbsp;:</span>
                                 <span>396521kfkldff2d122</span>
                             </li>
                             <li class="list-group-item">
-                                <span><i class="fa fa-fw fa-street-view"></i>是否在线&nbsp;:</span>
+                                <span><i class="fa fa-fw fa-street-view"></i>在线&nbsp;:</span>
                                 <span>是</span>
                             </li>
                             <li class="list-group-item">
-                                <span><i class="fa fa-fw fa-map-marker"></i>用户位置&nbsp;:</span>
+                                <span><i class="fa fa-fw fa-map-marker"></i>位置&nbsp;:</span>
                                 <span>江苏苏州</span>
                             </li>
                         </ul>
