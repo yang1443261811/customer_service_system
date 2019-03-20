@@ -86,6 +86,7 @@ function showChatRecord(wo_id, uid) {
         });
 
         $(".direct-chat-messages").html(_html);
+
         //聊天框默认最底部
         scrollToEnd();
     })
@@ -114,7 +115,7 @@ function sendImageHandler(e) {
         console.log(res);
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, kf_avatar, 'left');
+        var _html = msgFactory(image, kf_avatar, 'right');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         scrollToEnd();
@@ -130,7 +131,7 @@ function sendImageHandler(e) {
 function sendTextHandler() {
     var text = $('#text_in').val();
     $('#text_in').val('');
-    var elem = msgFactory(text, kf_avatar, 'left');
+    var elem = msgFactory(text, kf_avatar, 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(text, 1);
@@ -140,7 +141,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, kf_avatar, 'left');
+    var elem = msgFactory(labFace, kf_avatar, 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(labFace, 3);

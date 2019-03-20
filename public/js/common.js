@@ -207,17 +207,24 @@ function getWorkOrder(uid) {
 
 //创建新的工单
 function createWorkOrder() {
-    var param = {'uid': uid, 'name': name, 'avatar': avatar, '_token': token};
-    $.post('/workOrder/create', param, function (res) {
+    $.ajax({
+        url: '/workOrder/create',
+        type: 'POST',
+        async: false,
+        data: {'uid': uid, 'name': name, 'avatar': avatar, '_token': token}
+
+    }).done(function (res) {
         if (res.success) {
             window.wo_id = res.wo_id;
             window.hasWorkOrder = true;
         } else {
             console.log('工单创建失败');
         }
-    }).complete(function (res) {
-        console.log(res);
+
+    }).fail(function (res) {
+        console.log(res.responseJSON.message);
     });
+
 }
 
 

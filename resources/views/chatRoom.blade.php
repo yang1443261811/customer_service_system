@@ -235,7 +235,7 @@
                     data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
                 }
                 //构建消息标签然后插入dom中
-                var _html = msgFactory(data.content, data.avatar, 'right');
+                var _html = msgFactory(data.content, data.avatar, 'left');
                 $(".direct-chat-messages").append(_html);
 
                 //聊天框默认最底部

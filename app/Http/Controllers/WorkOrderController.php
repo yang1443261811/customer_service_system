@@ -40,7 +40,7 @@ class WorkOrderController extends Controller
      */
     public function getByUid($uid)
     {
-        $history = WorkOrder::where(['uid' => $uid, 'status' => 2])->first();
+        $history = WorkOrder::where('uid', $uid)->whereIn('status', [1, 2])->first();
         if ($history) {
             $chatRecord = ChatLog::where('wo_id', $history->id)->get()->toArray();
 
@@ -59,8 +59,8 @@ class WorkOrderController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'uid'    => 'required|max:255',
-            'name'   => 'required',
+            'uid' => 'required|max:255',
+            'name' => 'required',
             'avatar' => 'required',
         ]);
 
