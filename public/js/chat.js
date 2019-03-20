@@ -62,17 +62,15 @@ function intoChatRoom() {
     //使聊天窗口的编辑区可编辑
     unLock();
     //获取聊天记录
-    showChatRecord(wo_id, to_id);
+    showChatRecord(wo_id);
 }
 
 /**
  * 获取聊天记录
  * @param wo_id 工单id
- * @param uid   客户的id
  */
-function showChatRecord(wo_id, uid) {
-    var param = {'wo_id': wo_id, 'uid': uid, 'from': 'kf', '_token': token};
-    $.post('/chatLog/get', param, function (response) {
+function showChatRecord(wo_id) {
+    $.get('/chatLog/getByServer/' + wo_id, function (response) {
         var _html = '';
         $.each(response, function (index, item) {
             //如果是图片的话,构建一个图片标签

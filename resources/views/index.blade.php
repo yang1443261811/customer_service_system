@@ -142,7 +142,7 @@
             //聊天框默认最底部
             positionBottom();
             //将接收到的消息标记为已读
-            $.get('chatLog/haveRead/' + data.message_id).done(function (res) {
+            $.get('chatLog/clientHaveRead/' + data.wo_id).done(function (res) {
                 console.log(res);
             })
         }

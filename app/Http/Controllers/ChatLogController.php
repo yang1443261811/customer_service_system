@@ -10,22 +10,37 @@ use Illuminate\Support\Facades\Storage;
 class ChatLogController extends Controller
 {
     /**
-     * 根据uid获取聊天记录
+     * 客户端根据用户ID获取聊天记录
      *
-     * @param Request $request
+     * @param int $uid
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Request $request)
+    public function getByClient($uid)
     {
-        $wo_id = $request->input('wo_id');
-        //请求来源于普通用户还是客服人员,from = kf 表示请求来源于客服人员否则就是普通用户的请求
-        $from = $request->input('from');
-        $uid = $request->input('uid');
+        $data = WorkOrder::where('uid', $uid)->whereIn('status', [1, 2])->first();
 
-        //如果请求来源于普通用户则将客服发给用户的所有未读消息更新为已读
-        //如果请求来源于客服人员那么将用户发给客服人员的所有未读消息更新为已读
-        $where = $from == 'kf' ? ['from_id' => $uid] : ['to_id' => $uid];
-        ChatLog::where($where)->update(['is_read' => 1]);
+        if ($data) {
+            //获取聊天记录
+            $chatRecord = ChatLog::where('wo_id', $data->id)->get()->toArray();
+            //将工单里客服发送给用户的未读消息数清零
+            WorkOrder::where('id', $data->id)->update(['client_msg_unread_count' => 0]);
+
+            return response()->json(['wo_id' => $data->id, 'chatRecord' => $chatRecord]);
+        }
+
+        return response()->json(['wo_id' => '', 'chatRecord' => []]);
+    }
+
+    /**
+     * 服务端根据工单ID获取聊天记录
+     *
+     * @param int $wo_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getByServer($wo_id)
+    {
+        //将工单里用户发送给客服的未读消息数清零
+        WorkOrder::where('id', $wo_id)->update(['server_msg_unread_count' => 0]);
 
         $data = ChatLog::where('wo_id', $wo_id)->orderBy('created_at', 'asc')->get();
 
@@ -48,14 +63,27 @@ class ChatLogController extends Controller
     }
 
     /**
-     * 更新消息为已读
+     * 更新客户消息为已读
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function haveRead($id)
+    public function clientHaveRead($id)
     {
-        $result = ChatLog::where('id', $id)->update(['is_read' => 1]);
+        $result = WorkOrder::where('id', $id)->decrement('client_msg_unread_count', 1);
+
+        return response()->json($result);
+    }
+
+    /**
+     * 更新客户消息为已读
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function serverHaveRead($id)
+    {
+        $result = WorkOrder::where('id', $id)->decrement('server_msg_unread_count', 1);
 
         return response()->json($result);
     }

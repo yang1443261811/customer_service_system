@@ -181,7 +181,7 @@ function storeMessage(content, contentType) {
  * @param uid 客户的uid
  */
 function getWorkOrder(uid) {
-    $.get('/workOrder/getByUid/' + uid, function (response) {
+    $.get('/chatLog/getByClient/' + uid, function (response) {
         //如果没有获取到直接返回
         if (!response.wo_id) {
             return false;
@@ -212,7 +212,6 @@ function createWorkOrder() {
         type: 'POST',
         async: false,
         data: {'uid': uid, 'name': name, 'avatar': avatar, '_token': token}
-
     }).done(function (res) {
         if (res.success) {
             window.wo_id = res.wo_id;

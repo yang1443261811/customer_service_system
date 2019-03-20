@@ -242,7 +242,7 @@
                 scrollToEnd();
 
                 //将接收到的消息标记为已读
-                $.get('/chatLog/haveRead/' + data.message_id, function (res) {
+                $.get('/chatLog/ServerHaveRead/' + data.wo_id, function (res) {
                     console.log(res);
                 })
             }

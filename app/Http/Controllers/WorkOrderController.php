@@ -33,24 +33,6 @@ class WorkOrderController extends Controller
     }
 
     /**
-     * 获取用户未处理完成的历史工单
-     *
-     * @param $uid
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getByUid($uid)
-    {
-        $history = WorkOrder::where('uid', $uid)->whereIn('status', [1, 2])->first();
-        if ($history) {
-            $chatRecord = ChatLog::where('wo_id', $history->id)->get()->toArray();
-
-            return response()->json(['wo_id' => $history->id, 'chatRecord' => $chatRecord]);
-        }
-
-        return response()->json(['wo_id' => '', 'chatRecord' => []]);
-    }
-
-    /**
      * 创建一条新的工单
      *
      * @param Request $request
@@ -71,5 +53,4 @@ class WorkOrderController extends Controller
 
         return response()->json($response);
     }
-
 }

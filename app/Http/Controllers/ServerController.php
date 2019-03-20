@@ -53,6 +53,8 @@ class ServerController extends Controller
 
         //消息入库
         $result = $this->chat->fill($request->all())->save();
+        //累加未读消息数
+        WorkOrder::where('id', $request->wo_id)->increment('server_msg_unread_count', 1);
 
         $message = [
             'message_type' => 'chatMessage',
@@ -62,7 +64,7 @@ class ServerController extends Controller
                 'avatar'       => $request['from_avatar'],
                 'time'         => date('Y-m-d H:i:s'),
                 'content'      => $request['content'],
-                'message_id'   => $this->chat->id,
+                'wo_id'        => $request['wo_id'],
                 'content_type' => $request['content_type'],
             ]
         ];
@@ -88,6 +90,8 @@ class ServerController extends Controller
 
         //消息入库
         $result = $this->chat->fill($request->all())->save();
+        //累加未读消息数
+        WorkOrder::where('id', $request->wo_id)->increment('client_msg_unread_count', 1);
 
         //如果是未经受理的新工单,那么将当前客服作为工单的受理人,并将工单的状态更改为2(表示已接收处理)
         if (WorkOrder::isNew($request->wo_id)) {
@@ -102,7 +106,7 @@ class ServerController extends Controller
                 'avatar'       => $request['from_avatar'],
                 'time'         => date('Y-m-d H:i:s'),
                 'content'      => $request['content'],
-                'message_id'   => $this->chat->id,
+                'wo_id'        => $request['wo_id'],
                 'content_type' => $request['content_type'],
             ]
         ];

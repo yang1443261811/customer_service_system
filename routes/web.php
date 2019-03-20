@@ -14,9 +14,11 @@
 Auth::routes();
 
 Route::get('/', 'IndexController@index');
-Route::get('/chatLog/haveRead/{id}', 'ChatLogController@haveRead');
-Route::post('/chatLog/get', 'ChatLogController@get');
 Route::post('/chatLog/upload', 'ChatLogController@upload');
+Route::get('/chatLog/clientHaveRead/{uid}', 'ChatLogController@clientHaveRead');
+Route::get('/chatLog/serverHaveRead/{wo_id}', 'ChatLogController@serverHaveRead');
+Route::get('/chatLog/getByClient/{uid}', 'ChatLogController@getByClient');
+Route::get('/chatLog/getByServer/{wo_id}', 'ChatLogController@getByServer');
 Route::post('/server/joinGroup/{client_id}', 'ServerController@joinGroup');
 Route::post('/server/send/{client_id}', 'ServerController@send');
 Route::post('/server/send_by_kf/{client_id}', 'ServerController@send_by_kf');
