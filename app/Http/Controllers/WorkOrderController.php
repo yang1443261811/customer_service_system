@@ -38,10 +38,9 @@ class WorkOrderController extends Controller
      * @param $uid
      * @return \Illuminate\Http\JsonResponse
      */
-    public function history($uid)
+    public function getByUid($uid)
     {
         $history = WorkOrder::where(['uid' => $uid, 'status' => 2])->first();
-
         if ($history) {
             $chatRecord = ChatLog::where('wo_id', $history->id)->get()->toArray();
 

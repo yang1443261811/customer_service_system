@@ -20,7 +20,7 @@ Route::post('/chatLog/upload', 'ChatLogController@upload');
 Route::post('/server/joinGroup/{client_id}', 'ServerController@joinGroup');
 Route::post('/server/send/{client_id}', 'ServerController@send');
 Route::post('/server/send_by_kf/{client_id}', 'ServerController@send_by_kf');
-Route::get('/workOrder/history/{id}', 'WorkOrderController@history');
+Route::get('/workOrder/getByUid/{id}', 'WorkOrderController@getByUid');
 Route::post('/workOrder/create', 'WorkOrderController@create');
 Route::get('/workOrder/myself', 'WorkOrderController@myself');
 Route::get('/workOrder/getNew', 'WorkOrderController@getNew');

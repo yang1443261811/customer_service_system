@@ -145,6 +145,11 @@ function sendImageHandler(e) {
  * @param contentType 消息的类型 1是文字消息 2是图片消息 3是表情消息
  */
 function storeMessage(content, contentType) {
+    //如果用户还没有创建工单那么就创建一个新的工单
+    if (!window.hasWorkOrder) {
+        createWorkOrder();
+    }
+
     var data = {
         'wo_id': wo_id,
         'from_id': uid,
@@ -172,19 +177,21 @@ function storeMessage(content, contentType) {
 
 
 /**
- * 获取聊天记录
+ * 获取工单
  * @param uid 客户的uid
- * @param from 请求来源于客服人员还是用户
  */
-function getHistory(uid) {
-    $.get('/workOrder/history/' + uid, function (response) {
-        //如果没有历史工单就创建一条新的工单
-        wo_id = response.wo_id;
-        if (!wo_id) {
-            createWorkOrder();
+function getWorkOrder(uid) {
+    $.get('/workOrder/getByUid/' + uid, function (response) {
+        //如果没有获取到直接返回
+        if (!response.wo_id) {
             return false;
         }
 
+        window.hasWorkOrder = true;
+        //将工单的ID保存到变量中
+        window.wo_id = response.wo_id;
+
+        //将工单的聊天记录显示出来
         var _html = '';
         $.each(response.chatRecord, function (index, item) {
             //如果消息来源客户那么消息显示在聊天窗口右侧
@@ -198,10 +205,13 @@ function getHistory(uid) {
     })
 }
 
+//创建新的工单
 function createWorkOrder() {
-    $.post('/workOrder/create', {'uid': uid, 'name': name, 'avatar': avatar}, function (res) {
+    var param = {'uid': uid, 'name': name, 'avatar': avatar, '_token': token};
+    $.post('/workOrder/create', param, function (res) {
         if (res.success) {
-            wo_id = res.wo_id;
+            window.wo_id = res.wo_id;
+            window.hasWorkOrder = true;
         } else {
             console.log('工单创建失败');
         }

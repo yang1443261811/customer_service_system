@@ -104,19 +104,19 @@
 <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
 <script src="/js/common.js"></script>
 <script>
-    //当前用户相关信息
+    window.wo_id = '';//工单id
     window.uid = '{{$uid}}';
     window.name = '{{$name}}';
     window.avatar = '{{$avatar}}';
-    window.wo_id = '';//工单id
     window.to_id = '';
     window.to_name = '';
     window.group_id = '{{$uid}}';
     window.client_id = '';
     window.token = '{{csrf_token()}}';
+    window.hasWorkOrder = false;
 
-    //展示聊天记录
-    getHistory(uid);
+    //获取用户的工单,如果没有获取到那么用户发送消息的时候需要为本次会话创建一个新的工单
+    getWorkOrder(uid);
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
     window.ws = new WebSocket("ws://" + "127.0.0.1:8282");

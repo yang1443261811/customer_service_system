@@ -22,21 +22,22 @@ class IndexController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'uid' => 'required|max:255',
-            'name' => 'required',
+            'name'=> 'required',
         ]);
 
         $validator->fails() && exit($validator->errors()->first());
-
         //获取未读消息数
         $unread = WorkOrder::getUnreadMsgCount($request->uid);
+        //如果没有传递头像就自动生成头像
+        $avatar = $request->has('avatar')
+            ? $request->avatar
+            : (new Identicon())->getImageDataUri($request->uid, 256);
 
         $output = [
             'uid'    => $request->uid,
             'name'   => $request->name,
             'unread' => $unread,
-            'avatar' => $request->has('avatar')
-                ? $request->avatar
-                : (new Identicon())->getImageDataUri($request->uid, 256),
+            'avatar' => $avatar,
         ];
 
         return view('index', $output);

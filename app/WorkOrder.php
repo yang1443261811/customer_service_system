@@ -19,7 +19,7 @@ class WorkOrder extends Model
      * @var array
      */
     protected $fillable = [
-        'from_name', 'from_id', 'from_avatar', 'content', 'content_type', 'kf_id', 'status', 'client_msg_unread_count', 'server_msg_unread_count'
+        'name', 'uid', 'avatar', 'kf_id', 'status', 'client_msg_unread_count', 'server_msg_unread_count'
     ];
 
     /**
@@ -69,23 +69,4 @@ class WorkOrder extends Model
         return static::where(['uid' => $uid, 'status' => 2])->value('client_msg_unread_count');
     }
 
-    /**
-     * 客服发送的消息已读
-     *
-     * @param int $id 工单ID
-     */
-    public static function setServerUnreadCount($id)
-    {
-        return static::where('id', $id)->decrement('server_msg_unread_count', 1);
-    }
-
-    /**
-     * 用户发送的消息已读
-     *
-     * @param int $id 工单ID
-     */
-    public static function setClientUnreadCount($id)
-    {
-        return static::where('id', $id)->decrement('client_msg_unread_count', 1);
-    }
 }
