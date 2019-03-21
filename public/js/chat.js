@@ -70,7 +70,7 @@ function intoChatRoom() {
  * @param wo_id 工单id
  */
 function showChatRecord(wo_id) {
-    $.get('/chatLog/getByServer/' + wo_id, function (response) {
+    $.get('/chatRecord/get/' + wo_id, function (response) {
         var _html = '';
         $.each(response, function (index, item) {
             //如果是图片的话,构建一个图片标签
@@ -80,7 +80,7 @@ function showChatRecord(wo_id) {
             //如果消息来源于客户那么消息显示在聊天窗口右侧
             var point = item.from_id == to_id ? 'left' : 'right';
 
-            _html += msgFactory(item.content, item.from_avatar, point);
+            _html += msgFactory(item.content, item.from_avatar, item.from_name, point);
         });
 
         $(".direct-chat-messages").html(_html);
@@ -113,7 +113,7 @@ function sendImageHandler(e) {
         console.log(res);
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, kf_avatar, 'right');
+        var _html = msgFactory(image, kf_avatar, kf_name, 'right');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         scrollToEnd();
@@ -129,7 +129,7 @@ function sendImageHandler(e) {
 function sendTextHandler() {
     var text = $('#text_in').val();
     $('#text_in').val('');
-    var elem = msgFactory(text, kf_avatar, 'right');
+    var elem = msgFactory(text, kf_avatar, kf_name, 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(text, 1);
@@ -139,7 +139,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, kf_avatar, 'right');
+    var elem = msgFactory(labFace, kf_avatar, kf_name, 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(labFace, 3);
@@ -149,13 +149,14 @@ function sendFaceHandler() {
  * 为一条消息构建dom标签
  * @param content 消息的内容
  * @param avatar  发送消息人的头像
+ * @param nickname 发送消息人的昵称
  * @param point   消息显示在消息窗口的左侧还是右侧
  */
-function msgFactory(content, avatar, point) {
+function msgFactory(content, avatar, nickname, point) {
     point = (point === 'right') ? 'right' : '';
     var _html = '';
     _html += '<div class="direct-chat-msg ' + point + '"><div class="direct-chat-info clearfix">';
-    _html += '<span class="direct-chat-name ">Alexander Pierce</span>';
+    _html += '<span class="direct-chat-name ">' + nickname + '</span>';
     _html += '<span class="direct-chat-timestamp">23 Jan 2:00 pm</span></div>';
     _html += '<img class="direct-chat-img" src="' + avatar + '" alt="Message User Image">';
     _html += '<div class="direct-chat-text">' + content + '</div></div>';

@@ -15,10 +15,9 @@ class ChatLogController extends Controller
      * @param int $uid
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getByClient($uid)
+    public function get($uid)
     {
         $data = WorkOrder::where('uid', $uid)->whereIn('status', [1, 2])->first();
-
         if ($data) {
             //获取聊天记录
             $chatRecord = ChatLog::where('wo_id', $data->id)->get()->toArray();
@@ -32,19 +31,16 @@ class ChatLogController extends Controller
     }
 
     /**
-     * 服务端根据工单ID获取聊天记录
+     * 更新客户消息为已读
      *
-     * @param int $wo_id
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getByServer($wo_id)
+    public function haveRead($id)
     {
-        //将工单里用户发送给客服的未读消息数清零
-        WorkOrder::where('id', $wo_id)->update(['server_msg_unread_count' => 0]);
+        $result = WorkOrder::where('id', $id)->decrement('client_msg_unread_count', 1);
 
-        $data = ChatLog::where('wo_id', $wo_id)->orderBy('created_at', 'asc')->get();
-
-        return response()->json($data);
+        return response()->json($result);
     }
 
     /**
@@ -60,31 +56,5 @@ class ChatLogController extends Controller
         $path = $request->file('image')->store('avatars', 'public');
 
         return response()->json(['url' => Storage::url($path)]);
-    }
-
-    /**
-     * 更新客户消息为已读
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function clientHaveRead($id)
-    {
-        $result = WorkOrder::where('id', $id)->decrement('client_msg_unread_count', 1);
-
-        return response()->json($result);
-    }
-
-    /**
-     * 更新客户消息为已读
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function serverHaveRead($id)
-    {
-        $result = WorkOrder::where('id', $id)->decrement('server_msg_unread_count', 1);
-
-        return response()->json($result);
     }
 }

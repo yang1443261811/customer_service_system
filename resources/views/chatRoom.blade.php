@@ -5,22 +5,25 @@
     <style>
         body {
             margin: 0;
-            color: rgba(0,0,0,.65);
+            color: rgba(0, 0, 0, .65);
             font-size: 14px;
-            font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
             font-variant: tabular-nums;
             line-height: 1.5;
             background-color: #fff;
             font-feature-settings: "tnum";
         }
-        .user-info span{
+
+        .user-info span {
             display: inline-block;
             padding: 5px 0;
         }
+
         .user-info li {
             padding-left: 0;
             border: 0;
         }
+
         .user-info li span:first-child {
             text-align: right;
             width: 60px;
@@ -235,14 +238,14 @@
                     data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
                 }
                 //构建消息标签然后插入dom中
-                var _html = msgFactory(data.content, data.avatar, 'left');
+                var _html = msgFactory(data.content, data.avatar, data.avatar, 'left');
                 $(".direct-chat-messages").append(_html);
 
                 //聊天框默认最底部
                 scrollToEnd();
 
                 //将接收到的消息标记为已读
-                $.get('/chatLog/ServerHaveRead/' + data.wo_id, function (res) {
+                $.get('/chatRecord/haveRead/' + data.wo_id, function (res) {
                     console.log(res);
                 })
             }
