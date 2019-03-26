@@ -23,24 +23,18 @@ class ChatLog extends Model
     ];
 
     /**
-     * 保存聊天消息
+     * 获取某个人的最后回复内容
      *
-     * @param array $data
-     * @return bool
+     * @param int $wo_id
+     * @return mixed
      */
-    public function insertChatLog(array $data)
+    public static function getLastReply($wo_id)
     {
-        $workOrder = new WorkOrder();
-        //如果用户有未处理完成的工单,把工单号查询出来,一起保存到消息记录表中,形成工单表与消息记录表的关联关系
-        //如果没有就新建一条工单使工单与消息关联
-        $data['wo_id'] = $workOrder->where(['uid' => $data['uid'], 'status' => 2])->value('id');
-        if (!$data['wo_id']) {
-            $workOrder->fill($data)->save();
-
-            $data['wo_id'] = $workOrder->id;
-        }
-
-        return (new ChatLog)->fill($data)->save();
+        return static::select('content', 'content_type')
+                     ->where('wo_id', $wo_id)
+                     ->orderBy('created_at', 'desc')
+                     ->first()
+                     ->toArray();
 
     }
 }

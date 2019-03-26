@@ -69,4 +69,9 @@ class WorkOrder extends Model
         return static::where(['uid' => $uid, 'status' => 2])->value('client_msg_unread_count');
     }
 
+    public function pageWithRequest()
+    {
+
+    }
+
 }

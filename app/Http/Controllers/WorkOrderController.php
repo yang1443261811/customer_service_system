@@ -15,7 +15,10 @@ class WorkOrderController extends Controller
      */
     public function myself()
     {
-        $data = WorkOrder::where('kf_id', \Auth::id())->get();
+        $data = WorkOrder::where('kf_id', \Auth::id())->get()->toArray();
+        foreach ($data as &$item) {
+            $item['lastReply'] = ChatLog::getLastReply($item['id']);
+        }
 
         return response()->json($data);
     }
@@ -28,6 +31,9 @@ class WorkOrderController extends Controller
     public function getNew()
     {
         $data = WorkOrder::where('status', 1)->get();
+        foreach ($data as &$item) {
+            $item['lastReply'] = ChatLog::getLastReply($item['id']);
+        }
 
         return response()->json($data);
     }

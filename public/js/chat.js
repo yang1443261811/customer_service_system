@@ -30,11 +30,13 @@ function getWorkOrderList(apiUrl) {
     $.get(apiUrl).done(function (response) {
         var _html = '';
         $.each(response, function (key, item) {
+            //如果最后的回复是图片将图片资源替换成文字
+            var lastWord = (item.lastReply.content_type === 2) ? '图片' : item.lastReply.content;
             _html += '<div class="box-comment" data-uid = ' + item.uid + ' wo_id=' + item.id + '>';
             _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
             _html += '<span class="username">' + item.name + '';
             _html += item.server_msg_unread_count > 0 ? '<span class="pull-right badge bg-red">' + item.server_msg_unread_count + '</span>' : '';
-            _html += '</span>It is a long established fact</div></div>';
+            _html += '</span>' + lastWord + '</div></div>';
         });
 
         $('.box-comments').html(_html);

@@ -4788,8 +4788,8 @@ table.text-center th {
 .img-sm,
 .box-comments .box-comment img,
 .user-block.user-block-sm img {
-  width: 40px !important;
-  height: 40px !important;
+  width: 40px;
+  height: 40px;
 }
 .img-sm + .img-push {
   margin-left: 40px;

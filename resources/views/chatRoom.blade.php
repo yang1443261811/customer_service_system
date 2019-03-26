@@ -29,7 +29,13 @@
             width: 60px;
             font-weight: 600;
         }
-
+        .comment-text img {
+            width: 20px !important;
+            height: 20px !important;
+        }
+        .box-comments {
+            overflow: auto !important;
+        }
     </style>
 @endsection
 
@@ -37,9 +43,9 @@
 @section('content')
     <!-- Your Page Content Here -->
     <div class="row no-padding">
-        <div class="col-md-3" style="padding-bottom: 0;margin: 0">
+        <div class="col-md-3" style="padding-bottom: 0;margin: 0;overflow: auto">
             <!-- Widget: user widget style 1 -->
-            <div class="box box-widget widget-user-2" style="margin-bottom:0;">
+            <div class="box box-widget widget-user-2" style="margin-bottom:0;overflow: auto">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-default no-padding">
                     <ul class="nav row no-margin no-padding users-status-list">
@@ -47,33 +53,13 @@
                         <li class="col-sm-6 no-padding" type="getNew"><a class="no-margin">排队列表</a></li>
                     </ul>
                 </div>
-                <div class="box-footer box-comments">
-                    <div class="box-comment">
+                <div class="box-footer box-comments" style="overflow: auto">
+                    <div class="box-comment" style="overflow: auto">
                         <!-- User image -->
                         <img class="img-circle img-sm" src="/img/user1-128x128.jpg" alt="User Image">
 
                         <div class="comment-text">
                             <span class="username">小明<span class="pull-right badge bg-red">842</span></span>
-                            <!-- /.username -->
-                            It is a long established fact that a reader will be
-                        </div>
-                        <!-- /.comment-text -->
-                    </div>
-                    <div class="box-comment">
-                        <!-- User image -->
-                        <img class="img-circle img-sm" src="/img/user1-128x128.jpg" alt="User Image">
-                        <div class="comment-text">
-                            <span class="username">小芳<span class="pull-right badge bg-red">842</span></span>
-                            <!-- /.username -->
-                            It is a long established fact that a reader will be
-                        </div>
-                        <!-- /.comment-text -->
-                    </div>
-                    <div class="box-comment">
-                        <!-- User image -->
-                        <img class="img-circle" src="/img/user1-128x128.jpg" alt="User Image">
-                        <div class="comment-text">
-                            <span class="username">小杨<span class="pull-right badge bg-red">842</span></span>
                             <!-- /.username -->
                             It is a long established fact that a reader will be
                         </div>
