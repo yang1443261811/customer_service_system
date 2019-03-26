@@ -80,7 +80,7 @@ function showChatRecord(wo_id) {
             //如果消息来源于客户那么消息显示在聊天窗口右侧
             var point = item.from_id == to_id ? 'left' : 'right';
 
-            _html += msgFactory(item.content, item.from_avatar, item.from_name, point);
+            _html += msgFactory(item.content, item.from_avatar, item.from_name, item.created_at, point);
         });
 
         $(".direct-chat-messages").html(_html);
@@ -113,7 +113,7 @@ function sendImageHandler(e) {
         console.log(res);
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, kf_avatar, kf_name, 'right');
+        var _html = msgFactory(image, kf_avatar, kf_name, getDate(), 'right');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         scrollToEnd();
@@ -129,7 +129,7 @@ function sendImageHandler(e) {
 function sendTextHandler() {
     var text = $('#text_in').val();
     $('#text_in').val('');
-    var elem = msgFactory(text, kf_avatar, kf_name, 'right');
+    var elem = msgFactory(text, kf_avatar, kf_name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(text, 1);
@@ -139,7 +139,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, kf_avatar, kf_name, 'right');
+    var elem = msgFactory(labFace, kf_avatar, kf_name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(labFace, 3);
@@ -150,14 +150,14 @@ function sendFaceHandler() {
  * @param content 消息的内容
  * @param avatar  发送消息人的头像
  * @param nickname 发送消息人的昵称
+ * @param time     发送消息的时间
  * @param point   消息显示在消息窗口的左侧还是右侧
  */
-function msgFactory(content, avatar, nickname, point) {
-    point = (point === 'right') ? 'right' : '';
+function msgFactory(content, avatar, nickname, time, point) {
     var _html = '';
     _html += '<div class="direct-chat-msg ' + point + '"><div class="direct-chat-info clearfix">';
     _html += '<span class="direct-chat-name ">' + nickname + '</span>';
-    _html += '<span class="direct-chat-timestamp">23 Jan 2:00 pm</span></div>';
+    _html += '<span class="direct-chat-timestamp">' + time + '</span></div>';
     _html += '<img class="direct-chat-img" src="' + avatar + '" alt="Message User Image">';
     _html += '<div class="direct-chat-text">' + content + '</div></div>';
 
@@ -211,6 +211,19 @@ function lock() {
 function unLock() {
     $('.shade').addClass('hidden');
 }
+
+// 获取日期
+function getDate() {
+    var d = new Date(new Date());
+
+    return d.getFullYear() + '-' + digit(d.getMonth() + 1) + '-' + digit(d.getDate())
+        + ' ' + digit(d.getHours()) + ':' + digit(d.getMinutes()) + ':' + digit(d.getSeconds());
+}
+
+//补齐数位
+var digit = function (num) {
+    return num < 10 ? '0' + (num | 0) : num;
+};
 
 
 function replace_em(str) {

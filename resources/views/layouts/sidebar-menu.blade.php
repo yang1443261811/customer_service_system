@@ -1,8 +1,8 @@
 <ul class="sidebar-menu">
     <li class="header">HEADER</li>
     <!-- Optionally, you can add icons to the links -->
-    <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-    <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
+    <li class="active"><a href="/home"><i class="fa fa-fw fa-dashboard"></i><span>仪表盘</span></a></li>
+    <li><a href="/home/chat"><i class="fa fa-fw fa-commenting-o"></i> <span>对话窗口</span></a></li>
     <li class="treeview">
         <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>
         <ul class="treeview-menu">

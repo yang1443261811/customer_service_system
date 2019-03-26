@@ -156,3 +156,6 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
     -moz-transform: rotate(360deg);
     transform: rotate(360deg);
 }
+.direct-chat-info {
+    /*text-align: center;*/
+}
