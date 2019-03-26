@@ -26,11 +26,11 @@ Route::get('/workOrder/myself', 'WorkOrderController@myself');
 Route::get('/workOrder/getNew', 'WorkOrderController@getNew');
 
 
-Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
+//Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
+Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/home/chat', 'HomeController@chat');
     Route::get('/home/test', 'HomeController@test');
-    Route::get('/customer/lists', 'CustomerController@lists');
     Route::get('/chatRecord/get/{wo_id}', 'ChatRecordController@get');
     Route::get('/chatRecord/haveRead/{wo_id}', 'ChatRecordController@haveRead');
 

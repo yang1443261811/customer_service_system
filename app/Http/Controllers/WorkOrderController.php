@@ -15,7 +15,7 @@ class WorkOrderController extends Controller
      */
     public function myself()
     {
-        $data = WorkOrder::where('kf_id', \Auth::id())->get()->toArray();
+        $data = WorkOrder::where('kf_id', \Auth::id())->get();
         foreach ($data as &$item) {
             $item['lastReply'] = ChatLog::getLastReply($item['id']);
         }
