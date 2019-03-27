@@ -24,8 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-//        $siteInfo = $this->getLocation('153.34.211.166');
-//        print_r($siteInfo);
         return view('home');
     }
 
@@ -52,7 +50,6 @@ class HomeController extends Controller
         $location = json_decode($result, true);
         //关闭资源
         curl_close($obj);
-
         return $location;
     }
 

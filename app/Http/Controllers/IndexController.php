@@ -34,10 +34,10 @@ class IndexController extends Controller
             : (new Identicon())->getImageDataUri($request->uid, 256);
 
         $output = [
-            'uid'    => $request->uid,
-            'name'   => $request->name,
             'unread' => $unread,
             'avatar' => $avatar,
+            'uid'    => $request->uid,
+            'name'   => $request->name,
         ];
 
         return view('index', $output);

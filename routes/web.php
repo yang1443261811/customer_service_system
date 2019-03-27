@@ -24,6 +24,7 @@ Route::get('/workOrder/getByUid/{id}', 'WorkOrderController@getByUid');
 Route::post('/workOrder/create', 'WorkOrderController@create');
 Route::get('/workOrder/myself', 'WorkOrderController@myself');
 Route::get('/workOrder/getNew', 'WorkOrderController@getNew');
+Route::get('/workOrder/getCity', 'WorkOrderController@getCity');
 
 
 //Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {

@@ -59,4 +59,24 @@ class WorkOrderController extends Controller
 
         return response()->json($response);
     }
+
+    /**
+     * ip定位
+     *
+     * @param Request $request
+     * @return \think\response\Json
+     */
+    public function getCity(Request $request)
+    {
+        $info = (new \Ip2Region())->btreeSearch($request->ip());
+
+        $city = explode('|', $info['region']);
+
+        if (0 != $info['city_id']) {
+            return response()->json(['data' => $city['2'] . $city['3'] . $city['4'], 'msg' => 'ok']);
+        } else {
+
+            return response()->json(['data' => $city['0'], 'msg' => 'ok']);
+        }
+    }
 }

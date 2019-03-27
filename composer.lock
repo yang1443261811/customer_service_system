@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "523fd8e6380f710308f88c103dd34f41",
+    "content-hash": "4e0b0c8fa89ed9c738f85ef99d80752b",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2903,6 +2903,53 @@
                 "image"
             ],
             "time": "2017-08-01T14:39:05+00:00"
+        },
+        {
+            "name": "zoujingli/ip2region",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zoujingli/ip2region.git",
+                "reference": "944dc687304133027c4586a35ff78b57e56dd659"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zoujingli/ip2region/zipball/944dc687304133027c4586a35ff78b57e56dd659",
+                "reference": "944dc687304133027c4586a35ff78b57e56dd659",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Ip2Region.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Anyon",
+                    "email": "zoujingli@qq.com",
+                    "homepage": "http://ctolog.com"
+                }
+            ],
+            "description": "Ip2Region for PHP",
+            "homepage": "https://github.com/zoujingli/Ip2Region",
+            "keywords": [
+                "Ip2Region"
+            ],
+            "time": "2019-01-23T06:23:53+00:00"
         }
     ],
     "packages-dev": [
