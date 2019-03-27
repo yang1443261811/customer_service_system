@@ -204,7 +204,7 @@ function scrollToEnd() {
 
 //给编辑区加上遮罩使其不能编辑
 function lock() {
-    var parentHeight = $('.shade').parent().height() + 15;
+    var parentHeight = $('.shade').parent().height() + 9;
     $('.shade').css('min-height', parentHeight);
     $('.shade').removeClass('hidden');
 }

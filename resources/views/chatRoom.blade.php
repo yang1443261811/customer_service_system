@@ -45,7 +45,7 @@
     <div class="row no-padding" style="height: 100%;">
         <div class="col-md-3" style="padding-bottom: 0;margin: 0;overflow: auto;height: 100%">
             <!-- Widget: user widget style 1 -->
-            <div class="box box-widget widget-user-2" style="margin-bottom:0;overflow: auto;height: 95%;">
+            <div class="box box-widget widget-user-2" style="margin-bottom:0;height: 95%;">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-default no-padding">
                     <ul class="nav row no-margin no-padding users-status-list">
@@ -53,8 +53,8 @@
                         <li class="col-sm-6 no-padding" type="getNew"><a class="no-margin">排队列表</a></li>
                     </ul>
                 </div>
-                <div class="box-footer box-comments" style="overflow: auto">
-                    <div class="box-comment" style="overflow: auto">
+                <div class="box-footer box-comments" style="overflow: auto;height: 93%">
+                    <div class="box-comment">
                         <!-- User image -->
                         <img class="img-circle img-sm" src="/img/user1-128x128.jpg" alt="User Image">
 
@@ -69,7 +69,7 @@
             </div>
             <!-- /.widget-user -->
         </div>
-        <div class="col-md-6" style="padding: 0;margin: 0;height: 95%;background: red">
+        <div class="col-md-6" style="padding: 0;margin: 0;height: 95%;">
             <!-- DIRECT CHAT PRIMARY -->
             <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0;height: 100%">
                 <div class="box-header with-border">
@@ -97,7 +97,7 @@
 
                 </div>
                 <!-- /.box-body -->
-                <div class="box-footer editor" style="margin: 0;padding-top: 0">
+                <div class="box-footer editor" style="margin: 0;padding-top: 0;height: 20%;">
                     <div class="shade hidden"></div>
                     <div class="box-header">
                         <div class="box-tools" style="position: absolute; left:0;margin: 0;">
@@ -124,18 +124,18 @@
             </div>
             <!--/.direct-chat -->
         </div>
-        <div class="col-md-3" style="padding-bottom: 0">
+        <div class="col-md-3" style="padding-bottom: 0;height: 95%;">
             <!-- Custom Tabs -->
-            <div class="nav-tabs-custom" style="margin-bottom:0">
+            <div class="nav-tabs-custom" style="margin-bottom:0;height: 100%">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
                     <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                 </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab_1">
-                        <ul class="list-group user-info">
+                <div class="tab-content" style="height: 90%;">
+                    <div class="tab-pane active" id="tab_1" style="height: 100%;">
+                        <ul class="list-group user-info" >
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-user"></i>&#12288;ID&nbsp;:</span>
                                 <span>396521kfkldff2d122</span>
@@ -151,7 +151,7 @@
                         </ul>
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_2">
+                    <div class="tab-pane" id="tab_2" style="height: 100%;">
                         The European languages are members of the same family. Their separate existence is a
                         myth.
                         For science, music, sport, etc, Europe uses the same vocabulary. The languages only
@@ -167,7 +167,7 @@
                         and regular than that of the individual languages.
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_3">
+                    <div class="tab-pane" id="tab_3" style="height: 100%;">
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
                         when an unknown printer took a galley of type and scrambled it to make a type specimen
