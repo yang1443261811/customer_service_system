@@ -1,28 +1,28 @@
 var chatRoomHeight, chatRecordHeight;
-autoChatRoomHeight();
+// autoChatRoomHeight();
 
 $(window, ".wrapper").resize(function () {
-    autoChatRoomHeight();
+    // autoChatRoomHeight();
 });
 
 lock();
 
-function autoChatRoomHeight() {
-    var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight();
-    var window_height = $(window).height();
-    var sidebar_height = $(".sidebar").height();
-    if (window_height >= sidebar_height) {
-        chatRoomHeight = window_height - neg - 80;
-        $(".nav-tabs-custom, .widget-user-2, .direct-chat").css('min-height', chatRoomHeight);
-    } else {
-        chatRoomHeight = sidebar_height - 80;
-        $(".nav-tabs-custom, .widget-user-2, .direct-chat").css('min-height', chatRoomHeight);
-    }
-
-    var editorHeight = $('.editor').height();
-    chatRecordHeight = chatRoomHeight - 60 - editorHeight;
-    $('.direct-chat-messages').css('min-height', chatRecordHeight);
-}
+// function autoChatRoomHeight() {
+//     var neg = $('.main-header').outerHeight() + $('.main-footer').outerHeight();
+//     var window_height = $(window).height();
+//     var sidebar_height = $(".sidebar").height();
+//     if (window_height >= sidebar_height) {
+//         chatRoomHeight = window_height - neg - 80;
+//         $(".nav-tabs-custom, .widget-user-2, .direct-chat").css('height', chatRoomHeight);
+//     } else {
+//         chatRoomHeight = sidebar_height - 80;
+//         $(".nav-tabs-custom, .widget-user-2, .direct-chat").css('height', chatRoomHeight);
+//     }
+//
+//     var editorHeight = $('.editor').height();
+//     chatRecordHeight = chatRoomHeight - 60 - editorHeight;
+//     $('.direct-chat-messages').css('height', chatRecordHeight);
+// }
 
 //获取工单列表
 function getWorkOrderList(apiUrl) {

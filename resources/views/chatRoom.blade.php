@@ -42,10 +42,10 @@
 
 @section('content')
     <!-- Your Page Content Here -->
-    <div class="row no-padding">
-        <div class="col-md-3" style="padding-bottom: 0;margin: 0;overflow: auto">
+    <div class="row no-padding" style="height: 100%;">
+        <div class="col-md-3" style="padding-bottom: 0;margin: 0;overflow: auto;height: 100%">
             <!-- Widget: user widget style 1 -->
-            <div class="box box-widget widget-user-2" style="margin-bottom:0;overflow: auto">
+            <div class="box box-widget widget-user-2" style="margin-bottom:0;overflow: auto;height: 95%;">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-default no-padding">
                     <ul class="nav row no-margin no-padding users-status-list">
@@ -69,9 +69,9 @@
             </div>
             <!-- /.widget-user -->
         </div>
-        <div class="col-md-6" style="padding: 0;margin: 0;">
+        <div class="col-md-6" style="padding: 0;margin: 0;height: 95%;background: red">
             <!-- DIRECT CHAT PRIMARY -->
-            <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0;">
+            <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0;height: 100%">
                 <div class="box-header with-border">
                     <h3 class="box-title">Direct Chat</h3>
 
@@ -89,9 +89,9 @@
                     </div>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body" style="height: 70%;">
                     <!-- Conversations are loaded here -->
-                    <div class="direct-chat-messages">
+                    <div class="direct-chat-messages" style="height:100%">
 
                     </div>
 
