@@ -47,13 +47,17 @@ class WorkOrderController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'uid' => 'required|max:255',
-            'name' => 'required',
+            'uid'    => 'required|max:255',
+            'name'   => 'required',
             'avatar' => 'required',
         ]);
 
         $workOrder = new WorkOrder();
-        $result = $workOrder->fill($request->all())->save();
+
+        $input = $request->all();
+        //根据ip获取地理位置
+        $input['address'] = $this->getCity($request->ip());
+        $result = $workOrder->fill($input)->save();
 
         $response = $result ? ['success' => true, 'wo_id' => $workOrder->id] : ['success' => false];
 
@@ -63,20 +67,22 @@ class WorkOrderController extends Controller
     /**
      * ip定位
      *
-     * @param Request $request
-     * @return \think\response\Json
+     * @param string $ip
+     * @return string
      */
-    public function getCity(Request $request)
+    protected function getCity($ip)
     {
-        $info = (new \Ip2Region())->btreeSearch($request->ip());
+        $info = (new \Ip2Region())->btreeSearch($ip);
 
         $city = explode('|', $info['region']);
+        if (0 == $info['city_id']) {
+            if ($city['0'] == '0') {
+                return '未知地址';
+            }
 
-        if (0 != $info['city_id']) {
-            return response()->json(['data' => $city['2'] . $city['3'] . $city['4'], 'msg' => 'ok']);
-        } else {
-
-            return response()->json(['data' => $city['0'], 'msg' => 'ok']);
+            return $city['0'] . '，' . $city['2'];
         }
+
+        return sprintf('%s%s', $city['2'], $city['3']);
     }
 }

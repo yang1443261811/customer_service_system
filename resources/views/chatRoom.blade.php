@@ -138,7 +138,7 @@
                         <ul class="list-group user-info" >
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-user"></i>&#12288;ID&nbsp;:</span>
-                                <span>396521kfkldff2d122</span>
+                                <span class="user_id"></span>
                             </li>
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-street-view"></i>在线&nbsp;:</span>
@@ -146,7 +146,7 @@
                             </li>
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-map-marker"></i>位置&nbsp;:</span>
-                                <span>江苏苏州</span>
+                                <span class="address">江苏苏州</span>
                             </li>
                         </ul>
                     </div>

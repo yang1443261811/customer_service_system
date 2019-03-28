@@ -1,4 +1,3 @@
-
 lock();
 
 //获取工单列表
@@ -9,7 +8,8 @@ function getWorkOrderList(apiUrl) {
         $.each(response, function (key, item) {
             //如果最后的回复是图片将图片资源替换成文字
             var lastWord = (item.lastReply.content_type === 2) ? '图片' : item.lastReply.content;
-            _html += '<div class="box-comment" data-uid = ' + item.uid + ' wo_id=' + item.id + '>';
+            var data = JSON.stringify({uid: item.uid, wo_id: item.id, address: item.address});
+            _html += '<div class="box-comment" data = ' + data + '>';
             _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
             _html += '<span class="username">' + item.name + '';
             _html += item.server_msg_unread_count > 0 ? '<span class="pull-right badge bg-red">' + item.server_msg_unread_count + '</span>' : '';
@@ -23,13 +23,17 @@ function getWorkOrderList(apiUrl) {
 //点击客户进入聊天窗口
 function intoChatRoom() {
     //保存客户的uid
-    to_id = $(this).attr('data-uid');
+    var data = $(this).attr('data');
+    data = JSON.parse(data);
+    to_id = data.uid;
     //保存工单的ID
-    wo_id = $(this).attr('wo_id');
+    wo_id = data.wo_id;
+    $('.user_id').html(data.uid);
+    $('.address').html(data.address);
     //初始化客服与用户的的连接
     $.ajax({
-        url: '/server/joinGroup/' + client_id,
         type: "post",
+        url: '/server/joinGroup/' + client_id,
         data: {'group_id': to_id, '_token': token}
     });
 
@@ -89,7 +93,6 @@ function sendImageHandler(e) {
         contentType: false
 
     }).done(function (res) {
-        console.log(res);
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
         var _html = msgFactory(image, kf_avatar, kf_name, getDate(), 'right');

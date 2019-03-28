@@ -24,6 +24,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+//        echo $this->getLocation('169.235.24.133');
+//        echo $this->getLocation('112.86.106.140');
+//        echo $this->getLocation('127.0.0.1');
+//        die;
         return view('home');
     }
 
@@ -36,21 +40,22 @@ class HomeController extends Controller
      * 获取 IP  地理位置
      * 淘宝IP接口
      * @param string $ip
-     * @return array
+     * @return string
      */
     public function getLocation($ip)
     {
-        $obj = curl_init();
-        //设置抓取的网页地址
-        curl_setopt($obj, CURLOPT_URL, "http://ip.taobao.com/service/getIpInfo.php?ip=" . $ip);
-        //设置不直接打印网页内容
-        curl_setopt($obj, CURLOPT_RETURNTRANSFER, true);
-        //执行
-        $result = curl_exec($obj);
-        $location = json_decode($result, true);
-        //关闭资源
-        curl_close($obj);
-        return $location;
+        $info = (new \Ip2Region())->btreeSearch($ip);
+
+        $city = explode('|', $info['region']);
+        if (0 == $info['city_id']) {
+            if ($city['0'] == '0') {
+                return '未知地址';
+            }
+
+            return $city['0'] . '，' . $city['2'];
+        }
+
+        return sprintf('%s%s', $city['2'], $city['3']);
     }
 
 }

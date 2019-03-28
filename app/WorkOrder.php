@@ -19,7 +19,7 @@ class WorkOrder extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'uid', 'avatar', 'kf_id', 'status', 'client_msg_unread_count', 'server_msg_unread_count'
+        'name', 'uid', 'avatar', 'kf_id', 'status', 'address', 'client_msg_unread_count', 'server_msg_unread_count'
     ];
 
     /**
