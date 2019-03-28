@@ -29,10 +29,12 @@
             width: 60px;
             font-weight: 600;
         }
+
         .comment-text img {
             width: 20px !important;
             height: 20px !important;
         }
+
         .box-comments {
             overflow: auto !important;
         }
@@ -70,6 +72,7 @@
             <!-- /.widget-user -->
         </div>
         <div class="col-md-6" style="padding: 0;margin: 0;height: 95%;">
+            <div class="shade"></div>
             <!-- DIRECT CHAT PRIMARY -->
             <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0;height: 100%">
                 <div class="box-header with-border">
@@ -98,7 +101,6 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer editor" style="margin: 0;padding-top: 0;height: 20%;">
-                    <div class="shade hidden"></div>
                     <div class="box-header">
                         <div class="box-tools" style="position: absolute; left:0;margin: 0;">
                             <div id="show"></div>
@@ -124,29 +126,30 @@
             </div>
             <!--/.direct-chat -->
         </div>
-        <div class="col-md-3" style="padding-bottom: 0;height: 95%;">
-            <!-- Custom Tabs -->
+        <div class="col-md-3" style="padding-bottom: 0;height: 95%;position: relative;">
+        {{--<div class="screen"></div>--}}
+        <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0;height: 100%">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
+                    <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
-                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
+                    <li class="active"><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
                     <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                 </ul>
                 <div class="tab-content" style="height: 90%;">
-                    <div class="tab-pane active" id="tab_1" style="height: 100%;">
-                        <ul class="list-group user-info" >
+                    <div class="tab-pane" id="tab_1" style="height: 100%;">
+                        <ul class="list-group user-info">
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-user"></i>&#12288;ID&nbsp;:</span>
                                 <span class="user_id"></span>
                             </li>
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-street-view"></i>在线&nbsp;:</span>
-                                <span>是</span>
+                                <span></span>
                             </li>
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-map-marker"></i>位置&nbsp;:</span>
-                                <span class="address">江苏苏州</span>
+                                <span class="address"></span>
                             </li>
                         </ul>
                     </div>
@@ -167,17 +170,8 @@
                         and regular than that of the individual languages.
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_3" style="height: 100%;">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and scrambled it to make a type specimen
-                        book.
-                        It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged. It was popularised in the 1960s with the release of
-                        Letraset
-                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing
-                        software
-                        like Aldus PageMaker including versions of Lorem Ipsum.
+                    <div class="tab-pane active fastReply-box" id="tab_3" style="height: 100%;">
+                        <span class='addReply label bg-green'><i class="fa fa-fw fa-plus"></i></span>
                     </div>
                     <!-- /.tab-pane -->
                 </div>
@@ -185,13 +179,35 @@
             </div>
             <!-- nav-tabs-custom -->
         </div>
+
+        <div class="assistant" style="display: none">
+            <div class="addReplyForm">
+                <div class="">
+                    <label for="reply_title" class="control-label">标签:</label>
+                    <input type="email" id="reply_title">
+                </div>
+                <div class="">
+                    <label for="reply_content" class="control-label">内容:</label>
+                    <textarea name="" id="reply_content"></textarea>
+                </div>
+                <div style="text-align: right">
+                    <button type="button" class="btn btn-info btn-sm">确定</button>
+                    <button type="button" class="btn btn-default btn-sm">取消</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection
 
 
 @section('js')
+    <script>
+        <
+        div > < / div >
+    </script>
     <script type="text/javascript" src="/js/jquery-browser.js"></script>
+    <script src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
     <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
     <script type="text/javascript" src="/js/chat.js"></script>
     <script>
@@ -271,5 +287,15 @@
             path: '/img/arclist/'	//表情存放的路径
         });
 
+        $('.addReply').click(function () {
+            var _html = $('.assistant').html();
+            //自定页
+            layer.open({
+                type: 1,
+                title: '新增快捷回复',
+                area: ['420px', '300px'], //宽高
+                content: _html,
+            });
+        })
     </script>
 @endsection

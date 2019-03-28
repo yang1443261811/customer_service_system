@@ -34,6 +34,9 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::get('/home/test', 'HomeController@test');
     Route::get('/chatRecord/get/{wo_id}', 'ChatRecordController@get');
     Route::get('/chatRecord/haveRead/{wo_id}', 'ChatRecordController@haveRead');
+    Route::get('/fastReply/get', 'FastReplyController@get');
+    Route::post('/fastReply/create', 'FastReplyController@create');
+    Route::get('/fastReply/delete/{id}', 'FastReplyController@delete');
 
 });
 

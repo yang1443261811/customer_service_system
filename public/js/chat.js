@@ -191,7 +191,7 @@ function lock() {
 
 //去除编辑区的遮罩使其可以编辑
 function unLock() {
-    $('.shade').addClass('hidden');
+    $('.shade,.screen').addClass('hidden');
 }
 
 // 获取日期
