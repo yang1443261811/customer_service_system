@@ -275,5 +275,17 @@
         $(document).on('click', '.cancelPopup', function () {
             layer.closeAll();
         });
+        $('.fastReply-box').on('click', '.fa-remove', function () {
+            var that = $(this);
+            var id = that.parents('span').attr('key');
+            layer.confirm('确认删除？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                $.get('/fastReply/delete/' + id, function () {
+                    that.parents('span').remove();
+                    layer.msg('删除成功', {icon: 1});
+                });
+            });
+        })
     </script>
 @endsection

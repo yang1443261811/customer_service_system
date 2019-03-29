@@ -193,7 +193,7 @@ function createFastReply() {
         data: {title: title, word: content, _token: token},
         success: function (res) {
             if (res) {
-                layer.msg('添加成功');
+                layer.msg('添加成功', {icon: 1});
                 $('.fastReply-box').prepend('<span class="addReply label bg-green" word="' + content + '" key="' + res + '">' + title + '</span>');
                 window.setTimeout(layer.closeAll, 2000);
             } else {
@@ -234,7 +234,7 @@ function getFastReply() {
     $.get('/fastReply/get', function (res) {
         var _html = '';
         $.each(res, function (index, item) {
-            _html += '<span class="addReply label bg-green" title="应用" word="' + item.word + '" key="' + item.id + '">' + item.title + '</span>'
+            _html += '<span class="label bg-green" title="应用" word="' + item.word + '" key="' + item.id + '">' + item.title + '<i class="fa fa-fw fa-remove"></i></span>'
         });
 
         $('.fastReply-box').prepend(_html);
