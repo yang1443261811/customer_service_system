@@ -73,16 +73,17 @@ class WorkOrderController extends Controller
     protected function getCity($ip)
     {
         $info = (new \Ip2Region())->btreeSearch($ip);
-
         $city = explode('|', $info['region']);
-        if (0 == $info['city_id']) {
-            if ($city['0'] == '0') {
-                return '未知地址';
-            }
 
-            return $city['0'] . '，' . $city['2'];
+        if (0 != $info['city_id']) {
+            return $city['2'] .','. $city['3'];
         }
 
-        return sprintf('%s%s', $city['2'], $city['3']);
+        if ($city['0'] == '0') {
+            return '未知地址';
+        }
+
+        return $city['0'] . '，' . $city['2'];
+
     }
 }

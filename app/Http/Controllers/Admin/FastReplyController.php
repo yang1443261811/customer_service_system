@@ -15,7 +15,7 @@ class FastReplyController extends Controller
      */
     public function get()
     {
-        $data = FastReply::where('uid', \Auth()::id())->get();
+        $data = FastReply::where('uid', \Auth()->id())->get(['id', 'title', 'word']);
 
         return response()->json($data);
     }
@@ -29,16 +29,16 @@ class FastReplyController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-           'title' => 'require|max:24',
-            'word' => 'require'
+            'title' => 'required|max:24', 'word' => 'required'
         ]);
 
         $input = $request->all();
-        $input['uid'] = \Auth()::id();
+        $input['uid'] = \Auth()->id();
 
-        $result = (new FastReply($input))->save();
+        $model = new FastReply();
+        $model->fill($input)->save();
 
-        return response()->json($result);
+        return response()->json($model->id);
     }
 
     /**

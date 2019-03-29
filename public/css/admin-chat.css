@@ -160,11 +160,17 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
 
 .fastReply-box span {
     display: inline-block;
-    padding: 4px;
-    background: red;
+    height: 30px;
+    background: #0e9e21;
+    border-radius: 5px;
+    padding: 0 10px 0 10px;
+    line-height: 32px;
     color: white;
-    border-radius: 3px;
-    cursor: pointer
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-family: "Helvetica Neue", Helvetica, "Microsoft Yahei", Arial, sans-serif;
+    font-weight: 300;
 }
 
 .addReplyForm {
@@ -174,6 +180,7 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
 .addReplyForm div:first-child {
     margin-bottom: 20px;
 }
+
 .addReplyForm #reply_title {
     width: 320px;
     height: 38px;
@@ -182,17 +189,22 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
     vertical-align: middle;
     border-radius: 2px;
 }
+
 .addReplyForm textarea {
     padding-left: 10px;
     border: 1px solid #e6e6e6;
     display: inline-block;
     width: 320px;
-    height: 100px;
+    height: 110px;
     border-radius: 2px;
 }
 
 .addReplyForm label {
-    padding: 2px;
+    padding: 5px 10px 0 0;
     font-weight: 500;
+}
+
+.save_reply {
+    margin-right: 20px;
 }
 

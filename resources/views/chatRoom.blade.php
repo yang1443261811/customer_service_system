@@ -171,7 +171,7 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane active fastReply-box" id="tab_3" style="height: 100%;">
-                        <span class='addReply label bg-green'><i class="fa fa-fw fa-plus"></i></span>
+                        <span class='addReply label bg-green' title="新增"><i class="fa fa-fw fa-plus"></i></span>
                     </div>
                     <!-- /.tab-pane -->
                 </div>
@@ -179,33 +179,12 @@
             </div>
             <!-- nav-tabs-custom -->
         </div>
-
-        <div class="assistant" style="display: none">
-            <div class="addReplyForm">
-                <div class="">
-                    <label for="reply_title" class="control-label">标签:</label>
-                    <input type="email" id="reply_title">
-                </div>
-                <div class="">
-                    <label for="reply_content" class="control-label">内容:</label>
-                    <textarea name="" id="reply_content"></textarea>
-                </div>
-                <div style="text-align: right">
-                    <button type="button" class="btn btn-info btn-sm">确定</button>
-                    <button type="button" class="btn btn-default btn-sm">取消</button>
-                </div>
-            </div>
-        </div>
     </div>
 
 @endsection
 
 
 @section('js')
-    <script>
-        <
-        div > < / div >
-    </script>
     <script type="text/javascript" src="/js/jquery-browser.js"></script>
     <script src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
     <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
@@ -259,6 +238,10 @@
         };
 
 
+        //新增快捷回复的弹窗
+        $('.addReply').click(popupForm);
+        //创建快捷回复
+        $(document).on('click', '.save_reply', createFastReply);
         //发送文字消息
         $('.send').click(sendTextHandler);
         //发送表情消息
@@ -267,8 +250,10 @@
         $('.upload').change(sendImageHandler);
         //点击客户列表进入聊天窗口
         $('.box-comments').on('click', '.box-comment', intoChatRoom);
-        //获取客户列表
+        //获取工单列表
         getWorkOrderList('/workOrder/myself');
+        //获取快捷回复列表
+        getFastReply();
         //获取当前对话或者排队列表
         $('.users-status-list li').click(function () {
             if (!$(this).hasClass('active')) {
@@ -286,16 +271,9 @@
             assign: 'text_in',
             path: '/img/arclist/'	//表情存放的路径
         });
-
-        $('.addReply').click(function () {
-            var _html = $('.assistant').html();
-            //自定页
-            layer.open({
-                type: 1,
-                title: '新增快捷回复',
-                area: ['420px', '300px'], //宽高
-                content: _html,
-            });
-        })
+        //取消弹窗
+        $(document).on('click', '.cancelPopup', function () {
+            layer.closeAll();
+        });
     </script>
 @endsection
