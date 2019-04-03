@@ -155,8 +155,6 @@ function storeMessage(content, contentType) {
         'from_id': uid,
         'from_name': name,
         'from_avatar': avatar,
-        'to_id': to_id,
-        'to_name': to_name,
         'content': content,
         'content_type': contentType,
         '_token': token

@@ -127,7 +127,7 @@
             <!--/.direct-chat -->
         </div>
         <div class="col-md-3" style="padding-bottom: 0;height: 95%;position: relative;">
-        {{--<div class="screen"></div>--}}
+        <div class="screen"></div>
         <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0;height: 100%">
                 <ul class="nav nav-tabs">
@@ -254,8 +254,10 @@
         $('.editor').on('click', '.labFace', sendFaceHandler);
         //发送图片消息
         $('.upload').change(sendImageHandler);
-        //点击客户列表进入聊天窗口
+        //点击客户列表进入聊天窗口,并获取聊天记录
         $('.box-comments').on('click', '.box-comment', intoChatRoom);
+        //聊天记录上拉加载更多
+        $('.direct-chat-messages').scroll(loadMore);
         //获取工单列表
         getWorkOrderList('/workOrder/myself');
         //获取当前对话或者排队列表
@@ -279,16 +281,5 @@
         $(document).on('click', '.cancelPopup', function () {
             layer.closeAll();
         });
-
-        $('.direct-chat-messages').scroll(function () {
-            var scrollTop = $(this).scrollTop();
-            if (scrollTop === 0) {
-                if (current_page + 1 > total_page) {
-                    return false;
-                }
-                showChatRecord(wo_id, current_page + 1, false);
-            }
-        });
-
     </script>
 @endsection

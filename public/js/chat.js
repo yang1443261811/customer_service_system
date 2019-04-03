@@ -75,16 +75,22 @@ function showChatRecord(wo_id, page, scroll_to_end) {
         $(".direct-chat-messages").prepend(_html);
         var newScrollHeight = $('.direct-chat-messages')[0].scrollHeight;
         //聊天框定位到最底部
-        if (scroll_to_end) {
-            scrollToEnd();
-        } else {
-            $('.direct-chat-messages').scrollTop(newScrollHeight - scrollHeight);
-        }
-
-
+        (scroll_to_end === true)
+            ? scrollToEnd()
+            : $('.direct-chat-messages').scrollTop(newScrollHeight - scrollHeight);
     })
 }
 
+//上拉加载更多
+function loadMore() {
+    var scrollTop = $(this).scrollTop();
+    if (scrollTop === 0) {
+        if (current_page + 1 > total_page) {
+            return false;
+        }
+        showChatRecord(wo_id, current_page + 1, false);
+    }
+}
 //发送图片消息处理
 function sendImageHandler(e) {
     var image = e.target.files[0];
@@ -181,8 +187,6 @@ function storeMessage(content, contentType) {
         'from_id': kf_id,
         'from_name': kf_name,
         'from_avatar': kf_avatar,
-        'to_id': to_id,
-        'to_name': to_name,
         'content': content,
         'content_type': contentType,
         '_token': token

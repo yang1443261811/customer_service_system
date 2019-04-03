@@ -19,7 +19,7 @@ class ChatLog extends Model
      * @var array
      */
     protected $fillable = [
-        'wo_id', 'from_id', 'from_name', 'from_avatar', 'to_id', 'to_name', 'content', 'content_type'
+        'wo_id', 'from_id', 'from_name', 'from_avatar', 'content', 'content_type'
     ];
 
     /**
