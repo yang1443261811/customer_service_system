@@ -237,7 +237,7 @@
             }
         };
 
-
+        var current_page, total_page;
         //新增快捷回复的弹窗
         $('.addReply').click(popupForm);
         //创建快捷回复
@@ -278,6 +278,16 @@
         //取消弹窗
         $(document).on('click', '.cancelPopup', function () {
             layer.closeAll();
+        });
+
+        $('.direct-chat-messages').scroll(function () {
+            var scrollTop = $(this).scrollTop();
+            if (scrollTop === 0) {
+                if (current_page + 1 > total_page) {
+                    return false;
+                }
+                showChatRecord(wo_id, current_page + 1, false);
+            }
         });
 
     </script>

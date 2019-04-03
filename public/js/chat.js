@@ -1,4 +1,3 @@
-
 //获取工单列表
 function getWorkOrderList(apiUrl) {
     //获取客户列表
@@ -43,18 +42,25 @@ function intoChatRoom() {
     $(this).find('.badge').remove();
     //使聊天窗口的编辑区可编辑
     unLock();
+    //清空聊天记录
+    $(".direct-chat-messages").html('');
     //获取聊天记录
-    showChatRecord(wo_id);
+    showChatRecord(wo_id, 1, true);
 }
 
 /**
  * 获取聊天记录
  * @param wo_id 工单id
+ * @param page  当前页
+ * @param scroll_to_end 聊天框是否定位到顶部
  */
-function showChatRecord(wo_id) {
-    $.get('/chatRecord/get/' + wo_id, function (response) {
+function showChatRecord(wo_id, page, scroll_to_end) {
+    $.get('/chatRecord/get/' + wo_id + '?page=' + page, function (response) {
         var _html = '';
-        $.each(response, function (index, item) {
+        var scrollHeight = $('.direct-chat-messages')[0].scrollHeight;
+        current_page = response.current_page;
+        total_page = response.last_page;
+        $.each(response.data, function (index, item) {
             //如果是图片的话,构建一个图片标签
             if (parseInt(item.content_type) === 2) {
                 item.content = '<img src="' + item.content + '" style="width: 200px;height: auto">';
@@ -65,10 +71,17 @@ function showChatRecord(wo_id) {
             _html += msgFactory(item.content, item.from_avatar, item.from_name, item.created_at, point);
         });
 
-        $(".direct-chat-messages").html(_html);
+        //将聊天记录插入到dom中
+        $(".direct-chat-messages").prepend(_html);
+        var newScrollHeight = $('.direct-chat-messages')[0].scrollHeight;
+        //聊天框定位到最底部
+        if (scroll_to_end) {
+            scrollToEnd();
+        } else {
+            $('.direct-chat-messages').scrollTop(newScrollHeight - scrollHeight);
+        }
 
-        //聊天框默认最底部
-        scrollToEnd();
+
     })
 }
 
@@ -109,6 +122,9 @@ function sendImageHandler(e) {
 //发送文字消息处理
 function sendTextHandler() {
     var text = $('#text_in').val();
+    if (!text) {
+        return false;
+    }
     $('#text_in').val('');
     var elem = msgFactory(text, kf_avatar, kf_name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);

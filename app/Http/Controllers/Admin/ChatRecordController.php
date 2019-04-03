@@ -20,9 +20,11 @@ class ChatRecordController extends Controller
         //将工单里用户发送给客服的未读消息数清零
         WorkOrder::where('id', $wo_id)->update(['server_msg_unread_count' => 0]);
 
-        $data = ChatLog::where('wo_id', $wo_id)->orderBy('created_at', 'asc')->get();
+        $result = ChatLog::where('wo_id', $wo_id)->orderBy('created_at', 'desc')->paginate(20)->toArray();
+//        print_r($data->toArray());die;
+        $result['data'] = array_reverse($result['data']);
 
-        return response()->json($data);
+        return response()->json($result);
     }
 
     /**
