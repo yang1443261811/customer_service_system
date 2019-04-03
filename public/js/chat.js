@@ -1,4 +1,3 @@
-lock();
 
 //获取工单列表
 function getWorkOrderList(apiUrl) {
@@ -127,6 +126,15 @@ function sendFaceHandler() {
     storeMessage(labFace, 3);
 }
 
+//发送快捷回复
+function sendFastReply() {
+    var word = $(this).attr('word');
+    var elem = msgFactory(word, kf_avatar, kf_name, getDate(), 'right');
+    $('.direct-chat-messages').append(elem);
+    scrollToEnd();
+    storeMessage(word, 1);
+}
+
 /**
  * 为一条消息构建dom标签
  * @param content 消息的内容
@@ -194,7 +202,7 @@ function createFastReply() {
         success: function (res) {
             if (res) {
                 layer.msg('添加成功', {icon: 1});
-                $('.fastReply-box').prepend('<span class="addReply label bg-green" word="' + content + '" key="' + res + '">' + title + '</span>');
+                $('.addReply').before('<span class="label bg-green" word="' + content + '" key="' + res + '">' + title + '<i class="fa fa-fw fa-remove"></i></span>');
                 window.setTimeout(layer.closeAll, 2000);
             } else {
                 layer.msg('添加失败');
@@ -230,15 +238,30 @@ function popupForm() {
     });
 }
 
+//获取所有快捷回复
 function getFastReply() {
     $.get('/fastReply/get', function (res) {
         var _html = '';
         $.each(res, function (index, item) {
-            _html += '<span class="label bg-green" title="应用" word="' + item.word + '" key="' + item.id + '">' + item.title + '<i class="fa fa-fw fa-remove"></i></span>'
+            _html += '<span class="label bg-green send-fast-reply" title="应用" word="' + item.word + '" key="' + item.id + '">' + item.title + '<i class="fa fa-fw fa-remove"></i></span>'
         });
 
         $('.fastReply-box').prepend(_html);
     })
+}
+
+//删除快捷回复
+function removeFastReply() {
+    var that = $(this);
+    var id = that.parents('span').attr('key');
+    layer.confirm('确认删除？', {
+        btn: ['确定', '取消'] //按钮
+    }, function () {
+        $.get('/fastReply/delete/' + id, function () {
+            that.parents('span').remove();
+            layer.msg('删除成功', {icon: 1});
+        });
+    });
 }
 
 //消息显示框定位到最底部

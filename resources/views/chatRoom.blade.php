@@ -242,6 +242,12 @@
         $('.addReply').click(popupForm);
         //创建快捷回复
         $(document).on('click', '.save_reply', createFastReply);
+        //获取快捷回复列表
+        getFastReply();
+        //删除快捷回复
+        $('.fastReply-box').on('click', '.fa-remove', removeFastReply);
+        //发送快捷回复
+        $('.fastReply-box').on('click', '.send-fast-reply', sendFastReply);
         //发送文字消息
         $('.send').click(sendTextHandler);
         //发送表情消息
@@ -252,8 +258,6 @@
         $('.box-comments').on('click', '.box-comment', intoChatRoom);
         //获取工单列表
         getWorkOrderList('/workOrder/myself');
-        //获取快捷回复列表
-        getFastReply();
         //获取当前对话或者排队列表
         $('.users-status-list li').click(function () {
             if (!$(this).hasClass('active')) {
@@ -275,17 +279,6 @@
         $(document).on('click', '.cancelPopup', function () {
             layer.closeAll();
         });
-        $('.fastReply-box').on('click', '.fa-remove', function () {
-            var that = $(this);
-            var id = that.parents('span').attr('key');
-            layer.confirm('确认删除？', {
-                btn: ['确定', '取消'] //按钮
-            }, function () {
-                $.get('/fastReply/delete/' + id, function () {
-                    that.parents('span').remove();
-                    layer.msg('删除成功', {icon: 1});
-                });
-            });
-        })
+
     </script>
 @endsection
