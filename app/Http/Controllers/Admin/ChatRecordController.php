@@ -25,6 +25,7 @@ class ChatRecordController extends Controller
             ->paginate(20)
             ->toArray();
 
+        //反转聊天记录的顺序,使其在展示时是正序排列的
         $result['data'] = array_reverse($result['data']);
 
         return response()->json($result);

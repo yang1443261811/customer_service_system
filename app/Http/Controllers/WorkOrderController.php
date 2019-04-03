@@ -15,7 +15,9 @@ class WorkOrderController extends Controller
      */
     public function myself()
     {
-        $data = WorkOrder::where('kf_id', \Auth::id())->get();
+        $column = ['id', 'uid', 'name', 'avatar', 'address', 'server_msg_unread_count'];
+        $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->get();
+        //获取工单的最后一句对话
         foreach ($data as &$item) {
             $item['lastReply'] = ChatLog::getLastReply($item['id']);
         }
@@ -31,6 +33,7 @@ class WorkOrderController extends Controller
     public function getNew()
     {
         $data = WorkOrder::where('status', 1)->get();
+        //获取工单的最后一句对话
         foreach ($data as &$item) {
             $item['lastReply'] = ChatLog::getLastReply($item['id']);
         }
@@ -46,11 +49,7 @@ class WorkOrderController extends Controller
      */
     public function create(Request $request)
     {
-        $this->validate($request, [
-            'uid'    => 'required|max:255',
-            'name'   => 'required',
-            'avatar' => 'required',
-        ]);
+        $this->validate($request, ['uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required',]);
 
         $workOrder = new WorkOrder();
 
@@ -76,7 +75,7 @@ class WorkOrderController extends Controller
         $city = explode('|', $info['region']);
 
         if (0 != $info['city_id']) {
-            return $city['2'] .','. $city['3'];
+            return $city['2'] . ',' . $city['3'];
         }
 
         if ($city['0'] == '0') {

@@ -24,8 +24,7 @@ function intoChatRoom() {
     var data = $(this).attr('data');
     data = JSON.parse(data);
     to_id = data.uid;
-    //保存工单的ID
-    wo_id = data.wo_id;
+    wo_id = data.wo_id;//保存工单的ID
     $('.user_id').html(data.uid);
     $('.address').html(data.address);
     //初始化客服与用户的的连接
@@ -67,7 +66,6 @@ function showChatRecord(wo_id, page, scroll_to_end) {
             }
             //如果消息来源于客户那么消息显示在聊天窗口右侧
             var point = item.from_id == to_id ? 'left' : 'right';
-
             _html += msgFactory(item.content, item.from_avatar, item.from_name, item.created_at, point);
         });
 
@@ -287,13 +285,6 @@ function removeFastReply() {
 //消息显示框定位到最底部
 function scrollToEnd() {
     $(".direct-chat-messages").scrollTop($(".direct-chat-messages")[0].scrollHeight);
-}
-
-//给编辑区加上遮罩使其不能编辑
-function lock() {
-    var parentHeight = $('.shade').parent().height() + 9;
-    $('.shade').css('min-height', parentHeight);
-    $('.shade').removeClass('hidden');
 }
 
 //去除编辑区的遮罩使其可以编辑

@@ -15,7 +15,7 @@ class FastReplyController extends Controller
      */
     public function get()
     {
-        $data = FastReply::where('uid', \Auth()->id())->get(['id', 'title', 'word']);
+        $data = FastReply::where('uid', \Auth::id())->get(['id', 'title', 'word']);
 
         return response()->json($data);
     }
@@ -33,7 +33,7 @@ class FastReplyController extends Controller
         ]);
 
         $input = $request->all();
-        $input['uid'] = \Auth()->id();
+        $input['uid'] = \Auth()::id();
 
         $model = new FastReply();
         $model->fill($input)->save();
