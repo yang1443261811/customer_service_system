@@ -27,13 +27,6 @@ function intoChatRoom() {
     wo_id = data.wo_id;//保存工单的ID
     $('.user_id').html(data.uid);
     $('.address').html(data.address);
-    //初始化客服与用户的的连接
-    $.ajax({
-        type: "post",
-        url: '/server/joinGroup/' + client_id,
-        data: {'group_id': to_id, '_token': token}
-    });
-
     //客户列表选中效果
     $('.box-comment').removeClass('active');
     $(this).addClass('active');
@@ -86,6 +79,7 @@ function loadMore() {
         if (current_page + 1 > total_page) {
             return false;
         }
+
         showChatRecord(wo_id, current_page + 1, false);
     }
 }
@@ -111,7 +105,7 @@ function sendImageHandler(e) {
     }).done(function (res) {
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, kf_avatar, kf_name, getDate(), 'right');
+        var _html = msgFactory(image, avatar, name, getDate(), 'right');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         scrollToEnd();
@@ -130,7 +124,7 @@ function sendTextHandler() {
         return false;
     }
     $('#text_in').val('');
-    var elem = msgFactory(text, kf_avatar, kf_name, getDate(), 'right');
+    var elem = msgFactory(text, avatar, name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(text, 1);
@@ -140,7 +134,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, kf_avatar, kf_name, getDate(), 'right');
+    var elem = msgFactory(labFace, avatar, name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(labFace, 3);
@@ -149,7 +143,7 @@ function sendFaceHandler() {
 //发送快捷回复
 function sendFastReply() {
     var word = $(this).attr('word');
-    var elem = msgFactory(word, kf_avatar, kf_name, getDate(), 'right');
+    var elem = msgFactory(word, avatar, name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(word, 1);
@@ -182,9 +176,10 @@ function msgFactory(content, avatar, nickname, time, point) {
 function storeMessage(content, contentType) {
     var data = {
         'wo_id': wo_id,
-        'from_id': kf_id,
-        'from_name': kf_name,
-        'from_avatar': kf_avatar,
+        'from_id': uid,
+        'from_name': name,
+        'from_avatar': avatar,
+        'to_id': to_id,
         'content': content,
         'content_type': contentType,
         '_token': token

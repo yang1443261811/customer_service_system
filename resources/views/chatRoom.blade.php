@@ -127,8 +127,8 @@
             <!--/.direct-chat -->
         </div>
         <div class="col-md-3" style="padding-bottom: 0;height: 95%;position: relative;">
-        <div class="screen"></div>
-        <!-- Custom Tabs -->
+            <div class="screen"></div>
+            <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0;height: 100%">
                 <ul class="nav nav-tabs">
                     <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
@@ -190,10 +190,10 @@
     <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
     <script type="text/javascript" src="/js/chat.js"></script>
     <script>
-        window.ow_id = '';//工单ID
-        window.kf_id = '{{auth()->id()}}';//客服的ID
-        window.kf_name = '{{auth()->user()->name}}';//客服的名称
-        window.kf_avatar = '/img/icon03.png';
+        window.wo_id = '';//工单ID
+        window.uid = '{{auth()->id()}}';//客服的ID
+        window.name = '{{auth()->user()->name}}';//客服的名称
+        window.avatar = '/img/icon03.png';
         window.to_id = '';//客户的ID
         window.to_name = '';//客户的名称
         window.client_id = '';
@@ -214,6 +214,10 @@
 
             //如果有新消息就追加到dom中展示出来
             if (response.message_type === 'chatMessage') {
+                //如果新消息的工单不是当前工单直接返回
+                if (data.wo_id != wo_id) {
+                    return false;
+                }
                 //如果是图片消息
                 if (parseInt(data.content_type) === 2) {
                     data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
@@ -234,6 +238,8 @@
             //如果socket连接成功保存自己的client_id
             if (response.message_type === 'connectSuccess') {
                 window.client_id = response.client_id;
+                //用户加入到聊天服务中
+                $.post('/server/join/' + client_id, {'uid': uid, '_token': token}, function () {})
             }
         };
 

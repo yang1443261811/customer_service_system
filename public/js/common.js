@@ -146,7 +146,7 @@ function sendImageHandler(e) {
  */
 function storeMessage(content, contentType) {
     //如果用户还没有创建工单那么就创建一个新的工单
-    if (!window.hasWorkOrder) {
+    if (window.state === 0) {
         createWorkOrder();
     }
 
@@ -155,11 +155,12 @@ function storeMessage(content, contentType) {
         'from_id': uid,
         'from_name': name,
         'from_avatar': avatar,
+        'kf_id': kf_id,
         'content': content,
         'content_type': contentType,
         '_token': token
     };
-
+console.log(data);
     $.post('/server/send/' + client_id, data, function (res) {
         var err = res ? '保存成功' : '保存失败';
         console.log(err);
@@ -185,9 +186,9 @@ function getWorkOrder(uid) {
             return false;
         }
 
-        window.hasWorkOrder = true;
-        //将工单的ID保存到变量中
         window.wo_id = response.wo_id;
+        window.kf_id = response.kf_id;
+        window.state = 1;
 
         //将工单的聊天记录显示出来
         var _html = '';
@@ -213,7 +214,7 @@ function createWorkOrder() {
     }).done(function (res) {
         if (res.success) {
             window.wo_id = res.wo_id;
-            window.hasWorkOrder = true;
+            window.state = 1;
         } else {
             console.log('工单创建失败');
         }

@@ -49,13 +49,14 @@ class WorkOrderController extends Controller
      */
     public function create(Request $request)
     {
-        $this->validate($request, ['uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required',]);
+        $this->validate($request, [
+            'uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required'
+        ]);
 
         $workOrder = new WorkOrder();
 
         $input = $request->all();
-        //根据ip获取地理位置
-        $input['address'] = $this->getCity($request->ip());
+        $input['address'] = $this->getCity($request->ip());        //根据ip获取地理位置
         $result = $workOrder->fill($input)->save();
 
         $response = $result ? ['success' => true, 'wo_id' => $workOrder->id] : ['success' => false];

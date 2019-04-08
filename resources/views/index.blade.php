@@ -108,14 +108,14 @@
     window.uid = '{{$uid}}';
     window.name = '{{$name}}';
     window.avatar = '{{$avatar}}';
-    window.to_id = '';
-    window.to_name = '';
-    window.group_id = '{{$uid}}';
+    window.kf_id = '';
+    window.kf_name = '';
     window.client_id = '';
     window.token = '{{csrf_token()}}';
-    window.hasWorkOrder = false;
+    //当前状态,0表示用户还没有创建工单那么在发送消息的时候需要为本次会话创建一个工单,1表示工单已经创建不需要再次创建
+    window.state = 0;
 
-    //获取用户的工单,如果没有获取到那么用户发送消息的时候需要为本次会话创建一个新的工单
+    //获取用户的历史工单,如果没有获取到那么用户发送消息的时候需要为本次会话创建一个新的工单
     getWorkOrder(uid);
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
@@ -134,8 +134,8 @@
         //如果有新消息就追加到dom中展示出来
         if (response.message_type === 'chatMessage') {
             //保存消息来源用户的信息,回复消息时会用到
-            to_id = data.id;
-            to_name = data.name;
+            window.kf_id = data.id;
+            window.kf_name = data.name;
             //构建消息标签然后插入dom中
             var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'right');
             $(".chatBox-content-demo").append(dom);
@@ -149,7 +149,7 @@
 
         if (response.message_type === 'connectSuccess') {
             window.client_id = response.client_id;
-            $.post('/server/joinGroup/' + client_id, {'group_id': group_id, '_token': token})
+            $.post('/server/join/' + client_id, {'uid': uid, '_token': token})
                 .done(function (res) {
                     console.log(res);
                 })

@@ -24,10 +24,10 @@ class ChatLogController extends Controller
             //将工单里客服发送给用户的未读消息数清零
             WorkOrder::where('id', $data->id)->update(['client_msg_unread_count' => 0]);
 
-            return response()->json(['wo_id' => $data->id, 'chatRecord' => $chatRecord]);
+            return response()->json(['wo_id' => $data->id, 'kf_id' => $data->kf_id, 'chatRecord' => $chatRecord]);
         }
 
-        return response()->json(['wo_id' => '', 'chatRecord' => []]);
+        return response()->json(['wo_id' => '', 'kf_id' => '', 'chatRecord' => []]);
     }
 
     /**

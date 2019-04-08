@@ -17,7 +17,7 @@ Route::get('/', 'IndexController@index');
 Route::post('/chatLog/upload', 'ChatLogController@upload');
 Route::get('/chatLog/get/{uid}', 'ChatLogController@get');
 Route::get('/chatLog/haveRead/{wo_id}', 'ChatLogController@haveRead');
-Route::post('/server/joinGroup/{client_id}', 'ServerController@joinGroup');
+Route::post('/server/join/{client_id}', 'ServerController@join');
 Route::post('/server/send/{client_id}', 'ServerController@send');
 Route::post('/server/send_by_kf/{client_id}', 'ServerController@send_by_kf');
 Route::get('/workOrder/getByUid/{id}', 'WorkOrderController@getByUid');
