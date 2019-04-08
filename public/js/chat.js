@@ -11,7 +11,7 @@ function getWorkOrderList(apiUrl) {
             _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
             _html += '<span class="username">' + item.name + '';
             _html += item.server_msg_unread_count > 0 ? '<span class="pull-right badge bg-red">' + item.server_msg_unread_count + '</span>' : '';
-            _html += '</span>' + lastWord + '</div></div>';
+            _html += '</span><span class="last-word">' + lastWord + '</span></div></div>';
         });
 
         $('.box-comments').html(_html);
@@ -278,10 +278,30 @@ function removeFastReply() {
 }
 
 function new_message_process(data) {
+    $('.box-comments .box-comment').each(function () {
+        var attr = JSON.parse($(this).attr('data'));
+        if (data.wo_id == attr.wo_id) {
+            //累加未读消息的数量,如果用户标签里存在未读消息数量标签,就累加标签的计数,如果没有就插入一个新的未读消息标签
+            if ($(this).find('.badge').length !== 0) {
+                var total = parseInt($(this).find('.badge').html()) + 1;
+                $(this).find('.badge').html(total);
+            } else {
+                $(this).find('.username').append('<span class="pull-right badge bg-red">1</span>');
+            }
+
+            //如果发送的消息是一张图片就显示成文字提示
+            var elem = data.content_type == 2 ? '图片' : data.content;
+            $(this).find('.last-word').html(elem);
+
+            return false;
+        }
+    });
+
     //如果新消息的工单不是当前工单直接返回
     if (data.wo_id != wo_id) {
         return false;
     }
+
     //如果是图片消息
     if (parseInt(data.content_type) === 2) {
         data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
