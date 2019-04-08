@@ -293,6 +293,13 @@ function new_message_process(data) {
             var elem = data.content_type == 2 ? '图片' : data.content;
             $(this).find('.last-word').html(elem);
 
+            var index = $(this).index();
+            if (index > 5) {
+                var move_dom = $(this);
+                $(this).parent().prepend(move_dom);
+                // $(this).remove();
+            }
+
             return false;
         }
     });
