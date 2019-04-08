@@ -293,11 +293,10 @@ function new_message_process(data) {
             var elem = data.content_type == 2 ? '图片' : data.content;
             $(this).find('.last-word').html(elem);
 
-            var index = $(this).index();
-            if (index > 5) {
+            //如果新消息所属的工单的排列位置大于5就将工单置顶到顶部
+            if ($(this).index() > 5) {
                 var move_dom = $(this);
                 $(this).parent().prepend(move_dom);
-                // $(this).remove();
             }
 
             return false;
