@@ -160,7 +160,7 @@ function storeMessage(content, contentType) {
         'content_type': contentType,
         '_token': token
     };
-console.log(data);
+
     $.post('/server/send/' + client_id, data, function (res) {
         var err = res ? '保存成功' : '保存失败';
         console.log(err);
@@ -251,4 +251,22 @@ function makeChatMessage(content, content_type, avatar, point) {
             '<div class="left"><div class="chat-avatars"><img src="' + avatar + '" alt="头像"></div>' +
             '<div class="chat-message">' + content + '</div></div></div>';
     }
+}
+
+function new_message_process(data) {
+    //保存消息来源用户的信息,回复消息时会用到
+    kf_id = data.id;
+    kf_name = data.name;
+    //构建消息标签然后插入dom中
+    var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'right');
+    $(".chatBox-content-demo").append(dom);
+    //聊天框默认最底部
+    positionBottom();
+    //将接收到的消息标记为已读
+    $.get('chatLog/haveRead/' + data.wo_id);
+}
+
+function connect_success_process(client_id) {
+    window.client_id = client_id;
+    $.post('/server/join/' + client_id, {'uid': uid, '_token': token});
 }

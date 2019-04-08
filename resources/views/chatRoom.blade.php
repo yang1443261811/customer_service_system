@@ -211,35 +211,15 @@
         socket.onmessage = function (e) {
             var response = JSON.parse(e.data);
             var data = response.data;
-
-            //如果有新消息就追加到dom中展示出来
-            if (response.message_type === 'chatMessage') {
-                //如果新消息的工单不是当前工单直接返回
-                if (data.wo_id != wo_id) {
-                    return false;
-                }
-                //如果是图片消息
-                if (parseInt(data.content_type) === 2) {
-                    data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
-                }
-                //构建消息标签然后插入dom中
-                var _html = msgFactory(data.content, data.avatar, data.name, getDate(), 'left');
-                $(".direct-chat-messages").append(_html);
-
-                //聊天框默认最底部
-                scrollToEnd();
-
-                //将接收到的消息标记为已读
-                $.get('/chatRecord/haveRead/' + data.wo_id, function (res) {
-                    console.log(res);
-                })
-            }
-
-            //如果socket连接成功保存自己的client_id
-            if (response.message_type === 'connectSuccess') {
-                window.client_id = response.client_id;
-                //用户加入到聊天服务中
-                $.post('/server/join/' + client_id, {'uid': uid, '_token': token}, function () {})
+            switch (response.message_type) {
+                case 'new_message' :
+                    new_message_process(data);
+                    break;
+                case 'connect_success' :
+                    connect_success_process(response.client_id);
+                    break;
+                default :
+                    console.log('未知的消息类型');
             }
         };
 

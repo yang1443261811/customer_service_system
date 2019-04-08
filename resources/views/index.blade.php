@@ -119,46 +119,33 @@
     getWorkOrder(uid);
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
-    window.ws = new WebSocket("ws://" + "127.0.0.1:8282");
+    window.socket = new WebSocket("ws://" + "127.0.0.1:8282");
 
-    ws.onopen = function (e) {
+    socket.onopen = function (e) {
         //如果连接成功执行初始化
         if (e.target.readyState === 1) {
             console.log('socket连接成功');
         }
     };
 
-    ws.onmessage = function (e) {
+    //监听消息
+    socket.onmessage = function (e) {
         var response = JSON.parse(e.data);
         var data = response.data;
-        //如果有新消息就追加到dom中展示出来
-        if (response.message_type === 'chatMessage') {
-            //保存消息来源用户的信息,回复消息时会用到
-            window.kf_id = data.id;
-            window.kf_name = data.name;
-            //构建消息标签然后插入dom中
-            var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'right');
-            $(".chatBox-content-demo").append(dom);
-            //聊天框默认最底部
-            positionBottom();
-            //将接收到的消息标记为已读
-            $.get('chatLog/haveRead/' + data.wo_id).done(function (res) {
-                console.log(res);
-            })
-        }
-
-        if (response.message_type === 'connectSuccess') {
-            window.client_id = response.client_id;
-            $.post('/server/join/' + client_id, {'uid': uid, '_token': token})
-                .done(function (res) {
-                    console.log(res);
-                })
+        switch (response.message_type) {
+            case 'new_message' :
+                new_message_process(data);
+                break;
+            case 'connect_success' :
+                connect_success_process(response.client_id);
+                break;
+            default :
+                console.log('未知的消息类型');
         }
     };
 
     //发送文字信息
     $("#chat-fasong").click(sendTextHandler);
-
     //发送表情
     $(".labFace").click(sendEmojiHandler);
 

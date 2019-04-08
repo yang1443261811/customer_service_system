@@ -277,6 +277,30 @@ function removeFastReply() {
     });
 }
 
+function new_message_process(data) {
+    //如果新消息的工单不是当前工单直接返回
+    if (data.wo_id != wo_id) {
+        return false;
+    }
+    //如果是图片消息
+    if (parseInt(data.content_type) === 2) {
+        data.content = '<img src="' + data.content + '" style="width: 200px;height: auto">';
+    }
+    //构建消息标签然后插入dom中
+    var _html = msgFactory(data.content, data.avatar, data.name, getDate(), 'left');
+    $(".direct-chat-messages").append(_html);
+    //聊天框默认最底部
+    scrollToEnd();
+    //将接收到的消息标记为已读
+    $.get('/chatRecord/haveRead/' + data.wo_id)
+}
+
+function connect_success_process(client_id) {
+    window.client_id = client_id;
+    //用户加入到聊天服务中
+    $.post('/server/join/' + client_id, {'uid': uid, '_token': token})
+}
+
 //消息显示框定位到最底部
 function scrollToEnd() {
     $(".direct-chat-messages").scrollTop($(".direct-chat-messages")[0].scrollHeight);

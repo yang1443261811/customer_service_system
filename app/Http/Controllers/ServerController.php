@@ -52,7 +52,7 @@ class ServerController extends Controller
         //如果接收用户的ID不为空并且这个用户在线就将消息推送给用户
         if (!is_null($request['kf_id'])) {
             $message = [
-                'message_type' => 'chatMessage',
+                'message_type' => 'new_message',
                 'data' => [
                     'id'           => $request['from_id'],
                     'name'         => $request['from_name'],
@@ -90,7 +90,7 @@ class ServerController extends Controller
         }
 
         $message = [
-            'message_type' => 'chatMessage',
+            'message_type' => 'new_message',
             'data' => [
                 'id'           => $request['from_id'],
                 'name'         => $request['from_name'],
