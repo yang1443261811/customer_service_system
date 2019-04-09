@@ -49,7 +49,6 @@ function intoChatRoom() {
 function showChatRecord(wo_id, page, scroll_to_end) {
     $.get('/chatRecord/get/' + wo_id + '?page=' + page, function (response) {
         var _html = '';
-        var scrollHeight = $('.direct-chat-messages')[0].scrollHeight;
         current_page = response.current_page;
         total_page = response.last_page;
         $.each(response.data, function (index, item) {
@@ -62,10 +61,11 @@ function showChatRecord(wo_id, page, scroll_to_end) {
             _html += msgFactory(item.content, item.from_avatar, item.from_name, item.created_at, point);
         });
 
+        var scrollHeight = $('.direct-chat-messages')[0].scrollHeight;
         //将聊天记录插入到dom中
         $(".direct-chat-messages").prepend(_html);
         var newScrollHeight = $('.direct-chat-messages')[0].scrollHeight;
-        //聊天框定位到最底部
+        //聊天框下拉条定位
         (scroll_to_end === true)
             ? scrollToEnd()
             : $('.direct-chat-messages').scrollTop(newScrollHeight - scrollHeight);
@@ -215,7 +215,7 @@ function createFastReply() {
         success: function (res) {
             if (res) {
                 layer.msg('添加成功', {icon: 1});
-                $('.addReply').before('<span class="label bg-green" word="' + content + '" key="' + res + '">' + title + '<i class="fa fa-fw fa-remove"></i></span>');
+                $('.addReply').before('<span class="label bg-green send-fast-reply" word="' + content + '" key="' + res + '">' + title + '<i class="fa fa-fw fa-remove"></i></span>');
                 window.setTimeout(layer.closeAll, 2000);
             } else {
                 layer.msg('添加失败');
@@ -294,10 +294,7 @@ function new_message_process(data) {
             $(this).find('.last-word').html(elem);
 
             //如果新消息所属的工单的排列位置大于5就将工单置顶到顶部
-            if ($(this).index() > 5) {
-                var move_dom = $(this);
-                $(this).parent().prepend(move_dom);
-            }
+            $(this).index() > 5 && $(this).parent().prepend($(this));
 
             return false;
         }

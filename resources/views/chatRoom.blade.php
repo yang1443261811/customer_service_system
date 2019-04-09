@@ -55,7 +55,7 @@
                         <li class="col-sm-6 no-padding" type="getNew"><a class="no-margin">排队列表</a></li>
                     </ul>
                 </div>
-                <div class="box-footer box-comments" style="overflow: auto;height: 93%">
+                <div class="box-footer box-comments" style="overflow: auto;height: 94%">
                     <div class="box-comment">
                         <!-- User image -->
                         <img class="img-circle img-sm" src="/img/user1-128x128.jpg" alt="User Image">

@@ -33,7 +33,7 @@ class FastReplyController extends Controller
         ]);
 
         $input = $request->all();
-        $input['uid'] = \Auth()::id();
+        $input['uid'] = \Auth::id();
 
         $model = new FastReply();
         $model->fill($input)->save();
