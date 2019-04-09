@@ -16,7 +16,7 @@ class WorkOrderController extends Controller
     public function myself()
     {
         $column = ['id', 'uid', 'name', 'avatar', 'address', 'server_msg_unread_count'];
-        $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->get();
+        $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->whereIn('status', [1, 2])->get();
         //获取工单的最后一句对话
         foreach ($data as &$item) {
             $item['lastReply'] = ChatLog::getLastReply($item['id']);
@@ -62,6 +62,19 @@ class WorkOrderController extends Controller
         $response = $result ? ['success' => true, 'wo_id' => $workOrder->id] : ['success' => false];
 
         return response()->json($response);
+    }
+
+    /**
+     * 工单处理完成
+     *
+     * @param int $id 工单的ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function completed($id)
+    {
+        $result = WorkOrder::where('id', $id)->update(['status' => 3]);
+
+        return response()->json($result);
     }
 
     /**

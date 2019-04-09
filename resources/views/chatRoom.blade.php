@@ -76,19 +76,10 @@
             <!-- DIRECT CHAT PRIMARY -->
             <div class="box box-primary direct-chat direct-chat-primary" style="margin-bottom:0;height: 100%">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Direct Chat</h3>
-
+                    <h3 class="box-title nickname"></h3>
                     <div class="box-tools pull-right">
-                                <span data-toggle="tooltip" title="" class="badge bg-light-blue"
-                                      data-original-title="3 New Messages">3</span>
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                    class="fa fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title=""
-                                data-widget="chat-pane-toggle" data-original-title="Contacts">
-                            <i class="fa fa-comments"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                    class="fa fa-times"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -131,13 +122,13 @@
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0;height: 100%">
                 <ul class="nav nav-tabs">
-                    <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
-                    <li class="active"><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
+                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
                     <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                 </ul>
                 <div class="tab-content" style="height: 90%;">
-                    <div class="tab-pane" id="tab_1" style="height: 100%;">
+                    <div class="tab-pane active" id="tab_1" style="height: 100%;">
                         <ul class="list-group user-info">
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-user"></i>&#12288;ID&nbsp;:</span>
@@ -152,6 +143,9 @@
                                 <span class="address"></span>
                             </li>
                         </ul>
+                        <div class="finish-box">
+                            <button class="finish-btn btn btn-danger btn-sm">处理完成</button>
+                        </div>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2" style="height: 100%;">
@@ -170,7 +164,7 @@
                         and regular than that of the individual languages.
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane active fastReply-box" id="tab_3" style="height: 100%;">
+                    <div class="tab-pane fastReply-box" id="tab_3" style="height: 100%;">
                         <span class='addReply label bg-green' title="新增"><i class="fa fa-fw fa-plus"></i></span>
                     </div>
                     <!-- /.tab-pane -->
@@ -190,14 +184,12 @@
     <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
     <script type="text/javascript" src="/js/chat.js"></script>
     <script>
-        window.wo_id = '';//工单ID
-        window.uid = '{{auth()->id()}}';//客服的ID
-        window.name = '{{auth()->user()->name}}';//客服的名称
-        window.avatar = '/img/icon03.png';
-        window.to_id = '';//客户的ID
-        window.to_name = '';//客户的名称
+        window.kf_id = '{{auth()->id()}}';//客服的ID
+        window.kf_name = '{{auth()->user()->name}}';//客服的名称
+        window.kf_avatar = '/img/kf.png';
         window.client_id = '';
         window.token = '{{csrf_token()}}';
+        window.currentWorkOrder = ''; //当前工单的信息
 
         var socket = new WebSocket("ws://" + "127.0.0.1:8282");
 
@@ -246,6 +238,8 @@
         $('.direct-chat-messages').scroll(loadMore);
         //获取工单列表
         getWorkOrderList('/workOrder/myself');
+        //工单处理完成
+        $('.tab-pane .finish-btn').click(workOrderEnd);
         //获取当前对话或者排队列表
         $('.users-status-list li').click(function () {
             if (!$(this).hasClass('active')) {

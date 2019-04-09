@@ -6,7 +6,7 @@ function getWorkOrderList(apiUrl) {
         $.each(response, function (key, item) {
             //如果最后的回复是图片将图片资源替换成文字
             var lastWord = (item.lastReply.content_type === 2) ? '图片' : item.lastReply.content;
-            var data = JSON.stringify({uid: item.uid, wo_id: item.id, address: item.address});
+            var data = JSON.stringify({uid: item.uid, id: item.id, address: item.address, name: item.name, status: item.status});
             _html += '<div class="box-comment" data = ' + data + '>';
             _html += '<img class="img-circle img-sm" src="' + item.avatar + '"><div class="comment-text">';
             _html += '<span class="username">' + item.name + '';
@@ -21,12 +21,10 @@ function getWorkOrderList(apiUrl) {
 //点击客户进入聊天窗口
 function intoChatRoom() {
     //保存客户的uid
-    var data = $(this).attr('data');
-    data = JSON.parse(data);
-    to_id = data.uid;
-    wo_id = data.wo_id;//保存工单的ID
-    $('.user_id').html(data.uid);
-    $('.address').html(data.address);
+    currentWorkOrder = JSON.parse($(this).attr('data'));
+    $('.user_id').html(currentWorkOrder.uid);
+    $('.address').html(currentWorkOrder.address);
+    $('.direct-chat .nickname').html(currentWorkOrder.name);
     //客户列表选中效果
     $('.box-comment').removeClass('active');
     $(this).addClass('active');
@@ -37,7 +35,7 @@ function intoChatRoom() {
     //清空聊天记录
     $(".direct-chat-messages").html('');
     //获取聊天记录
-    showChatRecord(wo_id, 1, true);
+    showChatRecord(currentWorkOrder.id, 1, true);
 }
 
 /**
@@ -57,7 +55,7 @@ function showChatRecord(wo_id, page, scroll_to_end) {
                 item.content = '<img src="' + item.content + '" style="width: 200px;height: auto">';
             }
             //如果消息来源于客户那么消息显示在聊天窗口右侧
-            var point = item.from_id == to_id ? 'left' : 'right';
+            var point = item.from_id == currentWorkOrder.uid ? 'left' : 'right';
             _html += msgFactory(item.content, item.from_avatar, item.from_name, item.created_at, point);
         });
 
@@ -80,7 +78,7 @@ function loadMore() {
             return false;
         }
 
-        showChatRecord(wo_id, current_page + 1, false);
+        showChatRecord(currentWorkOrder.id, current_page + 1, false);
     }
 }
 //发送图片消息处理
@@ -105,7 +103,7 @@ function sendImageHandler(e) {
     }).done(function (res) {
         //构建图片消息标签然后插入dom中
         var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
-        var _html = msgFactory(image, avatar, name, getDate(), 'right');
+        var _html = msgFactory(image, kf_avatar, kf_name, getDate(), 'right');
         $(".direct-chat-messages").append(_html);
         //聊天消息显示框定位到最底部
         scrollToEnd();
@@ -124,7 +122,7 @@ function sendTextHandler() {
         return false;
     }
     $('#text_in').val('');
-    var elem = msgFactory(text, avatar, name, getDate(), 'right');
+    var elem = msgFactory(text, kf_avatar, kf_name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(text, 1);
@@ -134,7 +132,7 @@ function sendTextHandler() {
 function sendFaceHandler() {
     var faceText = $(this).attr('labFace');
     var labFace = $(this).parent().html();
-    var elem = msgFactory(labFace, avatar, name, getDate(), 'right');
+    var elem = msgFactory(labFace, kf_avatar, kf_name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(labFace, 3);
@@ -143,7 +141,7 @@ function sendFaceHandler() {
 //发送快捷回复
 function sendFastReply() {
     var word = $(this).attr('word');
-    var elem = msgFactory(word, avatar, name, getDate(), 'right');
+    var elem = msgFactory(word, kf_avatar, kf_name, getDate(), 'right');
     $('.direct-chat-messages').append(elem);
     scrollToEnd();
     storeMessage(word, 1);
@@ -175,11 +173,11 @@ function msgFactory(content, avatar, nickname, time, point) {
  */
 function storeMessage(content, contentType) {
     var data = {
-        'wo_id': wo_id,
-        'from_id': uid,
-        'from_name': name,
-        'from_avatar': avatar,
-        'to_id': to_id,
+        'wo_id': currentWorkOrder.id,
+        'from_id': kf_id,
+        'from_name': kf_name,
+        'from_avatar': kf_avatar,
+        'to_id': currentWorkOrder.uid,
         'content': content,
         'content_type': contentType,
         '_token': token
@@ -280,7 +278,7 @@ function removeFastReply() {
 function new_message_process(data) {
     $('.box-comments .box-comment').each(function () {
         var attr = JSON.parse($(this).attr('data'));
-        if (data.wo_id == attr.wo_id) {
+        if (data.wo_id == attr.id) {
             //累加未读消息的数量,如果用户标签里存在未读消息数量标签,就累加标签的计数,如果没有就插入一个新的未读消息标签
             if ($(this).find('.badge').length !== 0) {
                 var total = parseInt($(this).find('.badge').html()) + 1;
@@ -301,7 +299,7 @@ function new_message_process(data) {
     });
 
     //如果新消息的工单不是当前工单直接返回
-    if (data.wo_id != wo_id) {
+    if (data.wo_id != currentWorkOrder.id) {
         return false;
     }
 
@@ -321,7 +319,19 @@ function new_message_process(data) {
 function connect_success_process(client_id) {
     window.client_id = client_id;
     //用户加入到聊天服务中
-    $.post('/server/join/' + client_id, {'uid': uid, '_token': token})
+    $.post('/server/join/' + client_id, {'uid': kf_id, '_token': token})
+}
+
+//工单处理完成
+function workOrderEnd() {
+    $.get('/workOrder/completed/' + currentWorkOrder.id, function (res) {
+        if (res) {
+            $('.box-comments .active').remove();
+            lock();
+        } else {
+            layer.msg('操作失败');
+        }
+    });
 }
 
 //消息显示框定位到最底部
@@ -332,6 +342,11 @@ function scrollToEnd() {
 //去除编辑区的遮罩使其可以编辑
 function unLock() {
     $('.shade,.screen').addClass('hidden');
+}
+
+//增加遮罩使编辑区不可编辑
+function lock() {
+    $('.shade,.screen').removeClass('hidden');
 }
 
 // 获取日期
