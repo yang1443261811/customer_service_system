@@ -23,19 +23,6 @@ class WorkOrder extends Model
     ];
 
     /**
-     * 根据工单id判断工单是否是新工单(状态为1的工单)
-     *
-     * @param int $id
-     * @return bool
-     */
-    public static function isNew($id)
-    {
-        $status = static::where('id', $id)->value('status');
-
-        return $status == 1;
-    }
-
-    /**
      * 获取工单的状态
      *
      * @param int $id
@@ -67,11 +54,6 @@ class WorkOrder extends Model
     public static function getUnreadMsgCount($uid)
     {
         return static::where(['uid' => $uid, 'status' => 2])->value('client_msg_unread_count');
-    }
-
-    public function pageWithRequest()
-    {
-
     }
 
 }

@@ -15,7 +15,8 @@ class WorkOrderController extends Controller
      */
     public function myself()
     {
-        $column = ['id', 'uid', 'name', 'avatar', 'address', 'server_msg_unread_count'];
+        $column = ['id', 'uid', 'name', 'avatar', 'address', 'server_msg_unread_count', 'status'];
+
         $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->whereIn('status', [1, 2])->get();
         //获取工单的最后一句对话
         foreach ($data as &$item) {

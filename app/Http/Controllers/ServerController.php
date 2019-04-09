@@ -84,8 +84,8 @@ class ServerController extends Controller
         //累加未读消息数
         WorkOrder::where('id', $request->wo_id)->increment('client_msg_unread_count', 1);
 
-        //如果是未经受理的新工单,那么将当前客服作为工单的受理人,并将工单的状态更改为2(表示已接收处理)
-        if (WorkOrder::isNew($request->wo_id)) {
+        //如果消息所属的工单是新工单,那么将当前客服作为工单的受理人,并将工单的状态更改为2(表示已接收处理)
+        if ($request->status == 1) {
             WorkOrder::setStatus($request->wo_id, 2);
         }
 

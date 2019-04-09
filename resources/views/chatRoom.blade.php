@@ -68,6 +68,9 @@
                         <!-- /.comment-text -->
                     </div>
                 </div>
+                <div class="box-footer box-comments hidden" style="overflow: auto;height: 94%">
+
+                </div>
             </div>
             <!-- /.widget-user -->
         </div>
@@ -78,8 +81,10 @@
                 <div class="box-header with-border">
                     <h3 class="box-title nickname"></h3>
                     <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                    class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                        </button>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -183,6 +188,7 @@
     <script src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
     <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
     <script type="text/javascript" src="/js/chat.js"></script>
+    <script type="text/javascript" src="/js/fastReply.js"></script>
     <script>
         window.kf_id = '{{auth()->id()}}';//客服的ID
         window.kf_name = '{{auth()->user()->name}}';//客服的名称
@@ -237,7 +243,9 @@
         //聊天记录上拉加载更多
         $('.direct-chat-messages').scroll(loadMore);
         //获取工单列表
-        getWorkOrderList('/workOrder/myself');
+        getWorkOrderList('/workOrder/myself', function (html) {
+            $('.box-comments').eq(0).html(html)
+        });
         //工单处理完成
         $('.tab-pane .finish-btn').click(workOrderEnd);
         //获取当前对话或者排队列表
@@ -246,11 +254,17 @@
                 //选中效果
                 $('.users-status-list li').removeClass('active');
                 $(this).addClass('active');
-                var action = $(this).attr('type');
-                var apiUrl = '/workOrder/' + action;
-                getWorkOrderList(apiUrl);
+                var index = $(this).index();
+                $('.box-comments').removeClass('hidden');
+                $('.box-comments').eq(index - 1).addClass('hidden');
+                if (index === 1) {
+                    getWorkOrderList('/workOrder/getNew', function (html) {
+                        $('.box-comments').eq(1).html(html)
+                    });
+                }
             }
         });
+        
         //初始化表情插件
         $('.face').qqFace({
             id: 'facebox',
