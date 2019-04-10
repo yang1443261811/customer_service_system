@@ -23,7 +23,7 @@ Route::post('/server/send_by_kf/{client_id}', 'ServerController@send_by_kf');
 Route::get('/workOrder/getByUid/{id}', 'WorkOrderController@getByUid');
 Route::post('/workOrder/create', 'WorkOrderController@create');
 Route::get('/workOrder/myself', 'WorkOrderController@myself');
-Route::get('/workOrder/getNew', 'WorkOrderController@getNew');
+Route::get('/workOrder/get/{type}', 'WorkOrderController@get');
 Route::get('/workOrder/completed/{id}', 'WorkOrderController@completed');
 
 

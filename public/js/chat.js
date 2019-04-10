@@ -1,9 +1,11 @@
 //获取工单列表
-function getWorkOrderList(apiUrl, $fun) {
+function getWorkOrderList(apiUrl, page, $fun) {
     //获取客户列表
-    $.get(apiUrl).done(function (response) {
+    $.get(apiUrl + '?page=' + page).done(function (response) {
         var _html = '';
-        $.each(response, function (key, item) {
+        users_current_page = response.current_page;
+        users_total_page = response.last_page;
+        $.each(response.data, function (key, item) {
             //如果最后的回复是图片将图片资源替换成文字
             var lastWord = (item.lastReply.content_type === 2) ? '图片' : item.lastReply.content;
 
@@ -57,8 +59,8 @@ function intoChatRoom() {
 function showChatRecord(wo_id, page, scroll_to_end) {
     $.get('/chatRecord/get/' + wo_id + '?page=' + page, function (response) {
         var _html = '';
-        current_page = response.current_page;
-        total_page = response.last_page;
+        chat_log_current_page = response.current_page;
+        chat_log_total_page = response.last_page;
         $.each(response.data, function (index, item) {
             //如果是图片的话,构建一个图片标签
             if (parseInt(item.content_type) === 2) {
@@ -81,14 +83,29 @@ function showChatRecord(wo_id, page, scroll_to_end) {
 }
 
 //上拉加载更多
-function loadMore() {
+function loadMoreChatLog() {
     var scrollTop = $(this).scrollTop();
     if (scrollTop === 0) {
-        if (current_page + 1 > total_page) {
-            return false;
+        if (chat_log_current_page + 1 <= chat_log_total_page) {
+            showChatRecord(currentWorkOrder.id, chat_log_current_page + 1, false);
         }
+    }
+}
 
-        showChatRecord(currentWorkOrder.id, current_page + 1, false);
+function loadMoreUser() {
+    var height = $(this).height();
+    if ($(this).scrollTop() + height === $(this)[0].scrollHeight) {
+        if (users_current_page + 1 <= users_total_page) {
+            if ($(this).hasClass('queue')) {
+                getWorkOrderList('/workOrder/get/1', users_current_page + 1, function (html) {
+                    $('.box-comments').eq(1).append(html)
+                });
+            } else {
+                getWorkOrderList('/workOrder/get/2', users_current_page + 1, function (html) {
+                    $('.box-comments').eq(0).append(html)
+                });
+            }
+        }
     }
 }
 //发送图片消息处理
@@ -200,8 +217,11 @@ function storeMessage(content, contentType) {
             return false;
         }
         //如果当前消息所属的工单是排队列表中的工单,那么将这个工单的dom动态的插入到当前对话列表
-        if (currentWorkOrder.dom.parents('.box-comments').hasClass('queue')) {
-            $('.box-comments:first').prepend(currentWorkOrder.DOM.clone());
+        if (currentWorkOrder.dom.parents('.box-comments').hasClass('queue') &&
+            currentWorkOrder.dom
+        ) {
+            $('.box-comments:first').prepend(currentWorkOrder.dom.clone());
+            currentWorkOrder.dom = '';
         }
 
     }).complete(function (res) {

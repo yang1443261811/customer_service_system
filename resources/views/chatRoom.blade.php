@@ -144,19 +144,7 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2" style="height: 100%;">
-                        The European languages are members of the same family. Their separate existence is a
-                        myth.
-                        For science, music, sport, etc, Europe uses the same vocabulary. The languages only
-                        differ
-                        in their grammar, their pronunciation and their most common words. Everyone realizes why
-                        a
-                        new common language would be desirable: one could refuse to pay expensive translators.
-                        To
-                        achieve this, it would be necessary to have uniform grammar, pronunciation and more
-                        common
-                        words. If several languages coalesce, the grammar of the resulting language is more
-                        simple
-                        and regular than that of the individual languages.
+
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane fastReply-box" id="tab_3" style="height: 100%;">
@@ -211,7 +199,7 @@
             }
         };
 
-        var current_page, total_page;
+        var chat_log_current_page, chat_log_total_page, users_current_page, users_total_page;
         //新增快捷回复的弹窗
         $('.addReply').click(popupForm);
         //创建快捷回复
@@ -231,9 +219,11 @@
         //点击客户列表进入聊天窗口,并获取聊天记录
         $('.box-comments').on('click', '.box-comment', intoChatRoom);
         //聊天记录上拉加载更多
-        $('.direct-chat-messages').scroll(loadMore);
+        $('.direct-chat-messages').scroll(loadMoreChatLog);
+        //用户列表下拉加载更多
+        $('.box-comments').scroll(loadMoreUser);
         //获取工单列表
-        getWorkOrderList('/workOrder/myself', function (html) {
+        getWorkOrderList('/workOrder/get/2', 1, function (html) {
             $('.box-comments').eq(0).html(html)
         });
         //工单处理完成
@@ -248,7 +238,7 @@
                 $('.box-comments').removeClass('hidden');
                 $('.box-comments').eq(index - 1).addClass('hidden');
                 if (index === 1) {
-                    getWorkOrderList('/workOrder/getNew', function (html) {
+                    getWorkOrderList('/workOrder/get/1', 1, function (html) {
                         $('.box-comments').eq(1).html(html)
                     });
                 }

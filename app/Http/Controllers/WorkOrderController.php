@@ -9,37 +9,22 @@ use Illuminate\Http\Request;
 class WorkOrderController extends Controller
 {
     /**
-     * 获取当前用户的工单
+     * 按条件获取工单列表并分页
      *
+     * @param int $type 获取那种类型的工单
      * @return \Illuminate\Http\JsonResponse
      */
-    public function myself()
+    public function get($type)
     {
-        $column = ['id', 'uid', 'name', 'avatar', 'address', 'server_msg_unread_count', 'status'];
+        $where = $type == 1 ? ['status' => 1] : ['status' => 2, 'kf_id' => \Auth::id()];
 
-        $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->where('status', 2)->get();
+        $result = WorkOrder::where($where)->orderBy('updated_at', 'desc')->paginate(13);
         //获取工单的最后一句对话
-        foreach ($data as &$item) {
+        foreach ($result as &$item) {
             $item['lastReply'] = ChatLog::getLastReply($item['id']);
         }
 
-        return response()->json($data);
-    }
-
-    /**
-     * 获取新工单(状态为1的工单就是新工单)
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getNew()
-    {
-        $data = WorkOrder::where('status', 1)->get();
-        //获取工单的最后一句对话
-        foreach ($data as &$item) {
-            $item['lastReply'] = ChatLog::getLastReply($item['id']);
-        }
-
-        return response()->json($data);
+        return response()->json($result);
     }
 
     /**
@@ -98,6 +83,5 @@ class WorkOrderController extends Controller
         }
 
         return $city['0'] . '，' . $city['2'];
-
     }
 }
