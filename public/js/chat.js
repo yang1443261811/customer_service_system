@@ -42,11 +42,8 @@ function intoChatRoom() {
     unLock();
     //清空聊天记录
     $(".direct-chat-messages").html('');
-
-    if ($(this).parents('.box-comments').hasClass('queue')) {
-        $('.box-comments:first').prepend($(this).clone());
-    }
-
+    //保存当前选中工单的dom
+    currentWorkOrder.dom = $(this);
     //获取聊天记录
     showChatRecord(currentWorkOrder.id, 1, true);
 }
@@ -199,7 +196,14 @@ function storeMessage(content, contentType) {
 
     $.post('/server/send_by_kf/' + client_id, data, function (res) {
         var err = res ? '保存成功' : '保存失败';
-        console.log(err);
+        if (!res) {
+            return false;
+        }
+        //如果当前消息所属的工单是排队列表中的工单,那么将这个工单的dom动态的插入到当前对话列表
+        if (currentWorkOrder.dom.parents('.box-comments').hasClass('queue')) {
+            $('.box-comments:first').prepend(currentWorkOrder.DOM.clone());
+        }
+
     }).complete(function (res) {
         if (res.status !== 200) {
             $.each(res.responseJSON.errors, function (key, value) {
