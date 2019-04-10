@@ -51,24 +51,14 @@
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-default no-padding">
                     <ul class="nav row no-margin no-padding users-status-list">
-                        <li class="active col-sm-6 no-padding" type="myself"><a class="no-margin">当前对话</a></li>
-                        <li class="col-sm-6 no-padding" type="getNew"><a class="no-margin">排队列表</a></li>
+                        <li class="active col-sm-6 no-padding"><a class="no-margin">当前对话</a></li>
+                        <li class="col-sm-6 no-padding"><a class="no-margin">排队列表</a></li>
                     </ul>
                 </div>
                 <div class="box-footer box-comments" style="overflow: auto;height: 94%">
-                    <div class="box-comment">
-                        <!-- User image -->
-                        <img class="img-circle img-sm" src="/img/user1-128x128.jpg" alt="User Image">
 
-                        <div class="comment-text">
-                            <span class="username">小明<span class="pull-right badge bg-red">842</span></span>
-                            <!-- /.username -->
-                            It is a long established fact that a reader will be
-                        </div>
-                        <!-- /.comment-text -->
-                    </div>
                 </div>
-                <div class="box-footer box-comments hidden" style="overflow: auto;height: 94%">
+                <div class="box-footer box-comments hidden queue" style="overflow: auto;height: 94%">
 
                 </div>
             </div>
@@ -264,7 +254,7 @@
                 }
             }
         });
-        
+
         //初始化表情插件
         $('.face').qqFace({
             id: 'facebox',

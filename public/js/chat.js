@@ -30,8 +30,8 @@ function getWorkOrderList(apiUrl, $fun) {
 function intoChatRoom() {
     //保存客户的uid
     currentWorkOrder = JSON.parse($(this).attr('data'));
-    $('.user_id').html(currentWorkOrder.uid);
-    $('.address').html(currentWorkOrder.address);
+    $('.user-info .user_id').html(currentWorkOrder.uid);
+    $('.user-info .address').html(currentWorkOrder.address);
     $('.direct-chat .nickname').html(currentWorkOrder.name);
     //客户列表选中效果
     $('.box-comment').removeClass('active');
@@ -42,6 +42,11 @@ function intoChatRoom() {
     unLock();
     //清空聊天记录
     $(".direct-chat-messages").html('');
+
+    if ($(this).parents('.box-comments').hasClass('queue')) {
+        $('.box-comments:first').prepend($(this).clone());
+    }
+
     //获取聊天记录
     showChatRecord(currentWorkOrder.id, 1, true);
 }

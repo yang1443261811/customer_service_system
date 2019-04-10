@@ -17,7 +17,7 @@ class WorkOrderController extends Controller
     {
         $column = ['id', 'uid', 'name', 'avatar', 'address', 'server_msg_unread_count', 'status'];
 
-        $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->whereIn('status', [1, 2])->get();
+        $data = WorkOrder::select($column)->where('kf_id', \Auth::id())->where('status', 2)->get();
         //获取工单的最后一句对话
         foreach ($data as &$item) {
             $item['lastReply'] = ChatLog::getLastReply($item['id']);
