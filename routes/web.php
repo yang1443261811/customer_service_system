@@ -39,6 +39,7 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::get('/fastReply/delete/{id}', 'FastReplyController@delete');
     Route::get('/user/index', 'UserController@index');
     Route::post('/user/update/{id}', 'UserController@update');
+    Route::get('/user/delete/{id}', 'UserController@delete');
 
 });
 
