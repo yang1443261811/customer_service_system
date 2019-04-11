@@ -92,6 +92,7 @@ function loadMoreChatLog() {
     }
 }
 
+//客户列表下拉加载更多
 function loadMoreUser() {
     var height = $(this).height();
     if ($(this).scrollTop() + height === $(this)[0].scrollHeight) {

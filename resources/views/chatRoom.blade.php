@@ -41,6 +41,15 @@
     </style>
 @endsection
 
+@section('content-header')
+    <h1>
+        <small>Optional description</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        <li class="active">对话窗口</li>
+    </ol>
+@endsection
 
 @section('content')
     <!-- Your Page Content Here -->
@@ -100,8 +109,8 @@
                         </div>
                         <h3 class="box-title"></h3>
                     </div>
-                    <form action="javascript:;">
-                        <textarea id="text_in" class="edit-ipt disable" placeholder="编辑信息"></textarea>
+                    <form action="javascript:;" style="height: 80%;">
+                        <textarea id="text_in" class="edit-ipt disable form-control" placeholder="编辑信息"></textarea>
 
                         <div class="input-group pull-right">
                             <button type="submit" class="btn btn-default send">发送</button>

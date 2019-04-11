@@ -37,6 +37,8 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::get('/fastReply/get', 'FastReplyController@get');
     Route::post('/fastReply/create', 'FastReplyController@create');
     Route::get('/fastReply/delete/{id}', 'FastReplyController@delete');
+    Route::get('/user/index', 'UserController@index');
+    Route::post('/user/update/{id}', 'UserController@update');
 
 });
 
