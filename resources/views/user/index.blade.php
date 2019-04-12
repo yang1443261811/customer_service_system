@@ -176,7 +176,7 @@
                                     <td style="width: 25%">{{$item->email}}</td>
                                     <td><span class="badge bg-red">{{$item->created_at}}</span></td>
                                     <td class="action-bar">
-                                        <span><a class="edit-btn">编辑</a><a class="remove-btn">删除</a></span>
+                                        <span><a class="operate-btn">编辑</a><a class="operate-btn">删除</a></span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -211,7 +211,7 @@
                     <td style="width: 25%"><input type="text" name="email" placeholder="邮箱" autocomplete="off"/></td>
                     <td><input type="text" name="password" placeholder="登陆密码" autocomplete="off"/></td>
                     <td class="action-bar">
-                        <span><a class="save-user-btn">保存</a><a class="remove-btn cancel-save">取消</a></span>
+                        <span><a class="operate-btn">保存</a><a class="operate-btn">取消</a></span>
                     </td>
                 </tr>
             </table>
@@ -315,6 +315,10 @@
                 return false;
             }
 
+            parent.find('td').eq(1).html(user.name);
+            parent.find('td').eq(2).html(user.email);
+            parent.find('td').eq(3).html('20181296');
+            $('.table tbody').append(parent);
             layer.msg('成功', {icon: 1})
         })
     </script>
