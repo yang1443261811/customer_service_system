@@ -16,7 +16,7 @@ class WorkOrderController extends Controller
      */
     public function get($type)
     {
-        $where = $type == 1 ? ['status' => 1] : ['status' => 2, 'kf_id' => \Auth::id()];
+        $where = $type == 1 ? array('status' => 1) : array('status' => 2, 'kf_id' => \Auth::id());
 
         $result = WorkOrder::where($where)->orderBy('updated_at', 'desc')->paginate(13);
         //获取工单的最后一句对话

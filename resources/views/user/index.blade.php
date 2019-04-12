@@ -6,6 +6,10 @@
             color: rgba(0, 0, 0, .65)
         }
 
+        table .action-bar {
+            vertical-align: bottom !important;
+        }
+
         table .action-bar span {
             display: inline-block;
             height: auto;
@@ -87,13 +91,10 @@
             background-color: #1890ff;
             border-color: #1890ff;
             color: white;
+            outline: none;
         }
 
         .btn-yes:hover {
-            color: white;
-        }
-
-        .btn-yes:visited {
             color: white;
         }
 
@@ -101,6 +102,23 @@
             padding: 12px 16px;
             color: rgba(0, 0, 0, .65);
             text-align: center;
+        }
+
+        .btn-dashed {
+            color: rgba(0, 0, 0, .65);
+            background-color: #fff;
+            border: 1px dashed #d9d9d9;
+            height: 32px;
+            width: 100%;
+            margin-bottom: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .btn-dashed:hover {
+            border-color: #1890ff;
+            color: #1890ff;
         }
     </style>
 @endsection
@@ -133,7 +151,9 @@
                     </div>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body no-padding">
+                <div class="box-body" style="padding:0 10px;">
+                    <button type="button" class="add-btn btn-dashed"><i class="fa fa-fw fa-plus"></i><span>新增成员</span>
+                    </button>
                     <table class="table">
                         <tbody>
                         <tr>
@@ -143,15 +163,7 @@
                             <th>创建时间</th>
                             <th>操作</th>
                         </tr>
-                        <tr>
-                            <td style="width: 50px;"></td>
-                            <td style="width: 25%"><input type="text" class="name" placeholder="成员姓名" autocomplete="off"/></td>
-                            <td style="width: 25%"><input type="text" class="name" placeholder="邮箱" autocomplete="off"/></td>
-                            <td><input type="password" class="password" placeholder="登陆密码" autocomplete="off"/></td>
-                            <td class="action-bar">
-                                <span><a class="edit-btn">保存</a><a class="remove-btn">取消</a></span>
-                            </td>
-                        </tr>
+
                         @if($data->isEmpty())
                             <tr>
                                 <td colspan="4" style="text-align: center">没有查询到数据</td>
@@ -184,6 +196,26 @@
                 </div>
             </div>
         </div>
+        <div class="assist-box hidden">
+            <div class="popover-inner-content">
+                <div class="ant-popover-message"><i class="fa fa-fw fa-info-circle"></i>是否要删除此行？</div>
+                <div class="popover-buttons">
+                    <button type="button" class="btn btn-sm btn-default btn-no">取 消</button>
+                    <button type="button" class="btn btn-yes btn-sm">确 定</button>
+                </div>
+            </div>
+            <table>
+                <tr class="create-user-form">
+                    <td style="width: 50px;"></td>
+                    <td style="width: 25%"><input type="text" name="name" placeholder="成员姓名" autocomplete="off"/></td>
+                    <td style="width: 25%"><input type="text" name="email" placeholder="邮箱" autocomplete="off"/></td>
+                    <td><input type="text" name="password" placeholder="登陆密码" autocomplete="off"/></td>
+                    <td class="action-bar">
+                        <span><a class="save-user-btn">保存</a><a class="remove-btn cancel-save">取消</a></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
     </div>
 
@@ -199,56 +231,56 @@
             var tr = $(this).parents('tr');
             var word = $(this).html();
             if (word === '编辑') {
-                var old_name = tr.find('td').eq(1).html();
-                var old_email = tr.find('td').eq(2).html();
-                tr.find('td').eq(1).html('<input type="text" class="name" value="' + old_name + '" placeholder="用户名" autocomplete="off"/>');
-                tr.find('td').eq(2).html('<input type="text" class="email" value="' + old_email + '" placeholder="用户邮箱" autocomplete="off"/>');
+                var td_1 = tr.find('td').eq(1);
+                var td_2 = tr.find('td').eq(2);
+                td_1.html('<input type="text" class="name" value="' + td_1.html() + '" placeholder="用户名" autocomplete="off"/>');
+                td_2.html('<input type="text" class="email" value="' + td_2.html() + '" placeholder="用户邮箱" autocomplete="off"/>');
                 $(this).html('保存');
             }
 
             if (word === '保存') {
-                var new_name = tr.find('.name').val();
-                var new_email = tr.find('.email').val();
-                var id = tr.attr('data-row-key');
-                if (!new_email || !new_email) {
+                var name = tr.find('.name').val();
+                var email = tr.find('.email').val();
+                if (!name || !email) {
                     layer.msg('请填写完整用户信息', {icon: 2, time: 1000});
                     return false;
                 }
 
+                var id = tr.attr('data-row-key');
                 var that = $(this);
-                $.post('/user/update/' + id, {name: new_name, email: new_email, _token: token})
-                    .done(function (res) {
-                        if (res) {
-                            tr.find('td').eq(1).html(new_name);
-                            tr.find('td').eq(2).html(new_email);
-                            layer.msg('success', {icon: 1, time: 1000, shade: [0.3, '#fff']});
-                            that.html('编辑');
-                        } else {
-                            layer.msg('修改失败', {icon: 2, time: 1000});
-                        }
-                    })
-                    .fail(function (res) {
-                        if (res.status === 422) {
-                            var err = res.responseJSON.errors;
-                            var keys = Object.keys(err);
-                            layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
-                        }
-                    });
+
+                $.ajax({
+                    type: 'post',
+                    url: '/user/update/' + id,
+                    data: {name: name, email: email, _token: token}
+
+                }).done(function (res) {
+                    if (res) {
+                        tr.find('td').eq(1).html(name);
+                        tr.find('td').eq(2).html(email);
+                        layer.msg('success', {icon: 1, time: 1000, shade: [0.3, '#fff']});
+                        that.html('编辑');
+                    } else {
+                        layer.msg('修改失败', {icon: 2, time: 1000});
+                    }
+
+                }).fail(function (res) {
+                    if (res.status === 422) {
+                        var err = res.responseJSON.errors;
+                        var keys = Object.keys(err);
+                        layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
+                    }
+                });
             }
         });
 
+        var selected_row_index, data_row_key;
         $('.table .remove-btn').click(function () {
-            var row_key = $(this).parents('tr').attr('data-row-key');
-            var row_index = $(this).parents('tr').index();
-            var content = '<div class="popover-inner-content"><div class="ant-popover-message"><i class="fa fa-fw fa-info-circle"></i>是否要删除此行？</div>' +
-                '<div class="popover-buttons"><button type="button" class="btn btn-sm btn-default btn-no">取 消</button>' +
-                '<button type="button" class="btn btn-yes btn-sm" row-key="' + row_key + '" row-index="' + row_index + '">确 定</button></div>' +
-                '</div>';
+            data_row_key = $(this).parents('tr').attr('data-row-key');
+            selected_row_index = $(this).parents('tr').index();
+            var content = $('.assist-box .popover-inner-content').prop('outerHTML');
 
-            layer.tips(content, this, {
-                tips: [1, 'white'], //还可配置颜色
-                time: 5000
-            });
+            layer.tips(content, this, {tips: [1, 'white'], time: 5000});
         });
 
         $(document).on('click', '.popover-inner-content .btn-no', function () {
@@ -256,17 +288,34 @@
         });
 
         $(document).on('click', '.popover-inner-content .btn-yes', function () {
-            var id = $(this).attr('row-key');
-            var index = $(this).attr('row-index');
-            $.get('/user/delete/' + id, function (res) {
-                if (res) {
-                    $('.table tr').eq(index).remove();
-                } else {
-                    layer.msg('删除失败', {icon: 2})
-                }
+            $.get('/user/delete/' + data_row_key, function (res) {
+                res ? $('.table tr').eq(selected_row_index).remove() : layer.msg('删除失败', {icon: 2});
             });
 
             layer.closeAll();
+        });
+
+        $('.add-btn').click(function () {
+            var _html = $('.assist-box .create-user-form').prop('outerHTML');
+            $('.table tbody').prepend(_html);
+        });
+
+        $('.table').on('click', '.cancel-save', function () {
+            $(this).parents('tr').remove();
+        });
+
+        $('.table').on('click', '.save-user-btn', function () {
+            var user = {};
+            var parent = $(this).parents('tr');
+            user.name = parent.find('input[name=name]').val();
+            user.email = parent.find('input[name=email]').val();
+            user.password = parent.find('input[name=password]').val();
+            if (!(user.name && user.email && user.password)) {
+                layer.msg('请完善用户信息', {icon: 2, time: 1000});
+                return false;
+            }
+
+            layer.msg('成功', {icon: 1})
         })
     </script>
 @endsection

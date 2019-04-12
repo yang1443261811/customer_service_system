@@ -29,17 +29,13 @@ class IndexController extends Controller
         //获取未读消息数
         $unread = WorkOrder::getUnreadMsgCount($request->uid);
         //如果没有传递头像就自动生成头像
-        $avatar = $request->has('avatar')
-            ? $request->avatar
-            : (new Identicon())->getImageDataUri($request->uid, 256);
+        $avatar = $request->avatar ?: (new Identicon())->getImageDataUri($request->uid, 256);
 
-        $output = [
+        return view('index', [
             'unread' => $unread,
             'avatar' => $avatar,
             'uid'    => $request->uid,
             'name'   => $request->name,
-        ];
-
-        return view('index', $output);
+        ]);
     }
 }
