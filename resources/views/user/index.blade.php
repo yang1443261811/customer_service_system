@@ -176,7 +176,8 @@
                                     <td style="width: 25%">{{$item->email}}</td>
                                     <td><span class="badge bg-red">{{$item->created_at}}</span></td>
                                     <td class="action-bar">
-                                        <span><a class="operate-btn">编辑</a><a class="operate-btn">删除</a></span>
+                                        <span><a class="operate-btn edit-btn">编辑</a><a
+                                                    class="operate-btn remove-btn">删除</a></span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -205,13 +206,14 @@
                 </div>
             </div>
             <table>
-                <tr class="create-user-form">
+                <tr class="create-user-form create-able">
                     <td style="width: 50px;"></td>
                     <td style="width: 25%"><input type="text" name="name" placeholder="成员姓名" autocomplete="off"/></td>
                     <td style="width: 25%"><input type="text" name="email" placeholder="邮箱" autocomplete="off"/></td>
                     <td><input type="text" name="password" placeholder="登陆密码" autocomplete="off"/></td>
                     <td class="action-bar">
-                        <span><a class="operate-btn">保存</a><a class="operate-btn">取消</a></span>
+                        <span><a class="operate-btn save-user-btn">保存</a><a
+                                    class="operate-btn cancel-save-btn">删除</a></span>
                     </td>
                 </tr>
             </table>
@@ -227,55 +229,69 @@
     <script>
         var token = '{{csrf_token()}}';
 
-        $('.table .edit-btn').click(function () {
+        var old_name, old_email;
+        $('.table').on('click', ".operate-btn:contains('编辑')", function () {
             var tr = $(this).parents('tr');
-            var word = $(this).html();
-            if (word === '编辑') {
-                var td_1 = tr.find('td').eq(1);
-                var td_2 = tr.find('td').eq(2);
-                td_1.html('<input type="text" class="name" value="' + td_1.html() + '" placeholder="用户名" autocomplete="off"/>');
-                td_2.html('<input type="text" class="email" value="' + td_2.html() + '" placeholder="用户邮箱" autocomplete="off"/>');
-                $(this).html('保存');
+            var td_1 = tr.find('td').eq(1);
+            var td_2 = tr.find('td').eq(2);
+            old_name = td_1.html();
+            old_email = td_2.html();
+            td_1.html('<input type="text" class="name" value="' + old_name + '" placeholder="用户名" autocomplete="off"/>');
+            td_2.html('<input type="text" class="email" value="' + old_email + '" placeholder="用户邮箱" autocomplete="off"/>');
+            $(this).html('保存');
+            tr.find('.operate-btn').eq(1).html('取消');
+            tr.addClass('edit-able')
+        });
+
+
+        $('.table').on('click', ".edit-able .operate-btn:eq(0)", function () {
+            var tr = $(this).parents('tr');
+            var name = tr.find('.name').val();
+            var email = tr.find('.email').val();
+            if (!name || !email) {
+                layer.msg('请填写完整用户信息', {icon: 2, time: 1000});
+                return false;
             }
 
-            if (word === '保存') {
-                var name = tr.find('.name').val();
-                var email = tr.find('.email').val();
-                if (!name || !email) {
-                    layer.msg('请填写完整用户信息', {icon: 2, time: 1000});
-                    return false;
+            var id = tr.attr('data-row-key');
+            var that = $(this);
+
+            $.ajax({
+                type: 'post',
+                url: '/user/update/' + id,
+                data: {name: name, email: email, _token: token}
+
+            }).done(function (res) {
+                if (res) {
+                    tr.removeClass('edit-able');
+                    tr.find('td').eq(1).html(name);
+                    tr.find('td').eq(2).html(email);
+                    layer.msg('success', {icon: 1, time: 1000, shade: [0.3, '#fff']});
+                    that.html('编辑');
+                    tr.find('.operate-btn').eq(1).html('删除');
+                } else {
+                    layer.msg('修改失败', {icon: 2, time: 1000});
                 }
 
-                var id = tr.attr('data-row-key');
-                var that = $(this);
+            }).fail(function (res) {
+                if (res.status === 422) {
+                    var err = res.responseJSON.errors;
+                    var keys = Object.keys(err);
+                    layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
+                }
+            });
+        });
 
-                $.ajax({
-                    type: 'post',
-                    url: '/user/update/' + id,
-                    data: {name: name, email: email, _token: token}
-
-                }).done(function (res) {
-                    if (res) {
-                        tr.find('td').eq(1).html(name);
-                        tr.find('td').eq(2).html(email);
-                        layer.msg('success', {icon: 1, time: 1000, shade: [0.3, '#fff']});
-                        that.html('编辑');
-                    } else {
-                        layer.msg('修改失败', {icon: 2, time: 1000});
-                    }
-
-                }).fail(function (res) {
-                    if (res.status === 422) {
-                        var err = res.responseJSON.errors;
-                        var keys = Object.keys(err);
-                        layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
-                    }
-                });
-            }
+        $('.table').on('click', ".edit-able .operate-btn:eq(1)", function () {
+            var tr = $(this).parents('tr');
+            tr.find('td').eq(1).html(old_name);
+            tr.find('td').eq(2).html(old_email);
+            tr.removeClass('edit-able');
+            tr.find('.operate-btn').eq(0).html('编辑');
         });
 
         var selected_row_index, data_row_key;
-        $('.table .remove-btn').click(function () {
+        $('.table').on('click', ".operate-btn:contains('删除')", function () {
             data_row_key = $(this).parents('tr').attr('data-row-key');
             selected_row_index = $(this).parents('tr').index();
             var content = $('.assist-box .popover-inner-content').prop('outerHTML');
@@ -300,11 +316,11 @@
             $('.table tbody').prepend(_html);
         });
 
-        $('.table').on('click', '.cancel-save', function () {
+        $('.table').on('click', '.cancel-save-btn', function () {
             $(this).parents('tr').remove();
         });
 
-        $('.table').on('click', '.save-user-btn', function () {
+        $('.table').on('click', '.create-able .operate-btn:eq(0)', function () {
             var user = {};
             var parent = $(this).parents('tr');
             user.name = parent.find('input[name=name]').val();
@@ -318,6 +334,8 @@
             parent.find('td').eq(1).html(user.name);
             parent.find('td').eq(2).html(user.email);
             parent.find('td').eq(3).html('20181296');
+            $(this).html('编辑');
+            parent.removeClass('create-able');
             $('.table tbody').append(parent);
             layer.msg('成功', {icon: 1})
         })
