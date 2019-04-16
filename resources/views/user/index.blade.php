@@ -227,15 +227,12 @@
     <script>
         var token = '{{csrf_token()}}';
 
-        var old_name, old_email;
         $('.table').on('click', ".edit-btn:contains('编辑')", function () {
             var tr = $(this).parents('tr');
             var td_1 = tr.find('td').eq(1);
             var td_2 = tr.find('td').eq(2);
-            old_name = td_1.html();
-            old_email = td_2.html();
-            td_1.html('<input type="text" class="name" value="' + old_name + '" placeholder="用户名" autocomplete="off"/>');
-            td_2.html('<input type="text" class="email" value="' + old_email + '" placeholder="用户邮箱" autocomplete="off"/>');
+            td_1.html('<input type="text" class="name" value="' + td_1.html() + '" placeholder="用户名" autocomplete="off"/>');
+            td_2.html('<input type="text" class="email" value="' + td_2.html() + '" placeholder="用户邮箱" autocomplete="off"/>');
             $(this).html('保存');
             tr.find('.remove-btn').html('取消');
             tr.addClass('edit-able')
@@ -282,8 +279,10 @@
 
         $('.table').on('click', ".remove-btn:contains('取消')", function () {
             var tr = $(this).parents('tr');
-            tr.find('td').eq(1).html(old_name);
-            tr.find('td').eq(2).html(old_email);
+            var name = tr.find('.name').val();
+            var email = tr.find('.email').val();
+            tr.find('td').eq(1).html(name);
+            tr.find('td').eq(2).html(email);
             tr.removeClass('edit-able');
             tr.find('.edit-btn').html('编辑');
             $(this).html('删除');
