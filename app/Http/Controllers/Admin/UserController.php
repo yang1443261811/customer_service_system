@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateUser;
+use App\Http\Requests\StoreUser;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -35,9 +36,38 @@ class UserController extends Controller
         return response()->json($result);
     }
 
+    /**
+     * 删除用户
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
 //        return response()->json(User::destroy($id));
         return response()->json(true);
+    }
+
+    /**
+     * 创建新用户
+     *
+     * @param StoreUser $request
+     * @return mixed
+     */
+    public function store(StoreUser $request)
+    {
+        $input = [
+            'name'     => $request['name'],
+            'email'    => $request['email'],
+            'password' => bcrypt($request['password']),
+        ];
+
+        $user = new User($input);
+
+        $result = $user->save()
+            ? ['success' => true, 'id' => $user->id, 'created_at' => date('Y-m-d H:i:s')]
+            : ['success' => false];
+
+        return response()->json($result);
     }
 }
