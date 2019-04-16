@@ -154,7 +154,7 @@
                 <div class="box-body" style="padding:0 10px;">
                     <button type="button" class="add-btn btn-dashed"><i class="fa fa-fw fa-plus"></i><span>新增成员</span>
                     </button>
-                    <table class="table">
+                    <table class="table table-hover">
                         <tbody>
                         <tr>
                             <th style="width: 10px">ID</th>
@@ -319,29 +319,27 @@
         });
 
         $('.table').on('click', '.save-user-btn', function () {
-            var user = {};
             var parent = $(this).parents('tr');
-            user.name = parent.find('input[name=name]').val();
-            user.email = parent.find('input[name=email]').val();
-            user.password = parent.find('input[name=password]').val();
-            if (!(user.name && user.email && user.password)) {
+            var name = parent.find('input[name=name]').val();
+            var email = parent.find('input[name=email]').val();
+            var password = parent.find('input[name=password]').val();
+            if (!name || !email || !password) {
                 layer.msg('请完善用户信息', {icon: 2, time: 1000});
                 return false;
             }
 
-            user._token = token;
             var that = $(this);
             $.ajax({
                 type: 'post',
                 url: '/user/store',
-                data: user
+                data: {name: name, email: email, password: password, _token: token}
             }).done(function (res) {
 
                 if (res.success) {
                     parent.attr('data-row-key', res.id);
-                    parent.find('td').eq(1).html(user.name);
-                    parent.find('td').eq(2).html(user.email);
-                    parent.find('td').eq(3).html('<span class="badge bg-red">'+res.created_at+'</span>');
+                    parent.find('td').eq(1).html(name);
+                    parent.find('td').eq(2).html(email);
+                    parent.find('td').eq(3).html('<span class="badge bg-red">' + res.created_at + '</span>');
                     that.html('编辑').attr('class', 'edit-btn');
                     parent.find('.cancel-save-btn').html('删除').attr('class', 'remove-btn');
                     $('.table tbody').append(parent);
@@ -358,8 +356,6 @@
                     layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
                 }
             });
-
-
         })
     </script>
 @endsection
