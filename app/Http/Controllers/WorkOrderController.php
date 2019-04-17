@@ -18,11 +18,7 @@ class WorkOrderController extends Controller
     {
         $where = $type == 1 ? ['status' => 1] : ['status' => 2, 'kf_id' => \Auth::id()];
 
-        $result = WorkOrder::where($where)->orderBy('updated_at', 'desc')->paginate(13);
-        //获取工单的最后一句对话
-        foreach ($result as &$item) {
-            $item['lastReply'] = ChatLog::getLastReply($item['id']);
-        }
+        $result = WorkOrder::pageWithRequest($where);
 
         return response()->json($result);
     }

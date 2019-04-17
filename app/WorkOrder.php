@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkOrder extends Model
@@ -100,4 +101,16 @@ class WorkOrder extends Model
         }
     }
 
+    public static function pageWithRequest(array $where)
+    {
+        return DB::table('cs_work_order as w')
+            ->select('w.*', 'c.content', 'c.content_type')
+            ->leftJoin('cs_chat_log as c', function ($join) {
+                $join->on('w.id', '=', 'c.wo_id')
+                    ->where('c.is_latest', '=', 1);
+            })
+            ->where($where)
+            ->paginate(13);
+
+    }
 }

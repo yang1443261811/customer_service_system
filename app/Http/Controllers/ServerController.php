@@ -25,12 +25,11 @@ class ServerController extends Controller
     /**
      * 将聊天用户加入组内
      *
-     * @param Request $request
+     * @param int $uid
      * @param string $client_id
      */
-    public function join(Request $request, $client_id)
+    public function join($uid, $client_id)
     {
-        $uid = $request->input('uid');
         // client_id与uid绑定
         Gateway::bindUid($client_id, $uid);
     }
@@ -45,7 +44,7 @@ class ServerController extends Controller
     public function send(StoreChatMessage $request, $client_id)
     {
         //消息入库
-        $result = $this->chat->fill($request->all())->save();
+        $result = ChatLog::insertMessage($request->all());
         //累加未读消息数
         WorkOrder::set_service_msg_count($request->wo_id, 'up');
 
@@ -69,7 +68,7 @@ class ServerController extends Controller
     public function send_by_kf(StoreChatMessage $request, $client_id)
     {
         //消息入库
-        $result = $this->chat->fill($request->all())->save();
+        $result = ChatLog::insertMessage($request->all());
         //累加未读消息数
         WorkOrder::set_client_msg_count($request->wo_id, 'up');
 

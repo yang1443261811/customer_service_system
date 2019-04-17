@@ -268,5 +268,8 @@ function new_message_process(data) {
 
 function connect_success_process(client_id) {
     window.client_id = client_id;
-    $.post('/server/join/' + client_id, {'uid': uid, '_token': token});
+    var api = '/server/join/' + uid + '/' + client_id;
+    $.get(api, function(res) {
+        //nothing to do
+    });
 }

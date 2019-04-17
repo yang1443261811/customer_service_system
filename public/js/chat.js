@@ -281,7 +281,10 @@ function new_message_process(data) {
 function connect_success_process(client_id) {
     window.client_id = client_id;
     //用户加入到聊天服务中
-    $.post('/server/join/' + client_id, {'uid': kf_id, '_token': token})
+    var api = '/server/join/' + kf_id + '/' + client_id;
+    $.get(api, function(res) {
+        //nothing to do
+    });
 }
 
 //工单处理完成
