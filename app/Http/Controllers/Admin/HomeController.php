@@ -39,6 +39,11 @@ class HomeController extends Controller
         return view('home', $data);
     }
 
+    /**
+     * Enter dialog window
+     *
+     * @return mixed
+     */
     public function chat()
     {
         return view('chatRoom');

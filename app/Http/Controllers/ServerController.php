@@ -47,24 +47,13 @@ class ServerController extends Controller
         //消息入库
         $result = $this->chat->fill($request->all())->save();
         //累加未读消息数
-        WorkOrder::where('id', $request->wo_id)->increment('server_msg_unread_count', 1);
+        WorkOrder::set_service_msg_count($request->wo_id, 'up');
 
-        //如果接收用户的ID不为空并且这个用户在线就将消息推送给用户
+        //如果接收用户的ID不为空就将消息推送给接收方
         if (!is_null($request['kf_id'])) {
-            $message = [
-                'message_type' => 'new_message',
-                'data' => [
-                    'id'           => $request['from_id'],
-                    'name'         => $request['from_name'],
-                    'avatar'       => $request['from_avatar'],
-                    'time'         => date('Y-m-d H:i:s'),
-                    'content'      => $request['content'],
-                    'wo_id'        => $request['wo_id'],
-                    'content_type' => $request['content_type'],
-                ]
-            ];
+            $message = $this->msgFactory($request->all(), 'new_message');
 
-            Gateway::sendToUid($request['kf_id'], json_encode($message));
+            Gateway::sendToUid($request['kf_id'], $message);
         }
 
         return response()->json($result);
@@ -82,28 +71,38 @@ class ServerController extends Controller
         //消息入库
         $result = $this->chat->fill($request->all())->save();
         //累加未读消息数
-        WorkOrder::where('id', $request->wo_id)->increment('client_msg_unread_count', 1);
+        WorkOrder::set_client_msg_count($request->wo_id, 'up');
 
         //如果消息所属的工单是新工单,那么将当前客服作为工单的受理人,并将工单的状态更改为2(表示已接收处理)
-        if ($request->status == 1) {
-            WorkOrder::setStatus($request->wo_id, 2);
-        }
+        $request->status == 1 && WorkOrder::setStatus($request->wo_id, 2);
 
-        $message = [
-            'message_type' => 'new_message',
-            'data' => [
-                'id'           => $request['from_id'],
-                'name'         => $request['from_name'],
-                'avatar'       => $request['from_avatar'],
-                'time'         => date('Y-m-d H:i:s'),
-                'content'      => $request['content'],
-                'wo_id'        => $request['wo_id'],
-                'content_type' => $request['content_type'],
-            ]
-        ];
-
-        Gateway::sendToUid($request['to_id'], json_encode($message));
+        $message = $this->msgFactory($request->all(), 'new_message');
+        //将消息推送给接收用户
+        Gateway::sendToUid($request['to_id'], $message);
 
         return response()->json($result);
+    }
+
+    /**
+     * 构造消息
+     *
+     * @param array $data 包含消息参数的数组
+     * @param string $type 消息的类型
+     * @return string
+     */
+    public function msgFactory(array $data, $type)
+    {
+        return json_encode([
+            'message_type' => $type,
+            'data' => [
+                'id'           => $data['from_id'],
+                'name'         => $data['from_name'],
+                'avatar'       => $data['from_avatar'],
+                'time'         => date('Y-m-d H:i:s'),
+                'content'      => $data['content'],
+                'wo_id'        => $data['wo_id'],
+                'content_type' => $data['content_type'],
+            ]
+        ]);
     }
 }

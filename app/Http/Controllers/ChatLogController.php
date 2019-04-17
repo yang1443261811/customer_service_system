@@ -19,10 +19,10 @@ class ChatLogController extends Controller
     {
         $data = WorkOrder::where('uid', $uid)->whereIn('status', [1, 2])->first();
         if ($data) {
-            //获取聊天记录
-            $chatRecord = ChatLog::where('wo_id', $data->id)->get()->toArray();
             //将工单里客服发送给用户的未读消息数清零
-            WorkOrder::where('id', $data->id)->update(['client_msg_unread_count' => 0]);
+            WorkOrder::set_client_msg_count($data->id, 'clear');
+
+            $chatRecord = ChatLog::where('wo_id', $data->id)->get()->toArray();
 
             return response()->json(['wo_id' => $data->id, 'kf_id' => $data->kf_id, 'chatRecord' => $chatRecord]);
         }
@@ -38,7 +38,7 @@ class ChatLogController extends Controller
      */
     public function haveRead($id)
     {
-        $result = WorkOrder::where('id', $id)->decrement('client_msg_unread_count', 1);
+        $result = WorkOrder::set_client_msg_count($id, 'down');;
 
         return response()->json($result);
     }

@@ -26,15 +26,13 @@ class ChatLog extends Model
      * 获取某个人的最后回复内容
      *
      * @param int $wo_id
-     * @return mixed
+     * @return array
      */
     public static function getLastReply($wo_id)
     {
-        return static::select('content', 'content_type')
-                     ->where('wo_id', $wo_id)
+        return static::where('wo_id', $wo_id)
                      ->orderBy('created_at', 'desc')
-                     ->first()
+                     ->first(['content', 'content_type'])
                      ->toArray();
-
     }
 }

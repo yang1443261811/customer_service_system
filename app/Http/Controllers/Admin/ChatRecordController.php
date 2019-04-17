@@ -18,7 +18,7 @@ class ChatRecordController extends Controller
     public function get($wo_id)
     {
         //将工单里用户发送给客服的未读消息数清零
-        WorkOrder::where('id', $wo_id)->update(['server_msg_unread_count' => 0]);
+        WorkOrder::set_service_msg_count($wo_id, 'clear');
 
         $result = ChatLog::where('wo_id', $wo_id)
             ->orderBy('created_at', 'desc')
@@ -39,7 +39,7 @@ class ChatRecordController extends Controller
      */
     public function haveRead($id)
     {
-        $result = WorkOrder::where('id', $id)->decrement('server_msg_unread_count', 1);
+        $result = WorkOrder::set_service_msg_count($id, 'down');
 
         return response()->json($result);
     }

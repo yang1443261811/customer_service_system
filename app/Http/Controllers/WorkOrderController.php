@@ -16,7 +16,7 @@ class WorkOrderController extends Controller
      */
     public function get($type)
     {
-        $where = $type == 1 ? array('status' => 1) : array('status' => 2, 'kf_id' => \Auth::id());
+        $where = $type == 1 ? ['status' => 1] : ['status' => 2, 'kf_id' => \Auth::id()];
 
         $result = WorkOrder::where($where)->orderBy('updated_at', 'desc')->paginate(13);
         //获取工单的最后一句对话
@@ -43,11 +43,12 @@ class WorkOrderController extends Controller
 
         $input = $request->all();
         $input['address'] = $this->getCity($request->ip());        //根据ip获取地理位置
-        $result = $workOrder->fill($input)->save();
 
-        $response = $result ? ['success' => true, 'wo_id' => $workOrder->id] : ['success' => false];
+        $result = $workOrder->fill($input)->save()
+            ? ['success' => true, 'wo_id' => $workOrder->id]
+            : ['success' => false];
 
-        return response()->json($response);
+        return response()->json($result);
     }
 
     /**
@@ -58,7 +59,8 @@ class WorkOrderController extends Controller
      */
     public function completed($id)
     {
-        $result = WorkOrder::where('id', $id)->update(['status' => 3]);
+        //设置工单状态为3(表示该工单已处理完成)
+        $result = WorkOrder::setStatus($id, 3);
 
         return response()->json($result);
     }

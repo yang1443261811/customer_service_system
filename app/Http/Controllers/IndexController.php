@@ -27,7 +27,7 @@ class IndexController extends Controller
 
         $validator->fails() && exit($validator->errors()->first());
         //获取未读消息数
-        $unread = WorkOrder::getUnreadMsgCount($request->uid);
+        $unread = WorkOrder::get_client_msg_count($request->uid);
         //如果没有传递头像就自动生成头像
         $avatar = $request->avatar ?: (new Identicon())->getImageDataUri($request->uid, 256);
 
