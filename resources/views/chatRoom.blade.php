@@ -45,7 +45,7 @@
     <h1>
         <small>Optional description</small>
     </h1>
-    <ol class="breadcrumb">
+    <ol class="breadcrumb pull-left">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
         <li class="active">对话窗口</li>
     </ol>
@@ -198,11 +198,9 @@
             var data = response.data;
             switch (response.message_type) {
                 case 'new_message' :
-                    new_message_process(data);
-                    break;
+                    return new_message_process(data);
                 case 'connect_success' :
-                    connect_success_process(response.client_id);
-                    break;
+                    return connect_success_process(response.client_id);
                 default :
                     console.log('未知的消息类型');
             }
@@ -241,12 +239,9 @@
         $('.users-status-list li').click(function () {
             if (!$(this).hasClass('active')) {
                 //选中效果
-                $('.users-status-list li').removeClass('active');
-                $(this).addClass('active');
-                var index = $(this).index();
-                $('.box-comments').removeClass('hidden');
-                $('.box-comments').eq(index - 1).addClass('hidden');
-                if (index === 1) {
+                $('.users-status-list li').toggleClass('active');
+                $('.box-comments').toggleClass('hidden');
+                if ($(this).index() === 1) {
                     getWorkOrderList('/workOrder/get/1', 1, function (html) {
                         $('.box-comments').eq(1).html(html)
                     });

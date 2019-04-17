@@ -57,7 +57,7 @@ class UserController extends Controller
     public function store(StoreUser $request)
     {
         $input = $request->only('name', 'email', 'password');
-        $input['password'] = bcrypt($request['password']);
+        $input['password'] = bcrypt($input['password']);
 
         $user = new User($input);
 
