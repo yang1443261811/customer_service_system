@@ -104,7 +104,7 @@
 <script type="text/javascript" src="/js/jquery.qqFace.js"></script>
 <script src="/js/common.js"></script>
 <script>
-    window.wo_id = '';//工单id
+    window.chat_id = '';//工单id
     window.uid = '{{$uid}}';
     window.name = '{{$name}}';
     window.avatar = '{{$avatar}}';
@@ -116,7 +116,7 @@
     window.state = 0;
 
     //获取用户的历史工单,如果没有获取到那么用户发送消息的时候需要为本次会话创建一个新的工单
-    getWorkOrder(uid);
+    getDialog(uid);
 
     //    ws = new WebSocket("ws://" + document.domain + ":2346");
     window.socket = new WebSocket("ws://" + "127.0.0.1:8282");

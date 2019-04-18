@@ -147,17 +147,17 @@ function sendImageHandler(e) {
 function storeMessage(content, contentType) {
     //如果用户还没有创建工单那么就创建一个新的工单
     if (window.state === 0) {
-        createWorkOrder();
+        createDialog();
     }
 
     var data = {
-        'wo_id': wo_id,
+        'chat_id': chat_id,
         'from_id': uid,
         'from_name': name,
         'from_avatar': avatar,
         'kf_id': kf_id,
         'content': content,
-        'content_type': contentType,
+        'type': contentType,
         '_token': token
     };
 
@@ -179,14 +179,14 @@ function storeMessage(content, contentType) {
  * 获取工单
  * @param uid 客户的uid
  */
-function getWorkOrder(uid) {
+function getDialog(uid) {
     $.get('/chatLog/get/' + uid, function (response) {
         //如果没有获取到直接返回
-        if (!response.wo_id) {
+        if (!response.chat_id) {
             return false;
         }
 
-        window.wo_id = response.wo_id;
+        window.chat_id = response.chat_id;
         window.kf_id = response.kf_id;
         window.state = 1;
 
@@ -204,16 +204,16 @@ function getWorkOrder(uid) {
     })
 }
 
-//创建新的工单
-function createWorkOrder() {
+//创建新的会话
+function createDialog() {
     $.ajax({
-        url: '/workOrder/create',
+        url: '/dialog/create',
         type: 'POST',
         async: false,
         data: {'uid': uid, 'name': name, 'avatar': avatar, '_token': token}
     }).done(function (res) {
         if (res.success) {
-            window.wo_id = res.wo_id;
+            window.chat_id = res.chat_id;
             window.state = 1;
         } else {
             console.log('工单创建失败');
@@ -263,7 +263,7 @@ function new_message_process(data) {
     //聊天框默认最底部
     positionBottom();
     //将接收到的消息标记为已读
-    $.get('chatLog/haveRead/' + data.wo_id);
+    $.get('chatLog/haveRead/' + data.chat_id);
 }
 
 function connect_success_process(client_id) {

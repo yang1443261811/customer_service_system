@@ -1,5 +1,5 @@
 //获取工单列表
-function getWorkOrderList(apiUrl, page, $fun) {
+function getDialogList(apiUrl, page, $fun) {
     //获取客户列表
     $.get(apiUrl + '?page=' + page).done(function (response) {
         var _html = '';
@@ -7,7 +7,7 @@ function getWorkOrderList(apiUrl, page, $fun) {
         users_total_page = response.last_page;
         $.each(response.data, function (key, item) {
             //如果最后的回复是图片将图片资源替换成文字
-            var lastWord = (item.lastReply.content_type === 2) ? '图片' : item.lastReply.content;
+            var lastWord = (item.content_type === 2) ? '图片' : item.content;
 
             var data = JSON.stringify({
                 id: item.id,
@@ -31,10 +31,10 @@ function getWorkOrderList(apiUrl, page, $fun) {
 //点击客户进入聊天窗口
 function intoChatRoom() {
     //保存客户的uid
-    currentWorkOrder = JSON.parse($(this).attr('data'));
-    $('.user-info .user_id').html(currentWorkOrder.uid);
-    $('.user-info .address').html(currentWorkOrder.address);
-    $('.direct-chat .nickname').html(currentWorkOrder.name);
+    currentDialog = JSON.parse($(this).attr('data'));
+    $('.user-info .user_id').html(currentDialog.uid);
+    $('.user-info .address').html(currentDialog.address);
+    $('.direct-chat .nickname').html(currentDialog.name);
     //客户列表选中效果
     $('.box-comment').removeClass('active');
     $(this).addClass('active');
@@ -45,19 +45,19 @@ function intoChatRoom() {
     //清空聊天记录
     $(".direct-chat-messages").html('');
     //保存当前选中工单的dom
-    currentWorkOrder.dom = $(this);
+    currentDialog.dom = $(this);
     //获取聊天记录
-    showChatRecord(currentWorkOrder.id, 1, true);
+    showChatRecord(currentDialog.id, 1, true);
 }
 
 /**
  * 获取聊天记录
- * @param wo_id 工单id
+ * @param chat_id 工单id
  * @param page  当前页
  * @param scroll_to_end 聊天框是否定位到顶部
  */
-function showChatRecord(wo_id, page, scroll_to_end) {
-    $.get('/chatRecord/get/' + wo_id + '?page=' + page, function (response) {
+function showChatRecord(chat_id, page, scroll_to_end) {
+    $.get('/chatRecord/get/' + chat_id + '?page=' + page, function (response) {
         var _html = '';
         chat_log_current_page = response.current_page;
         chat_log_total_page = response.last_page;
@@ -67,7 +67,7 @@ function showChatRecord(wo_id, page, scroll_to_end) {
                 item.content = '<img src="' + item.content + '" style="width: 200px;height: auto">';
             }
             //如果消息来源于客户那么消息显示在聊天窗口右侧
-            var point = item.from_id == currentWorkOrder.uid ? 'left' : 'right';
+            var point = item.from_id == currentDialog.uid ? 'left' : 'right';
             _html += msgFactory(item.content, item.from_avatar, item.from_name, item.created_at, point);
         });
 
@@ -87,7 +87,7 @@ function loadMoreChatLog() {
     var scrollTop = $(this).scrollTop();
     if (scrollTop === 0) {
         if (chat_log_current_page + 1 <= chat_log_total_page) {
-            showChatRecord(currentWorkOrder.id, chat_log_current_page + 1, false);
+            showChatRecord(currentDialog.id, chat_log_current_page + 1, false);
         }
     }
 }
@@ -98,11 +98,11 @@ function loadMoreUser() {
     if ($(this).scrollTop() + height === $(this)[0].scrollHeight) {
         if (users_current_page + 1 <= users_total_page) {
             if ($(this).hasClass('queue')) {
-                getWorkOrderList('/workOrder/get/1', users_current_page + 1, function (html) {
+                getDialogList('/dialog/get/1', users_current_page + 1, function (html) {
                     $('.box-comments').eq(1).append(html)
                 });
             } else {
-                getWorkOrderList('/workOrder/get/2', users_current_page + 1, function (html) {
+                getDialogList('/dialog/get/2', users_current_page + 1, function (html) {
                     $('.box-comments').eq(0).append(html)
                 });
             }
@@ -201,14 +201,14 @@ function msgFactory(content, avatar, nickname, time, point) {
  */
 function storeMessage(content, contentType) {
     var data = {
-        'wo_id': currentWorkOrder.id,
+        'chat_id': currentDialog.id,
         'from_id': kf_id,
         'from_name': kf_name,
         'from_avatar': kf_avatar,
-        'to_id': currentWorkOrder.uid,
+        'to_id': currentDialog.uid,
         'content': content,
-        'content_type': contentType,
-        'status': currentWorkOrder.status,
+        'type': contentType,
+        'status': currentDialog.status,
         '_token': token
     };
 
@@ -218,11 +218,11 @@ function storeMessage(content, contentType) {
             return false;
         }
         //如果当前消息所属的工单是排队列表中的工单,那么将这个工单的dom动态的插入到当前对话列表
-        if (currentWorkOrder.dom.parents('.box-comments').hasClass('queue') &&
-            currentWorkOrder.dom
+        if (currentDialog.dom.parents('.box-comments').hasClass('queue') &&
+            currentDialog.dom
         ) {
-            $('.box-comments:first').prepend(currentWorkOrder.dom.clone());
-            currentWorkOrder.dom = '';
+            $('.box-comments:first').prepend(currentDialog.dom.clone());
+            currentDialog.dom = '';
         }
 
     }).complete(function (res) {
@@ -238,7 +238,7 @@ function storeMessage(content, contentType) {
 function new_message_process(data) {
     $('.box-comments .box-comment').each(function () {
         var attr = JSON.parse($(this).attr('data'));
-        if (data.wo_id == attr.id) {
+        if (data.chat_id == attr.id) {
             //累加未读消息的数量,如果用户标签里存在未读消息数量标签,就累加标签的计数,如果没有就插入一个新的未读消息标签
             if ($(this).find('.badge').length !== 0) {
                 var total = parseInt($(this).find('.badge').html()) + 1;
@@ -261,7 +261,7 @@ function new_message_process(data) {
     });
 
     //如果新消息的工单不是当前工单直接返回
-    if (data.wo_id != currentWorkOrder.id) {
+    if (data.chat_id != currentDialog.id) {
         return false;
     }
 
@@ -275,7 +275,7 @@ function new_message_process(data) {
     //聊天框默认最底部
     scrollToEnd();
     //将接收到的消息标记为已读
-    $.get('/chatRecord/haveRead/' + data.wo_id)
+    $.get('/chatRecord/haveRead/' + data.chat_id)
 }
 
 function connect_success_process(client_id) {
@@ -288,8 +288,8 @@ function connect_success_process(client_id) {
 }
 
 //工单处理完成
-function workOrderEnd() {
-    $.get('/workOrder/completed/' + currentWorkOrder.id, function (res) {
+function dialogEnd() {
+    $.get('/dialog/completed/' + currentDialog.id, function (res) {
         if (res) {
             $('.box-comments .active').remove();
             lock();

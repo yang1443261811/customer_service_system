@@ -5,14 +5,14 @@ namespace App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
-class WorkOrder extends Model
+class Dialog extends Model
 {
     /**
      * table name
      *
      * @var string
      */
-    protected $table = 'cs_work_order';
+    protected $table = 'cs_dialog';
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +20,7 @@ class WorkOrder extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'uid', 'avatar', 'kf_id', 'status', 'address', 'client_msg_unread_count', 'server_msg_unread_count'
+        'name', 'uid', 'avatar', 'kf_id', 'status', 'address', 'customer_unread', 'kf_unread'
     ];
 
     /**
@@ -64,15 +64,15 @@ class WorkOrder extends Model
      * @param string $type 设置的类型
      * @return mixed
      */
-    public static function set_service_msg_count($id, $type)
+    public static function set_kf_unread($id, $type)
     {
         switch ($type) {
             case 'up':
-                return static::where('id', $id)->increment('server_msg_unread_count', 1);
+                return static::where('id', $id)->increment('kf_unread', 1);
             case 'down':
-                return static::where('id', $id)->decrement('server_msg_unread_count', 1);
+                return static::where('id', $id)->decrement('kf_unread', 1);
             case 'clear':
-                return static::where('id', $id)->update(['server_msg_unread_count' => 0]);
+                return static::where('id', $id)->update(['kf_unread' => 0]);
             default:
                 //nothing to do
                 return null;
@@ -86,15 +86,15 @@ class WorkOrder extends Model
      * @param string $type 设置的类型
      * @return mixed
      */
-    public static function set_client_msg_count($id, $type)
+    public static function set_customer_unread($id, $type)
     {
         switch ($type) {
             case 'up':
-                return static::where('id', $id)->increment('client_msg_unread_count', 1);
+                return static::where('id', $id)->increment('customer_unread', 1);
             case 'down':
-                return static::where('id', $id)->decrement('client_msg_unread_count', 1);
+                return static::where('id', $id)->decrement('customer_unread', 1);
             case 'clear':
-                return static::where('id', $id)->update(['client_msg_unread_count' => 0]);
+                return static::where('id', $id)->update(['customer_unread' => 0]);
             default:
                 //nothing to do
                 return null;
@@ -103,14 +103,14 @@ class WorkOrder extends Model
 
     public static function pageWithRequest(array $where)
     {
-        return DB::table('cs_work_order as w')
-            ->select('w.*', 'c.content', 'c.content_type')
-            ->leftJoin('cs_chat_log as c', function ($join) {
-                $join->on('w.id', '=', 'c.wo_id')
-                    ->where('c.is_latest', '=', 1);
-            })
-            ->where($where)
-            ->paginate(13);
+        return DB::table('cs_dialog as A')
+                 ->select('A.*', 'B.content', 'B.type')
+                 ->leftJoin('cs_dialog_log as B', function ($join) {
+                    $join->on('A.id', '=', 'B.chat_id')
+                        ->where('B.is_latest', '=', 1);
+                 })
+                 ->where($where)
+                 ->paginate(13);
 
     }
 }

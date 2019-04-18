@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\ChatLog;
-use App\WorkOrder;
+use App\DialogLog;
+use App\Dialog;
 use Illuminate\Http\Request;
 
-class WorkOrderController extends Controller
+class DialogController extends Controller
 {
     /**
      * 按条件获取工单列表并分页
@@ -18,7 +18,7 @@ class WorkOrderController extends Controller
     {
         $where = $type == 1 ? ['status' => 1] : ['status' => 2, 'kf_id' => \Auth::id()];
 
-        $result = WorkOrder::pageWithRequest($where);
+        $result = Dialog::pageWithRequest($where);
 
         return response()->json($result);
     }
@@ -35,13 +35,13 @@ class WorkOrderController extends Controller
             'uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required'
         ]);
 
-        $workOrder = new WorkOrder();
+        $workOrder = new Dialog();
 
         $input = $request->all();
         $input['address'] = $this->getCity($request->ip());        //根据ip获取地理位置
 
         $result = $workOrder->fill($input)->save()
-            ? ['success' => true, 'wo_id' => $workOrder->id]
+            ? ['success' => true, 'chat_id' => $workOrder->id]
             : ['success' => false];
 
         return response()->json($result);
@@ -56,7 +56,7 @@ class WorkOrderController extends Controller
     public function completed($id)
     {
         //设置工单状态为3(表示该工单已处理完成)
-        $result = WorkOrder::setStatus($id, 3);
+        $result = Dialog::setStatus($id, 3);
 
         return response()->json($result);
     }

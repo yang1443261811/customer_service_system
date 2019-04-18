@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ChatLog extends Model
+class DialogLog extends Model
 {
     /**
      * table name
      *
      * @var string
      */
-    protected $table = 'cs_chat_log';
+    protected $table = 'cs_dialog_log';
 
     /**
      * The attributes that are mass assignable.
@@ -19,18 +19,18 @@ class ChatLog extends Model
      * @var array
      */
     protected $fillable = [
-        'wo_id', 'from_id', 'from_name', 'from_avatar', 'content', 'content_type'
+        'chat_id', 'from_id', 'from_name', 'from_avatar', 'content', 'type'
     ];
 
     /**
      * 获取某个人的最后回复内容
      *
-     * @param int $wo_id
+     * @param int $chat_id
      * @return array
      */
-    public static function getLastReply($wo_id)
+    public static function getLastReply($chat_id)
     {
-        return static::where('wo_id', $wo_id)
+        return static::where('chat_id', $chat_id)
                      ->orderBy('created_at', 'desc')
                      ->first(['content', 'content_type'])
                      ->toArray();
@@ -39,12 +39,12 @@ class ChatLog extends Model
     /**
      * 有新消息加入时变更工单的最后回复消息
      *
-     * @param int $wo_id 工单的ID
+     * @param int $chat_id 工单的ID
      * @return mixed
      */
-    public static function resetLatestMessage($wo_id)
+    public static function resetLatestMessage($chat_id)
     {
-        return static::where('wo_id', $wo_id)->update(['is_latest' => 0]);
+        return static::where('chat_id', $chat_id)->update(['is_latest' => 0]);
     }
 
     /**
@@ -56,7 +56,7 @@ class ChatLog extends Model
     public static function insertMessage(array $data)
     {
         //有新消息加入时变更工单的最后回复消息
-        static::where('wo_id', $data['wo_id'])->update(['is_latest' => 0]);
+        static::where('chat_id', $data['chat_id'])->update(['is_latest' => 0]);
 
         return (new static)->fill($data)->save();
     }

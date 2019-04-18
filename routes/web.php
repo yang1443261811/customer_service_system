@@ -20,11 +20,11 @@ Route::get('/chatLog/haveRead/{wo_id}', 'ChatLogController@haveRead');
 Route::get('/server/join/{uid}/{client_id}', 'ServerController@join');
 Route::post('/server/send/{client_id}', 'ServerController@send');
 Route::post('/server/send_by_kf/{client_id}', 'ServerController@send_by_kf');
-Route::get('/workOrder/getByUid/{id}', 'WorkOrderController@getByUid');
-Route::post('/workOrder/create', 'WorkOrderController@create');
-Route::get('/workOrder/myself', 'WorkOrderController@myself');
-Route::get('/workOrder/get/{type}', 'WorkOrderController@get');
-Route::get('/workOrder/completed/{id}', 'WorkOrderController@completed');
+Route::get('/dialog/getByUid/{id}', 'DialogController@getByUid');
+Route::post('/dialog/create', 'DialogController@create');
+Route::get('/dialog/myself', 'DialogController@myself');
+Route::get('/dialog/get/{type}', 'DialogController@get');
+Route::get('/dialog/completed/{id}', 'DialogController@completed');
 
 
 //Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {

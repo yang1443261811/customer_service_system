@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\ChatLog;
-use App\WorkOrder;
+use App\DialogLog;
+use App\Dialog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,17 +17,17 @@ class ChatLogController extends Controller
      */
     public function get($uid)
     {
-        $data = WorkOrder::where('uid', $uid)->whereIn('status', [1, 2])->first();
+        $data = Dialog::where('uid', $uid)->whereIn('status', [1, 2])->first();
         if ($data) {
             //将工单里客服发送给用户的未读消息数清零
-            WorkOrder::set_client_msg_count($data->id, 'clear');
+            Dialog::set_customer_unread($data->id, 'clear');
 
-            $chatRecord = ChatLog::where('wo_id', $data->id)->get()->toArray();
+            $chatRecord = DialogLog::where('chat_id', $data->id)->get()->toArray();
 
-            return response()->json(['wo_id' => $data->id, 'kf_id' => $data->kf_id, 'chatRecord' => $chatRecord]);
+            return response()->json(['chat_id' => $data->id, 'kf_id' => $data->kf_id, 'chatRecord' => $chatRecord]);
         }
 
-        return response()->json(['wo_id' => '', 'kf_id' => '', 'chatRecord' => []]);
+        return response()->json(['chat_id' => '', 'kf_id' => '', 'chatRecord' => []]);
     }
 
     /**
@@ -38,7 +38,7 @@ class ChatLogController extends Controller
      */
     public function haveRead($id)
     {
-        $result = WorkOrder::set_client_msg_count($id, 'down');;
+        $result = Dialog::set_customer_unread($id, 'down');;
 
         return response()->json($result);
     }

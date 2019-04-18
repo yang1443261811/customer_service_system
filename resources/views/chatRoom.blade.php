@@ -182,7 +182,7 @@
         window.kf_avatar = '/img/kf.png';
         window.client_id = '';
         window.token = '{{csrf_token()}}';
-        window.currentWorkOrder = ''; //当前工单的信息
+        window.currentDialog = ''; //当前工单的信息
 
         var socket = new WebSocket("ws://" + "127.0.0.1:8282");
 
@@ -230,11 +230,11 @@
         //用户列表下拉加载更多
         $('.box-comments').scroll(loadMoreUser);
         //获取工单列表
-        getWorkOrderList('/workOrder/get/2', 1, function (html) {
+        getDialogList('/dialog/get/2', 1, function (html) {
             $('.box-comments').eq(0).html(html)
         });
         //工单处理完成
-        $('.tab-pane .finish-btn').click(workOrderEnd);
+        $('.tab-pane .finish-btn').click(dialogEnd);
         //获取当前对话或者排队列表
         $('.users-status-list li').click(function () {
             if (!$(this).hasClass('active')) {
@@ -242,7 +242,7 @@
                 $('.users-status-list li').toggleClass('active');
                 $('.box-comments').toggleClass('hidden');
                 if ($(this).index() === 1) {
-                    getWorkOrderList('/workOrder/get/1', 1, function (html) {
+                    getDialogList('/dialog/get/1', 1, function (html) {
                         $('.box-comments').eq(1).html(html)
                     });
                 }

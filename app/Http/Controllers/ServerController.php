@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\ChatLog;
-use App\WorkOrder;
+use App\DialogLog;
+use App\Dialog;
 use GatewayClient\Gateway;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreChatMessage;
@@ -19,7 +19,7 @@ class ServerController extends Controller
     {
         Gateway::$registerAddress = '127.0.0.1:1238';
 
-        $this->chat = new ChatLog();
+        $this->chat = new DialogLog();
     }
 
     /**
@@ -44,9 +44,9 @@ class ServerController extends Controller
     public function send(StoreChatMessage $request, $client_id)
     {
         //消息入库
-        $result = ChatLog::insertMessage($request->all());
+        $result = DialogLog::insertMessage($request->all());
         //累加未读消息数
-        WorkOrder::set_service_msg_count($request->wo_id, 'up');
+        Dialog::set_kf_unread($request->chat_id, 'up');
 
         //如果接收用户的ID不为空就将消息推送给接收方
         if (!is_null($request['kf_id'])) {
@@ -68,12 +68,12 @@ class ServerController extends Controller
     public function send_by_kf(StoreChatMessage $request, $client_id)
     {
         //消息入库
-        $result = ChatLog::insertMessage($request->all());
+        $result = DialogLog::insertMessage($request->all());
         //累加未读消息数
-        WorkOrder::set_client_msg_count($request->wo_id, 'up');
+        Dialog::set_customer_unread($request->chat_id, 'up');
 
         //如果消息所属的工单是新工单,那么将当前客服作为工单的受理人,并将工单的状态更改为2(表示已接收处理)
-        $request->status == 1 && WorkOrder::setStatus($request->wo_id, 2);
+        $request->status == 1 && Dialog::setStatus($request->chat_id, 2);
 
         $message = $this->msgFactory($request->all(), 'new_message');
         //将消息推送给接收用户
@@ -94,13 +94,13 @@ class ServerController extends Controller
         return json_encode([
             'message_type' => $type,
             'data' => [
-                'id'           => $data['from_id'],
-                'name'         => $data['from_name'],
-                'avatar'       => $data['from_avatar'],
-                'time'         => date('Y-m-d H:i:s'),
-                'content'      => $data['content'],
-                'wo_id'        => $data['wo_id'],
-                'content_type' => $data['content_type'],
+                'id'     => $data['from_id'],
+                'name'   => $data['from_name'],
+                'avatar' => $data['from_avatar'],
+                'time'   => date('Y-m-d H:i:s'),
+                'content'=> $data['content'],
+                'chat_id'=> $data['chat_id'],
+                'type'   => $data['type'],
             ]
         ]);
     }

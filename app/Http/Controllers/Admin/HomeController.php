@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\WorkOrder;
+use App\Dialog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -26,13 +26,13 @@ class HomeController extends Controller
     public function index()
     {
         //累计客诉
-        $total = WorkOrder::count();
+        $total = Dialog::count();
         //今日客诉
-        $todayCount = WorkOrder::whereDate('created_at', date('Y-m-d'))->count();
+        $todayCount = Dialog::whereDate('created_at', date('Y-m-d'))->count();
         //未处理的客诉
-        $waitCount = WorkOrder::where('status', 1)->count();
+        $waitCount = Dialog::where('status', 1)->count();
         //当日正在处理的客诉
-        $processingCount = WorkOrder::whereDate('created_at', date('Y-m-d'))->where('status', 2)->count();
+        $processingCount = Dialog::whereDate('created_at', date('Y-m-d'))->where('status', 2)->count();
 
         $data = compact('total', 'todayCount', 'waitCount', 'processingCount');
 

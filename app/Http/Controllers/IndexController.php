@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Validator;
-use App\ChatLog;
+use App\DialogLog;
 use App\Customer;
-use App\WorkOrder;
+use App\Dialog;
 use Identicon\Identicon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +27,7 @@ class IndexController extends Controller
 
         $validator->fails() && exit($validator->errors()->first());
         //获取未读消息数
-        $unread = WorkOrder::get_client_msg_count($request->uid);
+        $unread = Dialog::get_client_msg_count($request->uid);
         //如果没有传递头像就自动生成头像
         $avatar = $request->avatar ?: (new Identicon())->getImageDataUri($request->uid, 256);
 

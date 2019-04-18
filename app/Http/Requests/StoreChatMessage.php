@@ -24,12 +24,12 @@ class StoreChatMessage extends FormRequest
     public function rules()
     {
         return [
-            'wo_id' => 'required',
+            'chat_id' => 'required',
             'from_id' => 'required',
             'from_name' => 'required',
             'from_avatar' => 'required',
             'content' => 'required',
-            'content_type' => 'required|in:1,2,3'
+            'type' => 'required|in:1,2,3'
         ];
     }
 }
