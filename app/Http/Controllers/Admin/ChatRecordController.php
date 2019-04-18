@@ -21,9 +21,9 @@ class ChatRecordController extends Controller
         Dialog::set_kf_unread($chat_id, 'clear');
 
         $result = DialogLog::where('chat_id', $chat_id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(20)
-            ->toArray();
+                           ->orderBy('created_at', 'desc')
+                           ->paginate(20)
+                           ->toArray();
 
         //反转聊天记录的顺序,使其在展示时是正序排列的
         $result['data'] = array_reverse($result['data']);

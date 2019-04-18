@@ -218,9 +218,7 @@ function storeMessage(content, contentType) {
             return false;
         }
         //如果当前消息所属的工单是排队列表中的工单,那么将这个工单的dom动态的插入到当前对话列表
-        if (currentDialog.dom.parents('.box-comments').hasClass('queue') &&
-            currentDialog.dom
-        ) {
+        if (currentDialog.dom.parents('.box-comments').hasClass('queue') && currentDialog.dom) {
             $('.box-comments:first').prepend(currentDialog.dom.clone());
             currentDialog.dom = '';
         }

@@ -101,7 +101,16 @@ class Dialog extends Model
         }
     }
 
-    public static function pageWithRequest(array $where)
+    /**
+     * 分页获取会话列表,并获得会话的最后回复消息
+     *
+     * @param array $where
+     * @param int $number
+     * @param string $sort
+     * @param string $sortColumn
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public static function pageWithRequest(array $where, $number = 20, $sort = 'desc', $sortColumn = 'updated_at')
     {
         return DB::table('cs_dialog as A')
                  ->select('A.*', 'B.content', 'B.type')
@@ -110,7 +119,7 @@ class Dialog extends Model
                         ->where('B.is_latest', '=', 1);
                  })
                  ->where($where)
-                 ->paginate(13);
-
+                 ->orderBy($sortColumn, $sort)
+                 ->paginate($number);
     }
 }

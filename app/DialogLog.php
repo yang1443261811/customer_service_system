@@ -23,20 +23,6 @@ class DialogLog extends Model
     ];
 
     /**
-     * 获取某个人的最后回复内容
-     *
-     * @param int $chat_id
-     * @return array
-     */
-    public static function getLastReply($chat_id)
-    {
-        return static::where('chat_id', $chat_id)
-                     ->orderBy('created_at', 'desc')
-                     ->first(['content', 'content_type'])
-                     ->toArray();
-    }
-
-    /**
      * 有新消息加入时变更工单的最后回复消息
      *
      * @param int $chat_id 工单的ID
