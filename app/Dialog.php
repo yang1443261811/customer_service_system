@@ -24,6 +24,16 @@ class Dialog extends Model
     ];
 
     /**
+     * 获取受理客服的信息
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function kf()
+    {
+        return $this->belongsTo(User::class, 'kf_id', 'id');
+    }
+
+    /**
      * 获取工单的状态
      *
      * @param int $id

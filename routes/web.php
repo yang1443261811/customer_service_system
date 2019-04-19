@@ -20,6 +20,8 @@ Route::get('/chatLog/haveRead/{wo_id}', 'ChatLogController@haveRead');
 Route::get('/server/join/{uid}/{client_id}', 'ServerController@join');
 Route::post('/server/send/{client_id}', 'ServerController@send');
 Route::post('/server/send_by_kf/{client_id}', 'ServerController@send_by_kf');
+Route::get('/dialog/index', 'DialogController@index');
+Route::get('/dialog/details/{id}', 'DialogController@details');
 Route::get('/dialog/getByUid/{id}', 'DialogController@getByUid');
 Route::post('/dialog/create', 'DialogController@create');
 Route::get('/dialog/myself', 'DialogController@myself');
@@ -41,7 +43,6 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::post('/user/store', 'UserController@store');
     Route::post('/user/update/{id}', 'UserController@update');
     Route::get('/user/delete/{id}', 'UserController@delete');
-
 });
 
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\DialogLog;
 use App\Dialog;
+use App\DialogLog;
 use Illuminate\Http\Request;
 
 class DialogController extends Controller
@@ -24,6 +24,34 @@ class DialogController extends Controller
     }
 
     /**
+     * 获取会话列表
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function index(Request $request)
+    {
+        $data = Dialog::orderBy('updated_at', 'desc')->paginate(20);
+
+        return view('dialog.index', compact('data'));
+    }
+
+    /**
+     * 会话详细信息
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function details($id)
+    {
+        $data = Dialog::find($id);
+
+        $data['messages'] = DialogLog::where('chat_id', $data->id)->orderBy('created_at', 'desc')->get();
+
+        return view('dialog.details', compact('data'));
+    }
+
+    /**
      * 创建一条新的工单
      *
      * @param Request $request
@@ -35,13 +63,13 @@ class DialogController extends Controller
             'uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required'
         ]);
 
-        $workOrder = new Dialog();
+        $dialog = new Dialog();
 
         $input = $request->all();
         $input['address'] = $this->getCity($request->ip());        //根据ip获取地理位置
 
-        $result = $workOrder->fill($input)->save()
-            ? ['success' => true, 'chat_id' => $workOrder->id]
+        $result = $dialog->fill($input)->save()
+            ? ['success' => true, 'chat_id' => $dialog->id]
             : ['success' => false];
 
         return response()->json($result);
