@@ -38,7 +38,7 @@ class ChatLogController extends Controller
      */
     public function haveRead($id)
     {
-        $result = Dialog::set_customer_unread($id, 'down');;
+        $result = Dialog::set_customer_unread($id, 'down');
 
         return response()->json($result);
     }

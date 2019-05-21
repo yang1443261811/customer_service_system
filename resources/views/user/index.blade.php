@@ -216,11 +216,8 @@
                 </tr>
             </table>
         </div>
-
     </div>
-
 @endsection
-
 
 @section('js')
     <script src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
@@ -334,7 +331,6 @@
                 url: '/user/store',
                 data: {name: name, email: email, password: password, _token: token}
             }).done(function (res) {
-
                 if (res.success) {
                     parent.attr('data-row-key', res.id);
                     parent.find('td').eq(1).html(name);
@@ -347,9 +343,8 @@
                 } else {
                     layer.msg('执行失败', {icon: 2})
                 }
-
+                
             }).fail(function (res) {
-
                 if (res.status === 422) {
                     var err = res.responseJSON.errors;
                     var keys = Object.keys(err);
