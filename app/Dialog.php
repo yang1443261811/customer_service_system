@@ -64,7 +64,7 @@ class Dialog extends Model
      */
     public static function get_client_msg_count($uid)
     {
-        return static::where(['uid' => $uid, 'status' => 2])->value('client_msg_unread_count');
+        return static::where(['uid' => $uid, 'status' => 2])->value('customer_unread');
     }
 
     /**

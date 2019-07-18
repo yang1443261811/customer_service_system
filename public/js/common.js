@@ -195,7 +195,7 @@ function getDialog(uid) {
     $.each(response.chatRecord, function (index, item) {
       //如果消息来源客户那么消息显示在聊天窗口右侧
       var point = item.from_id === uid ? 'left' : 'right';
-      _html += makeChatMessage(item.content, item.content_type, item.from_avatar, point);
+      _html += makeChatMessage(item.content, item.type, item.from_avatar, point);
     });
     
     $(".chatBox-content-demo").append(_html);
@@ -229,15 +229,15 @@ function createDialog() {
 /**
  * 为一条消息构建dom
  * @param content 消息的内容
- * @param content_type 消息的类型 1是文字消息 2是图片消息 3是表情消息
+ * @param type 消息的类型 1是文字消息 2是图片消息 3是表情消息
  * @param avatar      消息发送者的头像
  * @param point       消息显示在聊天窗口的左侧还是右侧
  * @returns {string}
  */
-function makeChatMessage(content, content_type, avatar, point) {
+function makeChatMessage(content, type, avatar, point) {
   var time = (new Date()).toLocaleString().split('/').join('-');
   
-  if (parseInt(content_type) === 2) {
+  if (parseInt(type) === 2) {
     content = '<img src="' + content + '">';
   }
   
@@ -258,7 +258,7 @@ function new_message_process(data) {
   kf_id = data.id;
   kf_name = data.name;
   //构建消息标签然后插入dom中
-  var dom = makeChatMessage(data.content, data.content_type, data.avatar, 'right');
+  var dom = makeChatMessage(data.content, data.type, data.avatar, 'right');
   $(".chatBox-content-demo").append(dom);
   //聊天框默认最底部
   positionBottom();

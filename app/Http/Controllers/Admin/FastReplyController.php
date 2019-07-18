@@ -32,10 +32,9 @@ class FastReplyController extends Controller
             'title' => 'required|max:24', 'word' => 'required'
         ]);
 
+        $model = new FastReply();
         $input = $request->all();
         $input['uid'] = \Auth::id();
-
-        $model = new FastReply();
         $model->fill($input)->save();
 
         return response()->json($model->id);

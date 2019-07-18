@@ -18,16 +18,16 @@ class ChatLogController extends Controller
     public function get($uid)
     {
         $data = Dialog::where('uid', $uid)->whereIn('status', [1, 2])->first();
-        if ($data) {
-            //将工单里客服发送给用户的未读消息数清零
-            Dialog::set_customer_unread($data->id, 'clear');
-
-            $chatRecord = DialogLog::where('chat_id', $data->id)->get()->toArray();
-
-            return response()->json(['chat_id' => $data->id, 'kf_id' => $data->kf_id, 'chatRecord' => $chatRecord]);
+        if (!$data) {
+            return response()->json(['chat_id' => '', 'kf_id' => '', 'chatRecord' => []]);
         }
 
-        return response()->json(['chat_id' => '', 'kf_id' => '', 'chatRecord' => []]);
+        //将工单里客服发送给用户的未读消息数清零
+        Dialog::set_customer_unread($data->id, 'clear');
+        //获取聊天记录
+        $chatRecord = DialogLog::where('chat_id', $data->id)->get()->toArray();
+
+        return response()->json(['chat_id' => $data->id, 'kf_id' => $data->kf_id, 'chatRecord' => $chatRecord]);
     }
 
     /**

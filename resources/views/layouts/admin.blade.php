@@ -17,13 +17,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/css/AdminLTE.css">
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
     -->
-    {{--<link rel="stylesheet" href="/css/skin-blue.css">--}}
-    <link rel="stylesheet" href="/css/_all-skins.css">
+    <link rel="stylesheet" href="/css/skin-blue.css">
+    {{--<link rel="stylesheet" href="/css/_all-skins.css">--}}
 @yield('css')
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -54,6 +54,13 @@ desired effect
 |---------------------------------------------------------|
 -->
 <body class="hold-transition skin-blue sidebar-mini">
+<div class="pace  pace-inactive">
+    <div class="pace-progress" data-progress-text="100%" data-progress="99"
+         style="transform: translate3d(100%, 0px, 0px);">
+        <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div>
+</div>
 <div class="wrapper">
 
     <!-- Main Header -->
@@ -213,7 +220,10 @@ desired effect
                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <form id="logout-form" action="{{ url('/logout') }}" method="POST">
+                                        {{ csrf_field() }}
+                                        <button class="btn btn-default btn-flat">Sign out</button>
+                                    </form>
                                 </div>
                             </li>
                         </ul>
@@ -271,7 +281,7 @@ desired effect
         </section>
 
         <!-- Main content -->
-        <section class="content" style="height: 100%;">
+        <section class="content">
 
             <!-- Your Page Content Here -->
             @yield('content')
@@ -301,7 +311,7 @@ desired effect
 <!-- Bootstrap 3.3.6 -->
 <script src="/js/bootstrap.js"></script>
 <!-- AdminLTE App -->
-<script src="/js/app2.js"></script>
+<script src="/js/app.min.js"></script>
 @yield('js')
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

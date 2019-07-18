@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\User;
-use Illuminate\Http\Request;
-use App\Http\Requests\UpdateUser;
-use App\Http\Requests\StoreUser;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUser;
+use App\Http\Requests\UpdateUser;
+use App\User;
 
 class UserController extends Controller
 {
@@ -58,13 +57,12 @@ class UserController extends Controller
     {
         $input = $request->only('name', 'email', 'password');
         $input['password'] = bcrypt($input['password']);
-
         $user = new User($input);
-
-        $result = $user->save()
+        $result = $user->save();
+        $response = $result
             ? ['success' => true, 'id' => $user->id, 'created_at' => date('Y-m-d H:i:s')]
             : ['success' => false];
 
-        return response()->json($result);
+        return response()->json($response);
     }
 }

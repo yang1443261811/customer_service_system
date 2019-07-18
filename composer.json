@@ -9,10 +9,12 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
+        "barryvdh/laravel-debugbar": "^3.2",
         "fideloper/proxy": "^4.0",
         "irazasyed/laravel-identicon": "~1.1",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
+        "predis/predis": "^1.1",
         "workerman/gatewayclient": "^3.0",
         "zoujingli/ip2region": "^1.0"
     },

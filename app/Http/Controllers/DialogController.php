@@ -17,7 +17,6 @@ class DialogController extends Controller
     public function get($type)
     {
         $where = $type == 1 ? ['status' => 1] : ['status' => 2, 'kf_id' => \Auth::id()];
-
         $result = Dialog::pageWithRequest($where);
 
         return response()->json($result);
@@ -45,7 +44,7 @@ class DialogController extends Controller
     public function details($id)
     {
         $data = Dialog::find($id);
-
+        //获取聊天记录
         $data['messages'] = DialogLog::where('chat_id', $data->id)->orderBy('created_at', 'desc')->get();
 
         return view('dialog.details', compact('data'));
@@ -59,20 +58,14 @@ class DialogController extends Controller
      */
     public function create(Request $request)
     {
-        $this->validate($request, [
-            'uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required'
-        ]);
-
-        $dialog = new Dialog();
-
+        $this->validate($request, ['uid' => 'required|max:255', 'name' => 'required', 'avatar' => 'required']);
         $input = $request->all();
-        $input['address'] = $this->getCity($request->ip());        //根据ip获取地理位置
+        //根据ip获取地理位置
+        $input['address'] = $this->getCity($request->ip());
+        $dialog = new Dialog();
+        $result = $dialog->fill($input)->save();
 
-        $result = $dialog->fill($input)->save()
-            ? ['success' => true, 'chat_id' => $dialog->id]
-            : ['success' => false];
-
-        return response()->json($result);
+        return response()->json(['success' => $result, 'chat_id' => $result ? $dialog->id : '']);
     }
 
     /**

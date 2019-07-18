@@ -29,8 +29,8 @@ Route::get('/dialog/get/{type}', 'DialogController@get');
 Route::get('/dialog/completed/{id}', 'DialogController@completed');
 
 
-//Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
-Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
+Route::group(['middleware' => ['web', 'auth'], 'namespace' => 'Admin'], function () {
+//Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/home/chat', 'HomeController@chat');
     Route::get('/home/test', 'HomeController@test');
@@ -43,6 +43,8 @@ Route::group(['middleware' => ['web'], 'namespace' => 'Admin'], function () {
     Route::post('/user/store', 'UserController@store');
     Route::post('/user/update/{id}', 'UserController@update');
     Route::get('/user/delete/{id}', 'UserController@delete');
+    Route::get('/eventLog/event_log_base', 'EventLogController@event_log_base');
+    Route::get('/eventLog/event_log', 'EventLogController@event_log');
 });
 
 

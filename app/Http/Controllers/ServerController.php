@@ -47,11 +47,9 @@ class ServerController extends Controller
         $result = DialogLog::insertMessage($request->all());
         //累加未读消息数
         Dialog::set_kf_unread($request->chat_id, 'up');
-
         //如果接收用户的ID不为空就将消息推送给接收方
         if (!is_null($request['kf_id'])) {
             $message = $this->msgFactory($request->all(), 'new_message');
-
             Gateway::sendToUid($request['kf_id'], $message);
         }
 
@@ -71,7 +69,6 @@ class ServerController extends Controller
         $result = DialogLog::insertMessage($request->all());
         //累加未读消息数
         Dialog::set_customer_unread($request->chat_id, 'up');
-
         //如果消息所属的工单是新工单,那么将当前客服作为工单的受理人,并将工单的状态更改为2(表示已接收处理)
         $request->status == 1 && Dialog::setStatus($request->chat_id, 2);
 
@@ -89,7 +86,7 @@ class ServerController extends Controller
      * @param string $type 消息的类型
      * @return string
      */
-    public function msgFactory(array $data, $type)
+    protected function msgFactory(array $data, $type)
     {
         return json_encode([
             'message_type' => $type,

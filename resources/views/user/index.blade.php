@@ -18,7 +18,6 @@
 
         table .action-bar a {
             display: inline-block;
-            padding-right: 15px;
             color: #1890ff;
             cursor: pointer;
         }
@@ -120,6 +119,27 @@
             border-color: #1890ff;
             color: #1890ff;
         }
+        .ant-divider, .ant-divider-vertical {
+            position: relative;
+            top: -.06em;
+            display: inline-block;
+            width: 1px;
+            height: .9em;
+            margin: 0 6px !important;
+            vertical-align: middle;
+        }
+        .ant-divider {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            color: rgba(0,0,0,.65);
+            font-size: 14px;
+            font-variant: tabular-nums;
+            line-height: 1.5;
+            list-style: none;
+            font-feature-settings: "tnum";
+            background: #e8e8e8;
+        }
     </style>
 @endsection
 
@@ -176,7 +196,11 @@
                                     <td style="width: 25%">{{$item->email}}</td>
                                     <td><span class="badge bg-red">{{$item->created_at}}</span></td>
                                     <td class="action-bar">
-                                        <span><a class="edit-btn">编辑</a><a class="remove-btn">删除</a></span>
+                                        <span>
+                                            <a class="edit-btn">编辑</a>
+                                            <div class="ant-divider ant-divider-vertical"></div>
+                                            <a class="remove-btn">删除</a>
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -211,7 +235,11 @@
                     <td style="width: 25%"><input type="text" name="email" placeholder="邮箱" autocomplete="off"/></td>
                     <td><input type="text" name="password" placeholder="登陆密码" autocomplete="off"/></td>
                     <td class="action-bar">
-                        <span><a class="save-user-btn">保存</a><a class="cancel-save-btn">取消</a></span>
+                        <span>
+                            <a class="save-user-btn">保存</a>
+                            <div class="ant-divider ant-divider-vertical"></div>
+                            <a class="cancel-save-btn">取消</a>
+                        </span>
                     </td>
                 </tr>
             </table>
@@ -222,135 +250,135 @@
 @section('js')
     <script src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
     <script>
-        var token = '{{csrf_token()}}';
+      var token = '{{csrf_token()}}';
 
-        $('.table').on('click', ".edit-btn:contains('编辑')", function () {
-            var tr = $(this).parents('tr');
-            var td_1 = tr.find('td').eq(1);
-            var td_2 = tr.find('td').eq(2);
-            td_1.html('<input type="text" class="name" value="' + td_1.html() + '" placeholder="用户名" autocomplete="off"/>');
-            td_2.html('<input type="text" class="email" value="' + td_2.html() + '" placeholder="用户邮箱" autocomplete="off"/>');
-            $(this).html('保存');
-            tr.find('.remove-btn').html('取消');
-            tr.addClass('edit-able')
-        });
+      $('.table').on('click', ".edit-btn:contains('编辑')", function () {
+        var tr = $(this).parents('tr');
+        var td_1 = tr.find('td').eq(1);
+        var td_2 = tr.find('td').eq(2);
+        td_1.html('<input type="text" class="name" value="' + td_1.html() + '" placeholder="用户名" autocomplete="off"/>');
+        td_2.html('<input type="text" class="email" value="' + td_2.html() + '" placeholder="用户邮箱" autocomplete="off"/>');
+        $(this).html('保存');
+        tr.find('.remove-btn').html('取消');
+        tr.addClass('edit-able')
+      });
 
 
-        $('.table').on('click', ".edit-btn:contains('保存')", function () {
-            var tr = $(this).parents('tr');
-            var name = tr.find('.name').val();
-            var email = tr.find('.email').val();
-            if (!name || !email) {
-                layer.msg('请填写完整用户信息', {icon: 2, time: 1000});
-                return false;
-            }
+      $('.table').on('click', ".edit-btn:contains('保存')", function () {
+        var tr = $(this).parents('tr');
+        var name = tr.find('.name').val();
+        var email = tr.find('.email').val();
+        if (!name || !email) {
+          layer.msg('请填写完整用户信息', {icon: 2, time: 1000});
+          return false;
+        }
 
-            var id = tr.attr('data-row-key');
-            var that = $(this);
+        var id = tr.attr('data-row-key');
+        var that = $(this);
 
-            $.ajax({
-                type: 'post',
-                url: '/user/update/' + id,
-                data: {name: name, email: email, _token: token}
+        $.ajax({
+          type: 'post',
+          url: '/user/update/' + id,
+          data: {name: name, email: email, _token: token}
 
-            }).done(function (res) {
-                if (res) {
-                    tr.removeClass('edit-able');
-                    tr.find('td').eq(1).html(name);
-                    tr.find('td').eq(2).html(email);
-                    layer.msg('success', {icon: 1, time: 1000, shade: [0.3, '#fff']});
-                    that.html('编辑');
-                    tr.find('.remove-btn').html('删除');
-                } else {
-                    layer.msg('修改失败', {icon: 2, time: 1000});
-                }
-
-            }).fail(function (res) {
-                if (res.status === 422) {
-                    var err = res.responseJSON.errors;
-                    var keys = Object.keys(err);
-                    layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
-                }
-            });
-        });
-
-        $('.table').on('click', ".remove-btn:contains('取消')", function () {
-            var tr = $(this).parents('tr');
-            var name = tr.find('.name').val();
-            var email = tr.find('.email').val();
+        }).done(function (res) {
+          if (res) {
+            tr.removeClass('edit-able');
             tr.find('td').eq(1).html(name);
             tr.find('td').eq(2).html(email);
-            tr.removeClass('edit-able');
-            tr.find('.edit-btn').html('编辑');
-            $(this).html('删除');
+            layer.msg('success', {icon: 1, time: 1000, shade: [0.3, '#fff']});
+            that.html('编辑');
+            tr.find('.remove-btn').html('删除');
+          } else {
+            layer.msg('修改失败', {icon: 2, time: 1000});
+          }
+
+        }).fail(function (res) {
+          if (res.status === 422) {
+            var err = res.responseJSON.errors;
+            var keys = Object.keys(err);
+            layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
+          }
+        });
+      });
+
+      $('.table').on('click', ".remove-btn:contains('取消')", function () {
+        var tr = $(this).parents('tr');
+        var name = tr.find('.name').val();
+        var email = tr.find('.email').val();
+        tr.find('td').eq(1).html(name);
+        tr.find('td').eq(2).html(email);
+        tr.removeClass('edit-able');
+        tr.find('.edit-btn').html('编辑');
+        $(this).html('删除');
+      });
+
+      var selected_row_index, data_row_key;
+      $('.table').on('click', ".remove-btn:contains('删除')", function () {
+        data_row_key = $(this).parents('tr').attr('data-row-key');
+        selected_row_index = $(this).parents('tr').index();
+        var content = $('.assist-box .popover-inner-content').prop('outerHTML');
+
+        layer.tips(content, this, {tips: [1, 'white'], time: 5000});
+      });
+
+      $(document).on('click', '.popover-inner-content .btn-no', function () {
+        layer.closeAll();
+      });
+
+      $(document).on('click', '.popover-inner-content .btn-yes', function () {
+        $.get('/user/delete/' + data_row_key, function (res) {
+          res ? $('.table tr').eq(selected_row_index).remove() : layer.msg('删除失败', {icon: 2});
         });
 
-        var selected_row_index, data_row_key;
-        $('.table').on('click', ".remove-btn:contains('删除')", function () {
-            data_row_key = $(this).parents('tr').attr('data-row-key');
-            selected_row_index = $(this).parents('tr').index();
-            var content = $('.assist-box .popover-inner-content').prop('outerHTML');
+        layer.closeAll();
+      });
 
-            layer.tips(content, this, {tips: [1, 'white'], time: 5000});
+      $('.add-btn').click(function () {
+        var _html = $('.assist-box .create-user-form').prop('outerHTML');
+        $('.table tbody').prepend(_html);
+      });
+
+      $('.table').on('click', '.cancel-save-btn', function () {
+        $(this).parents('tr').remove();
+      });
+
+      $('.table').on('click', '.save-user-btn', function () {
+        var parent = $(this).parents('tr');
+        var name = parent.find('input[name=name]').val();
+        var email = parent.find('input[name=email]').val();
+        var password = parent.find('input[name=password]').val();
+        if (!name || !email || !password) {
+          layer.msg('请完善用户信息', {icon: 2, time: 1000});
+          return false;
+        }
+
+        var that = $(this);
+        $.ajax({
+          type: 'post',
+          url: '/user/store',
+          data: {name: name, email: email, password: password, _token: token}
+        }).done(function (res) {
+          if (res.success) {
+            parent.attr('data-row-key', res.id);
+            parent.find('td').eq(1).html(name);
+            parent.find('td').eq(2).html(email);
+            parent.find('td').eq(3).html('<span class="badge bg-red">' + res.created_at + '</span>');
+            that.html('编辑').attr('class', 'edit-btn');
+            parent.find('.cancel-save-btn').html('删除').attr('class', 'remove-btn');
+            $('.table tbody').append(parent);
+            layer.msg('成功', {icon: 1})
+          } else {
+            layer.msg('执行失败', {icon: 2})
+          }
+
+        }).fail(function (res) {
+          if (res.status === 422) {
+            var err = res.responseJSON.errors;
+            var keys = Object.keys(err);
+            layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
+          }
         });
-
-        $(document).on('click', '.popover-inner-content .btn-no', function () {
-            layer.closeAll();
-        });
-
-        $(document).on('click', '.popover-inner-content .btn-yes', function () {
-            $.get('/user/delete/' + data_row_key, function (res) {
-                res ? $('.table tr').eq(selected_row_index).remove() : layer.msg('删除失败', {icon: 2});
-            });
-
-            layer.closeAll();
-        });
-
-        $('.add-btn').click(function () {
-            var _html = $('.assist-box .create-user-form').prop('outerHTML');
-            $('.table tbody').prepend(_html);
-        });
-
-        $('.table').on('click', '.cancel-save-btn', function () {
-            $(this).parents('tr').remove();
-        });
-
-        $('.table').on('click', '.save-user-btn', function () {
-            var parent = $(this).parents('tr');
-            var name = parent.find('input[name=name]').val();
-            var email = parent.find('input[name=email]').val();
-            var password = parent.find('input[name=password]').val();
-            if (!name || !email || !password) {
-                layer.msg('请完善用户信息', {icon: 2, time: 1000});
-                return false;
-            }
-
-            var that = $(this);
-            $.ajax({
-                type: 'post',
-                url: '/user/store',
-                data: {name: name, email: email, password: password, _token: token}
-            }).done(function (res) {
-                if (res.success) {
-                    parent.attr('data-row-key', res.id);
-                    parent.find('td').eq(1).html(name);
-                    parent.find('td').eq(2).html(email);
-                    parent.find('td').eq(3).html('<span class="badge bg-red">' + res.created_at + '</span>');
-                    that.html('编辑').attr('class', 'edit-btn');
-                    parent.find('.cancel-save-btn').html('删除').attr('class', 'remove-btn');
-                    $('.table tbody').append(parent);
-                    layer.msg('成功', {icon: 1})
-                } else {
-                    layer.msg('执行失败', {icon: 2})
-                }
-                
-            }).fail(function (res) {
-                if (res.status === 422) {
-                    var err = res.responseJSON.errors;
-                    var keys = Object.keys(err);
-                    layer.msg(err[keys[0]][0], {icon: 2, time: 2000});
-                }
-            });
-        })
+      })
     </script>
 @endsection
