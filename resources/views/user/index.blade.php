@@ -319,7 +319,7 @@
         selected_row_index = $(this).parents('tr').index();
         var content = $('.assist-box .popover-inner-content').prop('outerHTML');
 
-        layer.tips(content, this, {tips: [1, 'white'], time: 5000});
+        layer.tips(content, this, {tips: [1, 'white'], time: 500000});
       });
 
       $(document).on('click', '.popover-inner-content .btn-no', function () {

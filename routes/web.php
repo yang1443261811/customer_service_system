@@ -14,6 +14,7 @@
 Auth::routes();
 
 Route::get('/', 'IndexController@index');
+Route::get('/demo', 'IndexController@demo');
 Route::post('/chatLog/upload', 'ChatLogController@upload');
 Route::get('/chatLog/get/{uid}', 'ChatLogController@get');
 Route::get('/chatLog/haveRead/{wo_id}', 'ChatLogController@haveRead');

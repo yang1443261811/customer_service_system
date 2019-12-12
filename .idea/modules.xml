@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../HTML5-and-CSS3/.idea/HTML5-simple-game.iml" filepath="$PROJECT_DIR$/../HTML5-and-CSS3/.idea/HTML5-simple-game.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../blog2/.idea/blog2.iml" filepath="$PROJECT_DIR$/../blog2/.idea/blog2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../cs.gamemorefun.admin.net/.idea/cs.gamemorefun.admin.net.iml" filepath="$PROJECT_DIR$/../cs.gamemorefun.admin.net/.idea/cs.gamemorefun.admin.net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../customer-service/.idea/customer-service.iml" filepath="$PROJECT_DIR$/../customer-service/.idea/customer-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/customer_service_system.iml" filepath="$PROJECT_DIR$/.idea/customer_service_system.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dataStructure/.idea/dataStructure.iml" filepath="$PROJECT_DIR$/../dataStructure/.idea/dataStructure.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../event.hero.gamemorefun.net/.idea/event.hero.gamemorefun.net.iml" filepath="$PROJECT_DIR$/../event.hero.gamemorefun.net/.idea/event.hero.gamemorefun.net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../my-project/.idea/my-project.iml" filepath="$PROJECT_DIR$/../my-project/.idea/my-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../roast/.idea/roast.iml" filepath="$PROJECT_DIR$/../roast/.idea/roast.iml" />
     </modules>
   </component>
 </project>

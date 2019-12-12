@@ -115,11 +115,9 @@ function sendImageHandler(e) {
   if (!image) {
     return;
   }
-  
   var formData = new FormData();
   formData.append('image', image);
   formData.append('_token', token);
-  
   $.ajax({
     url: '/chatLog/upload',
     type: 'POST',
@@ -127,7 +125,6 @@ function sendImageHandler(e) {
     data: formData,
     processData: false,
     contentType: false
-    
   }).done(function (res) {
     //构建图片消息标签然后插入dom中
     var image = '<img src="' + res.url + '" style="height: 100px; width: 100px">';
@@ -137,7 +134,6 @@ function sendImageHandler(e) {
     scrollToEnd();
     //保存消息
     storeMessage(res.url, 2);
-    
   }).fail(function (res) {
     console.log(res.responseJSON.message);
   });

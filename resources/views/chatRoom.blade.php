@@ -126,13 +126,13 @@
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom" style="margin-bottom:0;height: 100%">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
+                    <li class=""><a href="#tab_1" data-toggle="tab" aria-expanded="false">用户信息</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">黑名单</a></li>
-                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
+                    <li class="active"><a href="#tab_3" data-toggle="tab" aria-expanded="false">快捷回复</a></li>
                     <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                 </ul>
                 <div class="tab-content" style="height: 90%;">
-                    <div class="tab-pane active" id="tab_1" style="height: 100%;">
+                    <div class="tab-pane" id="tab_1" style="height: 100%;">
                         <ul class="list-group user-info">
                             <li class="list-group-item">
                                 <span><i class="fa fa-fw fa-user"></i>&#12288;ID&nbsp;:</span>
@@ -156,7 +156,7 @@
 
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane fastReply-box" id="tab_3" style="height: 100%;">
+                    <div class="tab-pane fastReply-box active" id="tab_3" style="height: 100%;">
                         <span class='addReply label bg-green' title="新增"><i class="fa fa-fw fa-plus"></i></span>
                     </div>
                     <!-- /.tab-pane -->
